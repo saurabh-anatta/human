@@ -21,10 +21,10 @@
             "max_width": "normal",
             "alignment": "left",
             "type_preset": "h2",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
+            "font": "var(--font-heading--family)",
+            "font_size": "3rem",
             "line_height": "normal",
-            "letter_spacing": "normal",
+            "letter_spacing": "tight",
             "case": "none",
             "wrap": "pretty",
             "color": "",
@@ -128,15 +128,15 @@
           "type": "_product-card",
           "static": true,
           "settings": {
-            "product_card_gap": 4,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
+            "product_card_gap": 8,
+            "inherit_color_scheme": false,
+            "color_scheme": "scheme-2",
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
-            "border_radius": 0,
+            "border_radius": 16,
             "padding-block-start": 0,
-            "padding-block-end": 0,
+            "padding-block-end": 24,
             "padding-inline-start": 0,
             "padding-inline-end": 0
           },
@@ -148,11 +148,21 @@
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
-                "border_radius": 0,
+                "border_radius": 16,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "review_block": {
+              "type": "review",
+              "settings": {
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 24,
+                "padding-inline-end": 24
               },
               "blocks": {}
             },
@@ -164,8 +174,8 @@
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
+                "font": "var(--font-subheading--family)",
+                "font_size": "1.125rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -174,10 +184,21 @@
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
-                "padding-block-start": 4,
+                "padding-block-start": 0,
                 "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
+                "padding-inline-start": 24,
+                "padding-inline-end": 24
+              },
+              "blocks": {}
+            },
+            "description_custom": {
+              "type": "custom-liquid",
+              "settings": {
+                "liquid": "<div style=\"font-family: var(--font-heading--family); font-weight: 400; font-size: 1rem; line-height: 20px; color: #767676; letter-spacing: -0.5px;\">{{ closest.product.description | strip_html | truncate: 80 }}</div>",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 24,
+                "padding-inline-end": 24
               },
               "blocks": {}
             },
@@ -198,15 +219,17 @@
                 "color": "var(--color-foreground)",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
+                "padding-inline-start": 24,
+                "padding-inline-end": 24
               },
               "blocks": {}
             }
           },
           "block_order": [
             "card-gallery",
+            "review_block",
             "product_title_4nY4eT",
+            "description_custom",
             "price_EzJzMm"
           ]
         }
@@ -225,7 +248,79 @@
         "padding-inline-end": 0,
         "color_scheme": "scheme-1",
         "padding-block-start": 0,
-        "padding-block-end": 32
+        "padding-block-end": 32,
+        "promo_1_position": 3,
+        "promo_1_image": "shopify://shop_images/portraits-living-room-9222-1-link-1-415214069.png",
+        "promo_1_heading": "Get 50% off our starter routine",
+        "promo_1_text": "#1 Doctor Recommended",
+        "promo_1_link_text": "Shop the Routine",
+        "promo_2_position": 7,
+        "promo_2_image": "shopify://shop_images/portraits-living-room-9222-1-link-1-415214069.png",
+        "promo_2_heading": "Discover the Blood Pressure Science",
+        "promo_2_text": "How our ingredients deliver lasting benefit.",
+        "promo_2_link_text": "Learn more"
+      }
+    },
+    "collection_categories": {
+      "type": "collection-categories",
+      "blocks": {
+        "cat_blood_pressure": {
+          "type": "category-link",
+          "settings": {
+            "label": "Blood Pressure",
+            "dot_color": "#8C0132"
+          }
+        },
+        "cat_blood_flow": {
+          "type": "category-link",
+          "settings": {
+            "label": "Blood Flow",
+            "dot_color": "#D72A2A"
+          }
+        },
+        "cat_metabolic": {
+          "type": "category-link",
+          "settings": {
+            "label": "Metabolic",
+            "dot_color": "#E62F5E"
+          }
+        },
+        "cat_cholesterol": {
+          "type": "category-link",
+          "settings": {
+            "label": "Cholesterol",
+            "dot_color": "#D54427"
+          }
+        },
+        "cat_cognitive": {
+          "type": "category-link",
+          "settings": {
+            "label": "Cognitive",
+            "dot_color": "#B1369A"
+          }
+        },
+        "cat_sports": {
+          "type": "category-link",
+          "settings": {
+            "label": "Sports",
+            "dot_color": "#E9FF6D"
+          }
+        }
+      },
+      "block_order": [
+        "cat_blood_pressure",
+        "cat_blood_flow",
+        "cat_metabolic",
+        "cat_cholesterol",
+        "cat_cognitive",
+        "cat_sports"
+      ],
+      "settings": {
+        "shop_all_link": "/collections/all",
+        "shop_all_label": "Shop All",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 12,
+        "padding-block-end": 12
       }
     },
     "generic_section_rGrPyx": {
@@ -2744,6 +2839,7 @@
   },
   "order": [
     "section",
+    "collection_categories",
     "main",
     "generic_section_rGrPyx",
     "generic_section_f8XGUH"

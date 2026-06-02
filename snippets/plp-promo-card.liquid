@@ -1,0 +1,71 @@
+{% doc %}
+  Promotional card for insertion within the product grid.
+
+  Renders a full-bleed background image with a bottom-aligned content
+  overlay that uses backdrop-filter blur.
+
+  @param {object} image - Shopify image object (required)
+  @param {string} heading - Card heading text
+  @param {string} text - Card description text
+  @param {string} link_text - CTA link label
+  @param {string} link_url - CTA link URL
+
+  @example
+  {% render 'plp-promo-card',
+    image: section.settings.promo_1_image,
+    heading: section.settings.promo_1_heading,
+    text: section.settings.promo_1_text,
+    link_text: section.settings.promo_1_link_text,
+    link_url: section.settings.promo_1_link_url
+  %}
+{% enddoc %}
+
+{% liquid
+  assign image = image | default: empty
+  assign heading = heading | default: ''
+  assign text = text | default: ''
+  assign link_text = link_text | default: 'Learn more'
+  assign link_url = link_url | default: ''
+%}
+
+{% if link_url != blank %}
+  <a href="{{ link_url }}" class="plp-promo-card" aria-label="{{ heading | escape }}">
+{% else %}
+  <div class="plp-promo-card">
+{% endif %}
+
+  {% if image != empty %}
+    <div class="plp-promo-card__media">
+      {% assign sizes_val = '(min-width: 750px) 33vw, 50vw' %}
+      {{
+        image
+        | image_url: width: image.width
+        | image_tag:
+          sizes: sizes_val,
+          widths: '375,550,750,1100',
+          loading: 'lazy',
+          class: 'plp-promo-card__image',
+          alt: heading
+      }}
+    </div>
+  {% endif %}
+
+  <div class="plp-promo-card__overlay">
+    {% if heading != blank %}
+      <h3 class="plp-promo-card__heading">{{ heading }}</h3>
+    {% endif %}
+
+    {% if text != blank %}
+      <p class="plp-promo-card__text">{{ text }}</p>
+    {% endif %}
+
+    {% if link_text != blank %}
+      <span class="plp-promo-card__link">{{ link_text }}</span>
+    {% endif %}
+  </div>
+
+{% if link_url != blank %}
+  </a>
+{% else %}
+  </div>
+{% endif %}

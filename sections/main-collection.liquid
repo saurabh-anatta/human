@@ -51,6 +51,28 @@
     {% paginate collection.products by products_per_page %}
       {% capture children %}
         {% for product in collection.products %}
+          {% if section.settings.promo_1_position != blank and forloop.index == section.settings.promo_1_position and section.settings.promo_1_image != blank %}
+            <li class="product-grid__item product-grid__item--promo" data-page="{{ paginate.current_page }}">
+              {% render 'plp-promo-card',
+                image: section.settings.promo_1_image,
+                heading: section.settings.promo_1_heading,
+                text: section.settings.promo_1_text,
+                link_text: section.settings.promo_1_link_text,
+                link_url: section.settings.promo_1_link_url
+              %}
+            </li>
+          {% endif %}
+          {% if section.settings.promo_2_position != blank and forloop.index == section.settings.promo_2_position and section.settings.promo_2_image != blank %}
+            <li class="product-grid__item product-grid__item--promo" data-page="{{ paginate.current_page }}">
+              {% render 'plp-promo-card',
+                image: section.settings.promo_2_image,
+                heading: section.settings.promo_2_heading,
+                text: section.settings.promo_2_text,
+                link_text: section.settings.promo_2_link_text,
+                link_url: section.settings.promo_2_link_url
+              %}
+            </li>
+          {% endif %}
           <li
             id="{{ section.id }}-{{ product.id }}"
             class="product-grid__item product-grid__item--{{ forloop.index0 }}"
@@ -75,6 +97,26 @@
     {% endpaginate %}
   </div>
 </results-list>
+
+{% style %}
+  #shopify-section-{{ section.id }} .product-grid__item--promo {
+    min-height: 534px;
+  }
+
+  #shopify-section-{{ section.id }} product-card .quick-add__button {
+    opacity: 1;
+  }
+
+  #shopify-section-{{ section.id }} .product-card__content {
+    overflow: hidden;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .product-grid__item--promo {
+      min-height: 380px;
+    }
+  }
+{% endstyle %}
 
 {% schema %}
 {
@@ -252,6 +294,82 @@
       "step": 1,
       "unit": "px",
       "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Promotional cards"
+    },
+    {
+      "type": "number",
+      "id": "promo_1_position",
+      "label": "Promo 1: before product #",
+      "default": 3
+    },
+    {
+      "type": "image_picker",
+      "id": "promo_1_image",
+      "label": "Promo 1: Image"
+    },
+    {
+      "type": "text",
+      "id": "promo_1_heading",
+      "label": "Promo 1: Heading",
+      "default": "Get 50% off our starter routine"
+    },
+    {
+      "type": "text",
+      "id": "promo_1_text",
+      "label": "Promo 1: Description",
+      "default": "#1 Doctor Recommended"
+    },
+    {
+      "type": "text",
+      "id": "promo_1_link_text",
+      "label": "Promo 1: Link text",
+      "default": "Shop the Routine"
+    },
+    {
+      "type": "url",
+      "id": "promo_1_link_url",
+      "label": "Promo 1: Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Promotional card 2"
+    },
+    {
+      "type": "number",
+      "id": "promo_2_position",
+      "label": "Promo 2: before product #",
+      "default": 7
+    },
+    {
+      "type": "image_picker",
+      "id": "promo_2_image",
+      "label": "Promo 2: Image"
+    },
+    {
+      "type": "text",
+      "id": "promo_2_heading",
+      "label": "Promo 2: Heading",
+      "default": "Discover the Blood Pressure Science"
+    },
+    {
+      "type": "text",
+      "id": "promo_2_text",
+      "label": "Promo 2: Description",
+      "default": "How our ingredients deliver lasting benefit."
+    },
+    {
+      "type": "text",
+      "id": "promo_2_link_text",
+      "label": "Promo 2: Link text",
+      "default": "Learn more"
+    },
+    {
+      "type": "url",
+      "id": "promo_2_link_url",
+      "label": "Promo 2: Link URL"
     }
   ],
   "presets": []

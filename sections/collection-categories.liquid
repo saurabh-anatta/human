@@ -1,0 +1,172 @@
+{{ 'collection-categories.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="collection-categories-wrapper color-{{ section.settings.color_scheme }}"
+  style="
+    --padding-block-start: {{ section.settings.padding-block-start }}px;
+    --padding-block-end: {{ section.settings.padding-block-end }}px;
+  "
+>
+  <div class="collection-categories" role="navigation" aria-label="Collection categories">
+    {% if section.settings.shop_all_link != blank %}
+      {% liquid
+        assign is_all_active = true
+        for block in section.blocks
+          if block.settings.collection != blank and block.settings.collection.handle == collection.handle
+            assign is_all_active = false
+            break
+          endif
+        endfor
+      %}
+      <a
+        href="{{ section.settings.shop_all_link }}"
+        class="category-pill{% if is_all_active %} category-pill--active{% endif %}"
+      >
+        {{ section.settings.shop_all_label }}
+      </a>
+    {% endif %}
+
+    {% for block in section.blocks %}
+      {% if block.type == 'category-link' %}
+        {% liquid
+          assign is_active = false
+          if block.settings.collection != blank and block.settings.collection.handle == collection.handle
+            assign is_active = true
+          endif
+        %}
+        <a
+          href="{% if block.settings.collection != blank %}{{ block.settings.collection.url }}{% else %}#{% endif %}"
+          class="category-pill{% if is_active %} category-pill--active{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          {% if is_active %}
+            <span class="category-pill__check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M13.3 4.3a1 1 0 0 1 0 1.4l-6 6a1 1 0 0 1-1.4 0l-3-3a1 1 0 1 1 1.4-1.4L6.6 9.6l5.3-5.3a1 1 0 0 1 1.4 0Z" fill="currentColor"/>
+              </svg>
+            </span>
+          {% elsif block.settings.dot_color != blank %}
+            <span class="category-pill__dot" style="background-color: {{ block.settings.dot_color }};"></span>
+          {% endif %}
+          {% if block.settings.collection != blank %}
+            {{ block.settings.collection.title }}
+          {% else %}
+            {{ block.settings.label }}
+          {% endif %}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .collection-categories-wrapper {
+    padding-block-start: var(--padding-block-start, 12px);
+    padding-block-end: var(--padding-block-end, 12px);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection categories",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "url",
+      "id": "shop_all_link",
+      "label": "Shop All link"
+    },
+    {
+      "type": "text",
+      "id": "shop_all_label",
+      "label": "Shop All label",
+      "default": "Shop All"
+    },
+    {
+      "type": "header",
+      "content": "Section layout"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category-link",
+      "name": "Category link",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Fallback label",
+          "default": "Category"
+        },
+        {
+          "type": "color",
+          "id": "dot_color",
+          "label": "Dot color",
+          "default": "#D72A2A"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection categories",
+      "blocks": [
+        {
+          "type": "category-link",
+          "settings": {
+            "label": "Blood Pressure",
+            "dot_color": "#8C0132"
+          }
+        },
+        {
+          "type": "category-link",
+          "settings": {
+            "label": "Blood Flow",
+            "dot_color": "#D72A2A"
+          }
+        },
+        {
+          "type": "category-link",
+          "settings": {
+            "label": "Metabolic",
+            "dot_color": "#E62F5E"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
