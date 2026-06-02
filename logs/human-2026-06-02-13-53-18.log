@@ -211,3 +211,132 @@ Leave line ~14889 (`FromLabToLegacy_16x9_F_Web 1.mp4`) unchanged — it shares t
     - The `templates/index.json` file has a pre-existing comment block (lines 1-9) that makes it technically invalid JSON — this is not caused by this change and exists in the base theme.
     - The three affected blocks will now have no mobile-specific video and should fall back to `video_desktop` or show nothing on mobile, depending on how `blocks/video-modal.liquid` handles an empty `video_mobile`. This is acceptable since the referenced files did not exist.
     - If `FromLabToLegacy_16x9_F_Web 1.mp4` (line 14889) is also invalid, it would need a separate fix — it was explicitly excluded from this task.
+  Git commit: theme-factory(fix): Fix the theme validation error in `templates/index.json`: the `video_mobile` setting value does not point to an applicable Shopify-hosted video resource.
+
+There are several `video_mobile` settings with invalid values:
+- Lines around 8283, 8641, and 8999 reference `shopify://files/videos/...mp4` paths (e.g. `Davis-tv-video.mp4`, `ZS_Mobile_Hero_Video_Animated.mp4`) that do not resolve to valid Shopify-hosted video resources on this store.
+- One `video_mobile` value is set to an empty string (around line 14889).
+
+For each invalid `video_mobile` setting, resolve the validation error. If a referenced video file does not exist as a Shopify-hosted video resource on the store, clear the value (set it to an empty string) so it no longer references a non-existent resource, OR point it to a valid shopify-hosted video resource if an equivalent one exists. Empty `video_mobile` values that are already valid (no resource referenced) should be left as-is and not flagged.
+
+Do not modify any other settings or sections beyond what is required to clear the `video_mobile` validation errors. This is a validation-fix task — no new sections or templates should be created. [iteration 1]
+  [telemetry] updateRun(validator_started_1): OK 200 -- {"ok":true,"id":"SC1780408375257"}
+
+  --------------------------------------------------
+  Iteration 1/5 — Validator Agent
+  --------------------------------------------------
+
+  [2026-06-02T13:57:17.124Z] Validator agent started
+  Duration:              1m 44s
+  Turns:                 19
+  Prompt Size:           48,795 sys chars + 6,686 user chars
+  Tokens:                358,317 ctx (333,990 cached [93% hit]) → 4,578 out
+  Passed:                true
+  Theme Check:           true
+  JSON Valid:            true
+  Liquid Valid:          true
+  Summary:               All acceptance criteria met. Exactly 3 invalid video_mobile values (Davis-tv-video.mp4 at line 8283, ZS_Mobile_Hero_Video_Animated.mp4 at lines 8641 and 8999) were set to empty strings. video_desktop values are unchanged. No other settings, sections, blocks, or templates were modified. JSON is valid, theme check passes with 0 errors/warnings, and layout section groups are preserved.
+  Confidence:            96%
+  Confidence Reason:     Surgical 3-line fix exactly matching acceptance criteria. Only templates/index.json was modified. All video_desktop values preserved. JSON valid. Theme check passes with zero errors/warnings. Layout integrity intact. Translation keys clean for modified files. The only minor note is the Shopify-standard comment header in index.json which is normal and handled correctly by Shopify.
+
+  Issues: 0 errors, 0 warnings, 1 suggestions
+
+  Suggestions:
+    [SUGGEST] templates/index.json:1
+      File contains Shopify-standard block comment header (/* ... */), which is valid for Shopify but rejected by strict JSON parsers. Shopify handles this correctly. (json-validation)
+  [telemetry] updateRun(deploying): OK 200 -- {"ok":true,"id":"SC1780408375257"}
+
+======================================================================
+  DEPLOYMENT — GITHUB
+======================================================================
+
+  [2026-06-02T13:59:01.416Z] GitHub push started
+  Status:                SUCCESS
+  Branch:                feature/PLP
+
+======================================================================
+  DEPLOYMENT — SHOPIFY
+======================================================================
+
+  [2026-06-02T13:59:05.062Z] Shopify push started
+  Reusing existing Shopify theme: SAURABH Theme - Human (ID: 189097083159)
+  Store:                 anatta-ai.myshopify.com
+  Unpublished:           true
+  Local Files:           503
+  Theme ID:              189097083159
+  Theme Name:            SAURABH Theme - Human
+  Preview URL:           https://anatta-ai.myshopify.com/?preview_theme_id=189097083159
+  Editor URL:            https://admin.shopify.com/store/anatta-ai/themes/189097083159/editor
+  Files Uploaded:        503
+  Files With Errors:     0
+
+
+  --------------------------------------------------
+  Shopify CLI Raw Output
+  --------------------------------------------------
+
+{"environment":"default","theme":{"id":189097083159,"name":"SAURABH Theme - Human","role":"unpublished","shop":"anatta-ai.myshopify.com","editor_url":"https://anatta-ai.myshopify.com/admin/themes/189097083159/editor","preview_url":"https://anatta-ai.myshopify.com?preview_theme_id=189097083159"}}
+
+  Status:                SUCCESS
+
+======================================================================
+  EXECUTION REPORT
+======================================================================
+
+  [2026-06-02T13:59:14.623Z] Run completed
+
+  Client:                anatta-ai
+  Store:                 anatta-ai.myshopify.com
+  Theme Base:            Horizon
+  Input File:            human.md
+  Theme Name:            SAURABH Theme - Human
+  Preview URL:           https://anatta-ai.myshopify.com/?preview_theme_id=189097083159
+  Editor URL:            https://admin.shopify.com/store/anatta-ai/themes/189097083159/editor
+  GitHub:                https://github.com/saurabh-anatta/human/tree/feature/PLP
+  Branch:                feature/PLP
+  Mode:                  brownfield_type_3
+  Validation Status:     PASSED
+  Iterations:            1/5
+  Files Changed:         2 (+216 -3)
+  Total Duration:        5m 56s
+  Total Cost:            $2.0372
+
+
+  --------------------------------------------------
+  Agent Timing Breakdown (execution order)
+  --------------------------------------------------
+
+    Context Agent:       1m 16s  $0.4724  19 turns
+    Analyzer Agent:      1m 21s  $0.4634  6 turns
+    Dev Agent (iter 1):  58s  $0.6658  12 turns
+    Validator Agent (iter 1): 1m 44s  $0.4357  19 turns
+
+
+  --------------------------------------------------
+  Confidence Scores
+  --------------------------------------------------
+
+  Dev Agent:             97% (HIGH)
+    All three target values were found at the expected lines and replaced with empty strings using unique surrounding context. Grep verification confirms exactly three values changed and the fourth left untouched. All sibling `video_desktop` values are preserved. The only minor concern is the pre-existing JSON comment block which is not related to this change.
+  Validator Agent:       96% (HIGH)
+    Surgical 3-line fix exactly matching acceptance criteria. Only templates/index.json was modified. All video_desktop values preserved. JSON valid. Theme check passes with zero errors/warnings. Layout integrity intact. Translation keys clean for modified files. The only minor note is the Shopify-standard comment header in index.json which is normal and handled correctly by Shopify.
+  Overall:               97% (HIGH)
+
+
+  --------------------------------------------------
+  Final Validation Report
+  --------------------------------------------------
+
+  All acceptance criteria met. Exactly 3 invalid video_mobile values (Davis-tv-video.mp4 at line 8283, ZS_Mobile_Hero_Video_Animated.mp4 at lines 8641 and 8999) were set to empty strings. video_desktop values are unchanged. No other settings, sections, blocks, or templates were modified. JSON is valid, theme check passes with 0 errors/warnings, and layout section groups are preserved.
+    Suggestions: 1
+
+
+  --------------------------------------------------
+  Changed Files
+  --------------------------------------------------
+
+    - logs/human-2026-06-02-13-53-18.log
+    - templates/index.json
+  [telemetry] ensureSend: OK PATCH /api/tf/runs/SC1780408375257 ->200 -- {"ok":true,"id":"SC1780408375257"}
+  [telemetry] uploadLog: OK 200 -- id=a-cuetOQW9Y2q--Rk7f8TyPM path=/api/tf/logs/a-cuetOQW9Y2q--Rk7f8TyPM
+  [telemetry] ensureSend: OK PATCH /api/tf/runs/SC1780408375257 ->200 -- {"ok":true,"id":"SC1780408375257"}
