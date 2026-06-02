@@ -1,0 +1,21 @@
+[environments.default]
+store = "behumann.myshopify.com"
+ignore = [
+  "templates/*.json",
+  "sections/*.json",
+  "config/settings_data.json",
+  "package.json",
+  "yarn.lock",
+  ".prettierrc",
+  "node_modules/*",
+]
+open = true
+
+[environments.templates]
+store = "behumann.myshopify.com"
+ignore = [
+  "package.json",
+  "yarn.lock",
+  ".prettierrc",
+  "node_modules/*",
+]
