@@ -1,0 +1,129 @@
+<div
+  class="info-card color-{{ block.settings.color_scheme }}"
+  data-info-card
+  {% if block.settings.open_by_default %}data-open-by-default="true"{% endif %}
+  style="
+    --info-card-padding-block-mobile: {{ block.settings.mobile_padding_block }}px;
+    --info-card-padding-inline-mobile: {{ block.settings.mobile_padding_inline }}px;
+    --info-card-padding-block-desktop: {{ block.settings.desktop_padding_block }}px;
+    --info-card-padding-inline-desktop: {{ block.settings.desktop_padding_inline }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% stylesheet %}
+  .info-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    counter-increment: info-card-index;
+    padding-block: var(--info-card-padding-block-mobile, 0px);
+    padding-inline: var(--info-card-padding-inline-mobile, 0px);
+    height: 100%;
+  }
+
+  .info-card:not(:last-child) {
+    padding-bottom: calc(var(--info-card-padding-block-mobile, 0px) + var(--info-cards-radius-mobile, 0px));
+  }
+
+  @media screen and (max-width: 749px) {
+    .info-card {
+      border-radius: var(--info-cards-radius-mobile, 0px) var(--info-cards-radius-mobile, 0px) 0 0;
+      overflow: hidden;
+    }
+
+    .info-card:last-child {
+      border-radius: var(--info-cards-radius-mobile, 0px);
+    }
+
+    .info-card + .info-card {
+      margin-top: calc(-1 * var(--info-cards-radius-mobile, 0px));
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .info-card {
+      border-radius: var(--info-cards-radius-desktop, 0px);
+      padding-block: var(--info-card-padding-block-desktop, 0px);
+      padding-inline: var(--info-card-padding-inline-desktop, 0px);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Info Card",
+  "tag": null,
+  "blocks": [
+    { "type": "_info-card-header" },
+    { "type": "_info-card-content" },
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open by default",
+      "default": false,
+      "info": "If multiple cards have this enabled, only the first one opens"
+    },
+    {
+      "type": "header",
+      "content": "Desktop padding"
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_block",
+      "label": "Padding block (top & bottom)",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_inline",
+      "label": "Padding inline (left & right)",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Mobile padding"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_block",
+      "label": "Padding block (top & bottom)",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_inline",
+      "label": "Padding inline (left & right)",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

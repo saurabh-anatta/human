@@ -1,0 +1,226 @@
+{% liquid
+  assign s = block.settings
+
+  capture inline_styles
+    if s.color_scheme != blank
+      echo '--kcs-dialog-bg: rgb(' | append: s.color_scheme.settings.background.rgb | append: ');'
+      echo '--kcs-dialog-color: rgb(' | append: s.color_scheme.settings.foreground.rgb | append: ');'
+    endif
+    if s.desktop_width == 'custom' and s.desktop_width_custom != blank
+      echo '--kcs-dialog-width-desktop: ' | append: s.desktop_width_custom | append: 'px;'
+    else
+      echo '--kcs-dialog-width-desktop: 100%;'
+    endif
+  endcapture
+%}
+
+{% stylesheet %}
+  .kcs-dialog {
+    padding: 0;
+    border: none;
+    overflow: hidden;
+    background-color: var(--kcs-dialog-bg, var(--color-background, #fff));
+    color: var(--kcs-dialog-color, var(--color-foreground, #000));
+    box-shadow: var(--shadow-popover);
+  }
+
+  .kcs-dialog::backdrop {
+    background: rgb(var(--backdrop-color-rgb) / var(--backdrop-opacity));
+    transition: opacity var(--animation-speed) var(--animation-easing);
+  }
+
+  /* ─── Desktop: centred modal ─────────────────────────────────────────── */
+
+  @media screen and (min-width: 750px) {
+    .kcs-dialog:modal {
+      position: fixed;
+      inset: unset;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: var(--kcs-dialog-width-desktop, 100%);
+      max-width: 90vw;
+      height: auto;
+      overflow: hidden;
+      border-radius: 24px;
+    }
+
+    .kcs-dialog[open] {
+      animation: elementSlideInTop var(--animation-speed) var(--animation-easing) forwards;
+    }
+
+    .kcs-dialog::backdrop {
+      animation: backdropFilter var(--animation-speed) var(--animation-easing) forwards;
+    }
+
+    .kcs-dialog__body {
+      padding-block-start: 96px;
+    }
+  }
+
+  /* ─── Mobile: bottom drawer ──────────────────────────────────────────── */
+
+  @media screen and (max-width: 749px) {
+    .kcs-dialog:modal {
+      position: fixed;
+      inset: auto 0 0 0;
+      margin: 0;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border: none;
+      border-radius: 24px 24px 0 0;
+      box-shadow: 0 -4px 16px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes kcs-slide-in {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .kcs-dialog[open] {
+      animation: kcs-slide-in var(--animation-speed) var(--animation-easing) forwards;
+    }
+
+    .kcs-dialog::backdrop {
+      animation: backdropFilter var(--animation-speed) var(--animation-easing) forwards;
+    }
+
+    .kcs-dialog__body {
+      padding-block-start: 48px;
+    }
+  }
+
+  /* ─── Dialog inner structure ─────────────────────────────────────────── */
+
+  .kcs-dialog__panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    max-height: inherit;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .kcs-dialog__close svg {
+    width: 20px;
+    height: auto;
+    --icon-stroke-width: 1.5px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .kcs-dialog__panel {
+      height: auto;
+    }
+    .kcs-dialog__close svg {
+      opacity: 0.7;
+    }
+  }
+
+  .kcs-dialog__close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    padding: 0;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--kcs-dialog-color, var(--color-foreground, currentColor));
+    cursor: pointer;
+    appearance: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .kcs-dialog__close {
+      top: 40px;
+      right: 40px;
+    }
+  }
+
+  .kcs-dialog__close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .kcs-dialog__body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+{% endstylesheet %}
+
+<dialog
+  ref="dialog"
+  class="kcs-dialog"
+  style="{{ inline_styles }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="kcs-dialog__panel">
+    <button
+      ref="closeButton"
+      type="button"
+      class="kcs-dialog__close"
+      on:click="/closeDialog"
+      aria-label="{{ 'accessibility.close_dialog' | t }}"
+    >
+      {{- 'icon-close.svg' | inline_asset_content -}}
+    </button>
+
+    <div class="kcs-dialog__body">
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</dialog>
+
+{% schema %}
+{
+  "name": "KC — Search Drawer",
+  "tag": null,
+  "blocks": [
+    { "type": "_kcs-search-field" },
+    { "type": "_kcs-rotating-question" },
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Color scheme"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Width — Desktop"
+    },
+    {
+      "type": "select",
+      "id": "desktop_width",
+      "label": "Width",
+      "options": [
+        { "value": "full", "label": "100%" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "number",
+      "id": "desktop_width_custom",
+      "label": "Custom width (px)",
+      "default": 560,
+      "visible_if": "{{ block.settings.desktop_width == 'custom' }}"
+    }
+  ],
+  "presets": []
+}
+{% endschema %}

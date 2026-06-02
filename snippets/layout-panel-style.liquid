@@ -1,0 +1,40 @@
+{%- liquid
+  comment
+    Intended for blocks and sections that provide values for all the referenced settings.
+
+    Accepts:
+      settings: {block.settings || section.settings}
+      mobile_direction: 'column' | 'row'
+  endcomment
+
+  assign horizontal_alignment = settings.horizontal_alignment
+
+  assign vertical_alignment = settings.vertical_alignment
+  if settings.align_baseline and vertical_alignment == 'flex-end'
+    assign vertical_alignment = 'last baseline'
+  endif
+
+  unless settings.content_direction == 'row'
+    assign horizontal_alignment = settings.horizontal_alignment_flex_direction_column
+    assign vertical_alignment = settings.vertical_alignment_flex_direction_column
+  endunless
+
+  if mobile_direction == 'row'
+    assign horizontal_alignment_mobile = settings.horizontal_alignment_mobile | default: horizontal_alignment
+    assign vertical_alignment_mobile = settings.vertical_alignment_mobile | default: vertical_alignment
+  else
+    assign horizontal_alignment_mobile = settings.horizontal_alignment_flex_direction_column_mobile | default: horizontal_alignment
+    assign vertical_alignment_mobile = settings.vertical_alignment_flex_direction_column_mobile | default: vertical_alignment
+  endif
+-%}
+
+--flex-direction: {{ settings.content_direction | default: 'column' }}; --flex-wrap: {{ settings.flex_wrap | default: 'nowrap' }}; --flex-wrap-mobile: {{ settings.flex_wrap_mobile | default: 'wrap' }};
+
+{% render 'gap-style', value: settings.gap %}
+
+--horizontal-alignment: {{ horizontal_alignment }}; --vertical-alignment: {{ vertical_alignment }};
+--horizontal-alignment-mobile: {{ horizontal_alignment_mobile }};
+--vertical-alignment-mobile: {{ vertical_alignment_mobile }};
+{%- if settings.gap_mobile != blank -%}
+  --gap-mobile: {{ settings.gap_mobile }}px;
+{%- endif -%}

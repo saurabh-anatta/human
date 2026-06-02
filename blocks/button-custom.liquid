@@ -1,0 +1,371 @@
+{%- liquid
+
+  assign type_desktop_class = block.settings.type_desktop
+  assign style_desktop_class = block.settings.style_desktop
+  assign size_desktop_class = block.settings.size_desktop
+  assign width_desktop_class = block.settings.width_desktop
+  if width_desktop_class == 'btn--w-custom'
+    assign custom_w_md = block.settings.custom_width_desktop | append: 'px'
+  endif
+
+  assign type_mobile_class = block.settings.type_mobile
+  assign style_mobile_class = block.settings.style_mobile
+  assign size_mobile_class = block.settings.size_mobile
+  assign width_mobile_class = block.settings.width_mobile
+  if width_mobile_class == 'btn--w-custom--mobile'
+    assign custom_w_sm = block.settings.custom_width_mobile | append: 'px'
+  endif
+
+-%}
+
+{%- capture inline_style -%}
+  {%- if custom_w_md %}--btn-w-custom-md: {{ custom_w_md }};{% endif -%}
+  {%- if custom_w_sm %}--btn-w-custom-sm: {{ custom_w_sm }};{% endif -%}
+  --btn-mb-md: {{ block.settings.margin_block_end_desktop }}px;
+  --btn-mb-sm: {{ block.settings.margin_block_end_mobile }}px;
+{%- endcapture -%}
+{%- assign inline_style = inline_style | strip -%}
+
+<a
+  href="{{ block.settings.link | default: '#' }}"
+  class="btn {{ type_desktop_class }} {{ style_desktop_class }} {{ size_desktop_class }} {{ width_desktop_class }} {{ type_mobile_class }} {{ style_mobile_class }} {{ size_mobile_class }} {{ width_mobile_class }}"
+  {%- if block.settings.open_in_new_tab %} target="_blank" rel="noopener"{% endif -%}
+  {%- if inline_style != '' %} style="{{ inline_style }}"{% endif -%}
+  {{ block.shopify_attributes }}
+>
+  {{ block.settings.label | default: 'Button' }}
+</a>
+
+{% stylesheet %}
+
+  .btn {
+    display: block;
+    max-width: 100%;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-family: var(--font-labels--family, inherit);
+    font-weight: var(--font-labels--weight, 400);
+    line-height: 16px;
+    letter-spacing: var(--letter-spacing-loose, 0.75px);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease,
+      border-color 150ms ease,
+      opacity 150ms ease;
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+      /* --- Size --- */
+  .btn--large--mobile  { padding: 14px 24px; font-size: 14px; }
+  .btn--medium--mobile { padding: 10px 18px; font-size: 14px; }
+  .btn--small--mobile  { padding: 6px 12px;  font-size: 12px; }
+
+  /* --- Width --- */
+  .btn--w-full--mobile   { width: 100%; }
+  .btn--w-auto--mobile   { width: fit-content; }
+  .btn--w-custom--mobile { width: var(--btn-w-custom-sm, 160px); }
+
+  @media screen and (max-width: 749px) {
+    .btn { margin-bottom: var(--btn-mb-sm, 0px); }
+  }
+
+  @media screen and (min-width: 750px) {
+    .btn { margin-bottom: var(--btn-mb-md, 0px); }
+
+    /* --- Size --- */
+    .btn--large  { padding: 16px 28px; font-size: 16px; }
+    .btn--medium { padding: 12px 20px; font-size: 16px; }
+    .btn--small  { padding: 8px 16px;  font-size: 14px; }
+
+    /* --- Width --- */
+    .btn--w-full   { width: 100%; }
+    .btn--w-auto   { width: fit-content; }
+    .btn--w-custom { width: var(--btn-w-custom-md, 200px); }
+
+    /* --- Style: signature colors, with override hooks --- */
+    .btn--primary {
+      background-color: var(--color-brand-red);
+      color: var(--color-neutral-white);
+      border-color: var(--color-brand-red);
+      --btn-outline-fg: var(--color-brand-red);
+    }
+    .btn--secondary {
+      background-color: var(--color-neutral-black);
+      color: var(--color-neutral-white);
+      border-color: var(--color-neutral-black);
+      --btn-outline-fg: var(--color-neutral-black);
+    }
+    .btn--tertiary {
+      background-color: var(--color-neutral-100);
+      color: var(--color-neutral-900);
+      border-color: var(--color-neutral-700);
+      --btn-outline-fg: var(--color-neutral-900);
+    }
+    .btn--inverse {
+      background-color: var(--color-neutral-white);
+      color: var(--color-neutral-black);
+      border-color: var(--color-neutral-white);
+      --btn-outline-fg: var(--color-neutral-white);
+    }
+    .btn--base {
+      background-color: var(--color-neutral-100);
+      color: var(--color-neutral-700);
+      border-color: transparent;
+      --btn-outline-fg: var(--color-neutral-700);
+    }
+
+    /* --- Type --- */
+
+    .btn--outline {
+      background-color: transparent;
+      color: var(--btn-outline-fg);
+    }
+    .btn--text {
+      background-color: transparent;
+      border-color: transparent;
+      color: var(--btn-outline-fg);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+      padding: 0;
+    }
+  }
+
+
+  @media screen and (max-width: 749px) {
+    /* --- Style --- */
+    .btn--primary--mobile {
+      background-color: var(--color-brand-red);
+      color: var(--color-neutral-white);
+      border-color: var(--color-brand-red);
+      --btn-outline-fg: var(--color-brand-red);
+    }
+    .btn--secondary--mobile {
+      background-color: var(--color-neutral-black);
+      color: var(--color-neutral-white);
+      border-color: var(--color-neutral-black);
+      --btn-outline-fg: var(--color-neutral-black);
+    }
+    .btn--tertiary--mobile {
+      background-color: var(--color-neutral-100);
+      color: var(--color-neutral-900);
+      border-color: var(--color-neutral-700);
+      --btn-outline-fg: var(--color-neutral-900);
+    }
+    .btn--inverse--mobile {
+      background-color: var(--color-neutral-white);
+      color: var(--color-neutral-black);
+      border-color: var(--color-neutral-white);
+      --btn-outline-fg: var(--color-neutral-white);
+    }
+    .btn--base--mobile {
+      background-color: var(--color-neutral-100);
+      color: var(--color-neutral-700);
+      border-color: transparent;
+      --btn-outline-fg: var(--color-neutral-700);
+    }
+
+    .btn--outline--mobile {
+      background-color: transparent;
+      color: var(--btn-outline-fg);
+    }
+    .btn--text--mobile {
+      background-color: transparent;
+      border-color: transparent;
+      color: var(--btn-outline-fg);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+      padding: 0;
+    }
+
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Custom Button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open in new tab",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "select",
+      "id": "type_desktop",
+      "label": "Type",
+      "default": "btn--solid",
+      "options": [
+        { "value": "btn--solid",   "label": "Solid" },
+        { "value": "btn--outline", "label": "Outline" },
+        { "value": "btn--text",    "label": "Text" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "style_desktop",
+      "label": "Style",
+      "default": "btn--primary",
+      "options": [
+        { "value": "btn--primary",   "label": "Primary" },
+        { "value": "btn--secondary", "label": "Secondary" },
+        { "value": "btn--tertiary",  "label": "Tertiary" },
+        { "value": "btn--inverse",   "label": "Inverse" },
+        { "value": "btn--base",      "label": "Base" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "size_desktop",
+      "label": "Size",
+      "default": "btn--medium",
+      "options": [
+        { "value": "btn--large",  "label": "Large" },
+        { "value": "btn--medium", "label": "Medium" },
+        { "value": "btn--small",  "label": "Small" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "width_desktop",
+      "label": "Width",
+      "default": "btn--w-auto",
+      "options": [
+        { "value": "btn--w-full",   "label": "Full width (100%)" },
+        { "value": "btn--w-auto",   "label": "Auto" },
+        { "value": "btn--w-custom", "label": "Custom (px)" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "custom_width_desktop",
+      "label": "Custom width",
+      "min": 60,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 200,
+      "visible_if": "{{ block.settings.width_desktop == 'btn--w-custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "margin_block_end_desktop",
+      "label": "Bottom margin",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "type_mobile",
+      "label": "Type",
+      "default": "btn--solid--mobile",
+      "options": [
+        { "value": "btn--solid--mobile",   "label": "Solid" },
+        { "value": "btn--outline--mobile", "label": "Outline" },
+        { "value": "btn--text--mobile",    "label": "Text" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "style_mobile",
+      "label": "Style",
+      "default": "btn--primary--mobile",
+      "options": [
+        { "value": "btn--primary--mobile",   "label": "Primary" },
+        { "value": "btn--secondary--mobile", "label": "Secondary" },
+        { "value": "btn--tertiary--mobile",  "label": "Tertiary" },
+        { "value": "btn--inverse--mobile",   "label": "Inverse" },
+        { "value": "btn--base--mobile",      "label": "Base" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "size_mobile",
+      "label": "Size",
+      "default": "btn--medium--mobile",
+      "options": [
+        { "value": "btn--large--mobile",  "label": "Large" },
+        { "value": "btn--medium--mobile", "label": "Medium" },
+        { "value": "btn--small--mobile",  "label": "Small" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "Width",
+      "default": "btn--w-auto--mobile",
+      "options": [
+        { "value": "btn--w-full--mobile",   "label": "Full width (100%)" },
+        { "value": "btn--w-auto--mobile",   "label": "Auto" },
+        { "value": "btn--w-custom--mobile", "label": "Custom (px)" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Custom width",
+      "min": 60,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 160,
+      "visible_if": "{{ block.settings.width_mobile == 'btn--w-custom--mobile' }}"
+    },
+    {
+      "type": "range",
+      "id": "margin_block_end_mobile",
+      "label": "Bottom margin",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Button",
+      "category": "t:categories.basic",
+      "settings": {
+        "label": "Shop now",
+        "link": "shopify://collections/all"
+      }
+    }
+  ]
+}
+{% endschema %}

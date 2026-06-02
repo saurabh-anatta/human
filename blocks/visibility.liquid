@@ -1,0 +1,74 @@
+{%- liquid
+  assign show_desktop = block.settings.show_on_desktop
+  assign show_mobile = block.settings.show_on_mobile
+
+  assign visibility_class = ''
+  unless show_desktop
+    assign visibility_class = visibility_class | append: ' visibility-block--hide-desktop'
+  endunless
+  unless show_mobile
+    assign visibility_class = visibility_class | append: ' visibility-block--hide-mobile'
+  endunless
+  assign visibility_class = visibility_class | strip
+-%}
+
+<div class="visibility-block {{ visibility_class }}" {{ block.shopify_attributes }}>
+  {% content_for 'blocks' %}
+</div>
+
+{% stylesheet %}
+  .visibility-block {
+    display: contents;
+  }
+
+  @media (min-width: 750px) {
+    .visibility-block--hide-desktop {
+      display: none;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .visibility-block--hide-mobile {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Content Visibility",
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" },
+    { "type": "_divider" },
+    { "type": "_custom_divider" }
+  ],
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Breakpoints"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_desktop",
+      "label": "Show on desktop",
+      "default": true,
+      "info": "Visible at 750px and above."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_mobile",
+      "label": "Show on mobile",
+      "default": true,
+      "info": "Visible below 750px."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Content Visibility",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

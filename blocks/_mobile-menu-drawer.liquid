@@ -1,0 +1,103 @@
+{%- doc -%}
+  Renders the mobile menu drawer block.
+{%- enddoc -%}
+
+{% liquid
+  assign block_settings = block.settings
+%}
+
+<div
+  class="header__drawer"
+  ref="headerDrawerContainer"
+  data-hydration-key="header-drawer-mobile"
+  {{ block.shopify_attributes }}
+>
+  {% render 'header-drawer',
+    linklist: block_settings.menu,
+    data_header_drawer_type: 'mobile-drawer',
+    block: block,
+    section: section
+  %}
+</div>
+
+{% schema %}
+{
+  "name": "t:names.mobile_menu_drawer",
+  "tag": null,
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:settings.menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "primary"
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_accordion",
+      "label": "t:settings.accordion",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_accordion_expand_first",
+      "label": "t:settings.expand_first_group",
+      "default": false,
+      "visible_if": "{{ block.settings.drawer_accordion == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_dividers",
+      "label": "t:settings.dividers",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_slide_submenus",
+      "label": "t:settings.slide_submenus",
+      "info": "t:info.slide_submenus_info",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:content.drawer_banners"
+    },
+    {
+      "type": "text",
+      "id": "banner_section_title",
+      "label": "t:settings.banner_section_title"
+    },
+    {
+      "type": "metaobject_list",
+      "id": "mega_menu_banner_object",
+      "label": "t:settings.mega_menu_banner_object",
+      "metaobject_type": "mega_menu_banner",
+      "limit": 4
+    },
+    {
+      "type": "header",
+      "content": "t:content.bottom_menu"
+    },
+    {
+      "type": "text",
+      "id": "bottom_menu_title",
+      "label": "t:settings.bottom_menu_title"
+    },
+    {
+      "type": "textarea",
+      "id": "bottom_menu_text",
+      "label": "t:settings.bottom_menu_text"
+    },
+    {
+      "type": "link_list",
+      "id": "secondary_menu",
+      "label": "t:settings.secondary_menu"
+    }
+  ]
+}
+{% endschema %}

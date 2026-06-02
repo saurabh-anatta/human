@@ -1,0 +1,67 @@
+/* Moderat Serif
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-display: swap;
+  font-family: "Moderat Serif";
+  font-style: normal;
+  font-weight: 300;
+  src:
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/Moderat-Serif-Light.woff2?v=1755546439")
+      format("woff2"),
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/Moderat-Serif-Light.woff?v=1755546439")
+      format("woff");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Moderat Serif Regular";
+  font-style: normal;
+  font-weight: 400;
+  src:
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/Moderat-Serif-Regular.woff2?v=1755546430")
+      format("woff2"),
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/Moderat-Serif-Regular.woff?v=1755546430")
+      format("woff");
+}
+
+/* Uniforma
+     -------------------------------------------------------------------------- */
+
+@font-face {
+  font-display: swap;
+  font-family: "Uniforma Semibold";
+  font-style: normal;
+  font-weight: 400;
+  src:
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/Uniforma-70Semibold.woff2?v=1755546455")
+      format("woff2"),
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/Uniforma-70Semibold.woff?v=1755546455")
+      format("woff");
+}
+
+/* Stabil Grotesk
+     -------------------------------------------------------------------------- */
+
+@font-face {
+  font-display: swap;
+  font-family: "Stabil Grotesk Regular";
+  font-style: normal;
+  font-weight: 500;
+  src:
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/StabilGrotesk-50Regular.woff2?v=1755546533")
+      format("woff2"),
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/StabilGrotesk-50Regular.woff?v=1755546533")
+      format("woff");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Stabil Grotesk Bold";
+  font-style: normal;
+  font-weight: 700;
+  src:
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/StabilGrotesk-70Bold.woff2?v=1755546532")
+      format("woff2"),
+    url("https://cdn.shopify.com/s/files/1/0040/5526/9487/files/StabilGrotesk-70Bold.woff?v=1755546532")
+      format("woff");
+}

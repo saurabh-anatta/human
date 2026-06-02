@@ -1,0 +1,437 @@
+{%- liquid
+  assign bs = block.settings
+
+  assign kc = bs.article
+
+  assign card_thumbnail = nil
+  assign card_title = ''
+  assign drawer_title = ''
+  assign drawer_heading = ''
+  assign drawer_images = empty
+  assign article_ref = nil
+  assign page_ref = nil
+
+  if kc != blank
+    assign card_thumbnail = kc.card_thumbnail
+    assign card_title = kc.card_title
+    assign drawer_title = kc.drawer_title
+    assign drawer_heading = kc.drawer_heading
+    assign drawer_subheading_raw = kc.drawer_subheading
+    assign drawer_images = kc.drawer_images.value
+    assign drawer_description_raw = kc.drawer_description
+    assign article_ref = kc.article__reference
+    assign page_ref = kc.page_reference
+    assign button_label = kc.link_label | default: 'Read full report'
+    if article_ref != blank
+      assign report_link = article_ref.value.url
+    else
+      assign report_link = page_ref.value.url
+    endif
+  endif
+
+  assign heading_id = 'kc-drawer-heading-' | append: block.id
+
+  assign scheme_class = ''
+  if bs.color_scheme != blank
+    assign scheme_class = 'color-' | append: bs.color_scheme.id
+  endif
+-%}
+
+{%- if kc != blank -%}
+  <script src="{{ 'dialog.js' | asset_url }}" type="module"></script>
+
+  <dialog-component class="kc-card-block" {{ block.shopify_attributes }}>
+    <button
+      type="button"
+      class="kc-card"
+      on:click="/showDialog"
+      aria-haspopup="dialog"
+      aria-label="Open details for {{ card_title | escape }}">
+      {%- if card_thumbnail != blank -%}
+        <span class="kc-card__media" aria-hidden="true">
+          {{
+            card_thumbnail | image_url: width: 400 | image_tag: class: 'kc-card__image', loading: 'lazy', widths: '200,400,600', sizes: '185px', alt: card_thumbnail.alt
+          }}
+        </span>
+      {%- endif -%}
+
+      <span class="kc-card__overlay {{ scheme_class }}">
+        <span class="kc-card__title">{{ card_title }}</span>
+      </span>
+    </button>
+
+    <dialog
+      ref="dialog"
+      class="kc-drawer dialog-modal dialog-drawer"
+      scroll-lock
+      aria-labelledby="{{ heading_id }}">
+      <div class="kc-drawer__panel">
+        <header class="kc-drawer__header">
+          <div class="kc-drawer__eyebrow">
+            <svg
+              class="kc-drawer__icon"
+              width="17"
+              height="14"
+              viewBox="0 0 17 14"
+              fill="none"
+              aria-hidden="true"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg">
+              {% render 'icon'
+                , icon: 'book' %}
+            </svg>
+            <span class="kc-drawer__eyebrow-text">{{ drawer_title }}</span>
+          </div>
+          <button
+            ref="closeButton"
+            type="button"
+            class="kc-drawer__close button button-unstyled"
+            on:click="/closeDialog"
+            aria-label="{{ 'accessibility.close_dialog' | t }}">
+            {{- 'icon-close.svg' | inline_asset_content -}}
+          </button>
+        </header>
+
+        <div class="kc-drawer__body">
+          {%- if drawer_heading != blank -%}
+            <h2 class="kc-drawer__heading" id="{{ heading_id }}">{{ drawer_heading }}</h2>
+          {%- endif -%}
+
+          {%- if drawer_subheading_raw != blank -%}
+            <div class="kc-drawer__subheading rte">{{ kc.drawer_subheading | metafield_tag }}</div>
+          {%- endif -%}
+
+          {%- if drawer_images != blank and drawer_images.size > 0 -%}
+            <div class="kc-drawer__media">
+              {%- for image in drawer_images -%}
+                {{
+                  image
+                  | image_url: width: 1000
+                  | image_tag:
+                    class: 'kc-drawer__image',
+                    loading: 'lazy',
+                    widths: '300,500,700,1000',
+                    sizes: '(min-width: 750px) 420px, 100vw',
+                    alt: image.alt | default: ''
+                }}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          {%- if drawer_description_raw != blank -%}
+            <div class="kc-drawer__description rte">{{ kc.drawer_description | metafield_tag }}</div>
+          {%- endif -%}
+
+          {%- if report_link != blank -%}
+            <hr class="kc-drawer__divider">
+            <a class="kc-drawer__link" href="{{ report_link  }}">{{ button_label }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </dialog>
+  </dialog-component>
+{%- elsif request.design_mode -%}
+  <div class="kc-card-block" {{ block.shopify_attributes }}>
+    <div class="kc-card kc-card--empty" aria-hidden="true">
+      <span class="kc-card__overlay {{ scheme_class }}">
+        <span class="kc-card__title">Select an article</span>
+      </span>
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+
+  .kc-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 185 / 200;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    border-radius: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: center;
+    font: inherit;
+    color: inherit;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    isolation: isolate;
+  }
+
+  .kc-card:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .kc-card__media {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 0;
+  }
+
+  .kc-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 400ms ease;
+  }
+
+  .kc-card:hover .kc-card__image,
+  .kc-card:focus-visible .kc-card__image {
+    transform: scale(1.1);
+  }
+
+  .kc-card__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    border-radius: inherit;
+    z-index: 1;
+  }
+
+  .kc-card__title {
+    display: block;
+    max-width: 14ch;
+    font-family: var(--font-labels--family, inherit);
+    font-weight: 600;
+    font-size: var(--font-size--md);
+    line-height: 1rem;
+    letter-spacing: var(--letter-spacing--tight);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .kc-card--empty {
+    cursor: default;
+    background-color: #919191;
+    border: 1px dashed var(--color-border, rgba(0, 0, 0, 0.15));
+  }
+
+  /* ---------- Drawer (uses theme .dialog-modal + .dialog-drawer animations) ---------- */
+  .kc-drawer {
+    padding: 0;
+    width: 100%;
+    max-width: 420px;
+    border: 0;
+    border-radius: 0;
+    background-color: var(--color-background, var(--color-neutral-white));
+    color: var(--color-foreground, var(--color-neutral-900));
+    overflow: hidden;
+  }
+
+  .kc-drawer:modal {
+    position: fixed;
+    inset: 0 0 0 auto;
+    margin: 0;
+    height: 100%;
+    max-height: 100%;
+  }
+
+  .kc-drawer__panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .kc-drawer__header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: var(--padding-xs) var(--padding-lg);
+    border-bottom: 1px solid var(--color-border, #d9d9db);
+  }
+
+  .kc-drawer__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    color: var(--color-foreground-heading, var(--color-neutral-700));
+    font-family: var(--font-labels--family, inherit);
+    font-size: var(--font-size--2xs);
+    line-height: 14px;
+    letter-spacing: var(--letter-spacing--tight);
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .kc-drawer__icon {
+    width: var(--icon-size-sm);
+    height: var(--icon-size-sm);
+    flex-shrink: 0;
+  }
+
+  .kc-drawer__close {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: var(--padding-2xs);
+    margin: 0;
+    cursor: pointer;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+
+  .kc-drawer__close svg {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+    color: var(--color-neutral-700);
+  }
+
+  .kc-drawer__close:hover {
+    opacity: 0.7;
+  }
+
+  .kc-drawer__close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .kc-drawer__body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: var(--padding-2xl) var(--padding-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+  }
+
+  .kc-drawer__heading {
+    margin: 0;
+    font-family: var(--font-heading--family, var(--font-body--family, inherit));
+    font-size: var(--font-size--3xl);
+    line-height: 2.25rem;
+    letter-spacing: var(--letter-spacing--heading-tight);
+    color: var(--color-foreground, inherit);
+    font-weight: 400;
+  }
+
+  .kc-drawer__subheading {
+    font-family: var(--font-subheading--family, inherit);
+    font-size: var(--font-size--lg);
+    line-height: var(--line-height--body-normal);
+    color: var(--color-foreground-heading, var(--color-neutral-700));
+  }
+
+  .kc-drawer__subheading > :first-child,
+  .kc-drawer__description > :first-child {
+    margin-top: 0;
+  }
+
+  .kc-drawer__subheading > :last-child,
+  .kc-drawer__description > :last-child {
+    margin-bottom: 0;
+  }
+
+  .kc-drawer__media {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  .kc-drawer__image {
+    width: 100%;
+    height: 151px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    min-width: 0;
+  }
+
+  .kc-drawer__image:first-child {
+    grid-column: 1 / -1;
+    height: 240px;
+  }
+
+  .kc-drawer__image:last-child:nth-child(even) {
+    grid-column: 1 / -1;
+    height: 240px;
+  }
+
+  .kc-drawer__description {
+    font-family: var(--font-heading--family, var(--font-body--family, inherit));
+    font-size: var(--font-size--md);
+    line-height: var(--line-height--body-normal);
+    letter-spacing: var(--letter-spacing--body-tight);
+    color: var(--color-foreground-heading, var(--color-neutral-700));
+  }
+
+  .kc-drawer__divider {
+    border: 0;
+    border-top: 1px solid var(--color-border, #d9d9db);
+    margin: 0;
+    width: 100%;
+  }
+
+  .kc-drawer__link {
+    color: var(--color-foreground, var(--color-neutral-900));
+    font-family: var(--font-subheading--family);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    font-size: var(--font-size--md);
+    line-height: var(--line-height--body-normal);
+    letter-spacing: var(--letter-spacing--body-tight);
+    align-self: flex-start;
+  }
+
+  @media (max-width: 749px) {
+    .group-block-content:has( > .kc-card-block) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .kc-drawer {
+      max-width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+  {
+    "name": "Knowledge Center Card",
+    "tag": null,
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content"
+      }, {
+        "type": "metaobject",
+        "id": "article",
+        "label": "Metaobject Source",
+        "metaobject_type": "knowledge_center_card"
+      }, {
+        "type": "paragraph",
+        "content": "Card and drawer content are pulled from the Knowledge Center Card metaobject linked on the selected article via the custom.knowledge_center_cards metafield."
+      }, {
+        "type": "color_scheme",
+        "id": "color_scheme",
+        "label": "Color scheme",
+        "default": "scheme-6"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Knowledge Center Card",
+        "category": "Custom"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,255 @@
+{% doc %}
+  Block: Overlay Hotspots
+
+  An absolutely-positioned overlay anchored to its nearest positioned
+  ancestor. Drop it inside a Hero (or any container with position) to
+  float badges, callouts, or labels at arbitrary x/y coordinates.
+
+  Coordinates are percentages of the parent box. The hotspot is centered
+  on the (x, y) point via a translate(-50%, -50%). Desktop and mobile
+  positions are set independently.
+{% enddoc %}
+
+{% liquid
+  assign s = block.settings
+%}
+
+{% capture inline_styles %}
+  --ovh-x-mobile: {{ s.x_mobile }}%;
+  --ovh-y-mobile: {{ s.y_mobile }}%;
+  --ovh-x-desktop: {{ s.x_desktop }}%;
+  --ovh-y-desktop: {{ s.y_desktop }}%;
+{% endcapture %}
+
+{% stylesheet %}
+  .overlay-hotspot {
+    position: absolute;
+    left: var(--ovh-x-mobile);
+    top: var(--ovh-y-mobile);
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    pointer-events: auto;
+    max-width: 90%;
+    width: max-content;
+  }
+
+  @media screen and (min-width: 750px) {
+    .overlay-hotspot {
+      left: var(--ovh-x-desktop);
+      top: var(--ovh-y-desktop);
+    }
+  }
+{% endstylesheet %}
+
+<div
+  class="overlay-hotspot"
+  style="{{ inline_styles | strip_newlines }}"
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% schema %}
+{
+  "name": "Overlay Hotspots",
+  "tag": null,
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop position"
+    },
+    {
+      "type": "range",
+      "id": "x_desktop",
+      "label": "X position",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "info": "Horizontal position relative to the parent (0 = left, 100 = right)."
+    },
+    {
+      "type": "range",
+      "id": "y_desktop",
+      "label": "Y position",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "info": "Vertical position relative to the parent (0 = top, 100 = bottom)."
+    },
+    {
+      "type": "header",
+      "content": "Mobile position"
+    },
+    {
+      "type": "range",
+      "id": "x_mobile",
+      "label": "X position",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "y_mobile",
+      "label": "Y position",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50
+    }
+  ],
+  "presets": [
+    {
+      "name": "Overlay Hotspot — Top",
+      "category": "Custom",
+      "settings": {
+        "x_desktop": 50,
+        "y_desktop": 12,
+        "x_mobile": 50,
+        "y_mobile": 10
+      },
+      "blocks": {
+        "ovh_group": {
+          "type": "group",
+          "settings": {
+            "content_direction": "row",
+            "horizontal_alignment": "center",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "gap": 8,
+            "content_direction_mobile": "row",
+            "horizontal_alignment_mobile": "center",
+            "vertical_alignment_mobile": "center",
+            "gap_mobile": 8,
+            "width": "fit-content",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "inherit_color_scheme": false,
+            "color_scheme": "scheme-3",
+            "background_media": "none",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 100,
+            "padding-block-start": 8,
+            "padding-block-end": 8,
+            "padding-inline-start": 16,
+            "padding-inline-end": 16
+          },
+          "blocks": {
+            "ovh_label": {
+              "type": "custom-text",
+              "settings": {
+                "text": "<p><strong>Blood Pressure</strong></p>",
+                "font_family": "var(--font-body--family)",
+                "font_weight": "600",
+                "font_size": "0.875rem",
+                "line_height": "1rem",
+                "letter_spacing": "0px",
+                "alignment": "center",
+                "font_family_mobile": "var(--font-body--family)",
+                "font_weight_mobile": "600",
+                "font_size_mobile": "0.75rem",
+                "line_height_mobile": "0.875rem",
+                "letter_spacing_mobile": "0px",
+                "alignment_mobile": "center",
+                "width": "fit-content",
+                "max_width": "none",
+                "width_mobile": "fit-content",
+                "max_width_mobile": "none",
+                "margin_block_end": 0,
+                "margin_block_end_mobile": 0
+              }
+            }
+          },
+          "block_order": ["ovh_label"]
+        }
+      },
+      "block_order": ["ovh_group"]
+    },
+    {
+      "name": "Overlay Hotspot — Bottom right",
+      "category": "Custom",
+      "settings": {
+        "x_desktop": 80,
+        "y_desktop": 78,
+        "x_mobile": 75,
+        "y_mobile": 80
+      },
+      "blocks": {
+        "ovh_group": {
+          "type": "group",
+          "settings": {
+            "content_direction": "row",
+            "horizontal_alignment": "center",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "gap": 8,
+            "content_direction_mobile": "row",
+            "horizontal_alignment_mobile": "center",
+            "vertical_alignment_mobile": "center",
+            "gap_mobile": 8,
+            "width": "fit-content",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "inherit_color_scheme": false,
+            "color_scheme": "scheme-4",
+            "background_media": "none",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 100,
+            "padding-block-start": 8,
+            "padding-block-end": 8,
+            "padding-inline-start": 16,
+            "padding-inline-end": 16
+          },
+          "blocks": {
+            "ovh_label": {
+              "type": "custom-text",
+              "settings": {
+                "text": "<p><strong>Cholesterol</strong></p>",
+                "font_family": "var(--font-body--family)",
+                "font_weight": "600",
+                "font_size": "0.875rem",
+                "line_height": "1rem",
+                "letter_spacing": "0px",
+                "alignment": "center",
+                "font_family_mobile": "var(--font-body--family)",
+                "font_weight_mobile": "600",
+                "font_size_mobile": "0.75rem",
+                "line_height_mobile": "0.875rem",
+                "letter_spacing_mobile": "0px",
+                "alignment_mobile": "center",
+                "width": "fit-content",
+                "max_width": "none",
+                "width_mobile": "fit-content",
+                "max_width_mobile": "none",
+                "margin_block_end": 0,
+                "margin_block_end_mobile": 0
+              }
+            }
+          },
+          "block_order": ["ovh_label"]
+        }
+      },
+      "block_order": ["ovh_group"]
+    }
+  ]
+}
+{% endschema %}

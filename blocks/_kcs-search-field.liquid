@@ -1,0 +1,154 @@
+{% liquid
+  assign s          = block.settings
+  assign placeholder = s.placeholder | default: 'Search the Knowledge Center'
+  assign cta_label   = s.cta_label   | default: 'GO'
+
+  capture style_variables
+    if s.color_scheme != blank
+      echo '--kcs-bg-color:rgb(' | append: s.color_scheme.settings.background.rgb | append: ');'
+      echo '--kcs-color:rgb(' | append: s.color_scheme.settings.foreground.rgb | append: ');'
+      echo '--kcs-input-border: ' | append: s.color_scheme.settings.border | append: ';'
+      echo '--kcs-go-bg:rgb(' | append: s.color_scheme.settings.primary_button_background.rgb | append: ');'
+      echo '--kcs-go-color:rgb(' | append: s.color_scheme.settings.primary_button_text.rgb | append: ');'
+    endif
+    echo '--kcs-field-padding-mobile:' | append: s.padding_top_mobile | append: 'px ' | append: s.padding_right_mobile | append: 'px ' | append: s.padding_bottom_mobile | append: 'px ' | append: s.padding_left_mobile | append: 'px;'
+    echo '--kcs-field-padding-desktop:' | append: s.padding_top_desktop | append: 'px ' | append: s.padding_right_desktop | append: 'px ' | append: s.padding_bottom_desktop | append: 'px ' | append: s.padding_left_desktop | append: 'px;'
+  endcapture
+%}
+
+{% stylesheet %}
+  .kcs-field-wrap {
+    padding: var(--kcs-field-padding-mobile, 0px);
+  }
+
+  @media screen and (min-width: 750px) {
+    .kcs-field-wrap {
+      padding: var(--kcs-field-padding-desktop, var(--kcs-field-padding-mobile, 0px));
+    }
+  }
+{% endstylesheet %}
+
+<div class="kcs-field-wrap" style="{{ style_variables | strip_newlines | strip }}">
+  {%- render '_kcs-search-bar',
+     mode: 'field',
+     block: block,
+     placeholder: placeholder,
+     cta_label: cta_label,
+     style_variables: style_variables
+  -%}
+</div>
+
+{% schema %}
+{
+  "name": "KC — Search Field",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder text",
+      "default": "Search the Knowledge Center"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Submit button label",
+      "default": "Go"
+    },
+    {
+      "type": "header",
+      "content": "Padding — Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right_mobile",
+      "label": "Right (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left_mobile",
+      "label": "Left (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding — Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right_desktop",
+      "label": "Right (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left_desktop",
+      "label": "Left (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

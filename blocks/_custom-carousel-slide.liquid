@@ -1,0 +1,36 @@
+{% doc %}
+  Block: Custom Carousel Slide
+
+  A single slide for the Custom Carousel. Accepts any theme/app blocks
+  as children. Must be placed inside a Custom Carousel block.
+{% enddoc %}
+
+{% stylesheet %}
+  .custom-carousel-slide {
+    height: auto !important;
+  }
+
+  .custom-carousel-slide__content {
+    width: 100%;
+    height: 100%;
+  }
+{% endstylesheet %}
+
+<div class="swiper-slide custom-carousel-slide" {{ block.shopify_attributes }}>
+  <div class="custom-carousel-slide__content">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Slide",
+  "tag": null,
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
+  "settings": [],
+  "presets": [{ "name": "Slide" }]
+}
+{% endschema %}

@@ -1,0 +1,66 @@
+{% doc %}
+  Renders the predictive search empty state
+
+  @param {number} shadow_opacity - shadow opacity for the empty state container shadow
+  @param {string} products_test_id - a playwright test id, used to differentiate empty state from 'real' search results
+  @param {boolean} [load_empty_state] - Load the empty state or not
+
+  @example
+  {% render 'predictive-search-empty-state', shadow_opacity: 0.1, products_test_id: 'empty-state' %}
+{% enddoc %}
+
+<div
+  id="predictive-search-results"
+  class="predictive-search-dropdown"
+  role="listbox"
+  aria-expanded="true"
+  style="--color-shadow: rgb(var(--color-foreground-rgb) / {{ shadow_opacity }});"
+>
+  {% if load_empty_state %}
+    <div class="search-modal__results-grid">
+      <div class="search-modal__col-products">
+        {% liquid
+          assign collection = settings.empty_state_collection | default: collections.all
+          assign default_title = 'content.search_results_resource_products' | t
+          assign title = settings.empty_state_collection.title | default: default_title
+        %}
+        {% paginate collection.products by 4 %}
+          {% assign products = collection.products %}
+          {% if products.size > 0 %}
+            {% render 'predictive-search-products-list',
+              products_test_id: products_test_id,
+              title: 'Popular Products',
+              products: products,
+              limit: 4
+            %}
+          {% else %}
+            <div class="predictive-search-results__no-results">
+              <p>{{ 'content.no_products_found' | t }}</p>
+            </div>
+          {% endif %}
+        {% endpaginate %}
+      </div>
+      <div class="search-modal__col-searches">
+        <h4 class="search-modal__section-heading">Popular Searches</h4>
+        {% if settings.popular_search_terms != blank %}
+          {% assign popular_terms = settings.popular_search_terms | newline_to_br | split: '<br />' %}
+          <ul class="search-modal__popular-list">
+            {% for term in popular_terms %}
+              {% assign term_clean = term | strip %}
+              {% if term_clean != '' %}
+                <li>
+                  <a
+                    href="{{ routes.search_url }}?q={{ term_clean | url_encode }}&options[prefix]=last"
+                    class="search-modal__popular-link"
+                  >
+                    {{ term_clean }}
+                  </a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>

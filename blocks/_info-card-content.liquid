@@ -1,0 +1,62 @@
+<div
+  class="info-card-content"
+  role="region"
+  data-info-panel
+  hidden
+  {{ block.shopify_attributes }}
+>
+  <div class="info-card-content__inner">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .info-card-content__inner {
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media screen and (max-width: 749px) {
+    .info-card-content {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 0.35s ease, opacity 0.3s ease;
+    }
+
+    .info-card-content[data-open] {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .info-card-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .info-card-content__inner {
+      overflow: visible;
+      flex: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .info-card-content {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Card Body",
+  "tag": null,
+  "blocks": [{ "type": "@theme" }, { "type": "@app" }],
+  "settings": []
+}
+{% endschema %}

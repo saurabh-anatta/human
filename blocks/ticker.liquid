@@ -1,0 +1,402 @@
+{% doc %}
+  Block: Ticker
+
+  A Swiper-powered ticker (marquee-style) that continuously scrolls text and
+  image callouts from right to left. Uses `slidesPerView: auto` so each slide
+  sizes to its content, with optional dividers between callouts.
+
+  Accepts `_ticker-slide` blocks as direct children.
+{% enddoc %}
+
+{% liquid
+  assign s = block.settings
+
+  assign divider_width_mobile = 36
+  assign divider_width_desktop = 72
+
+  assign base_gap_mobile = s.mobile_gap
+  assign base_gap_desktop = s.gap
+
+  if s.show_divider
+    assign gap_mobile = base_gap_mobile | times: 2 | plus: divider_width_mobile
+    assign gap_desktop = base_gap_desktop | times: 2 | plus: divider_width_desktop
+  else
+    assign gap_mobile = base_gap_mobile
+    assign gap_desktop = base_gap_desktop
+  endif
+
+  capture ticker_settings
+    echo '{'
+    echo '"speed":' | append: s.speed | append: ','
+    echo '"gapMobile":' | append: gap_mobile | append: ','
+    echo '"gapDesktop":' | append: gap_desktop | append: ','
+    echo '"reverse":' | append: s.reverse | append: ','
+    echo '"enableMotionDesktop":' | append: s.enable_motion
+    echo '}'
+  endcapture
+%}
+
+<ticker-component
+  class="
+    ticker
+    {% if s.show_divider %}ticker--show-divider{% endif %}
+    {% if s.inherit_color_scheme == false %}color-{{ s.color_scheme }}{% endif %}
+  "
+  style="
+    {%- render 'responsive-spacing', settings: s, prefix: 'ticker' -%}
+    --ticker-side-space-mobile: {{ base_gap_mobile }}px;
+    --ticker-side-space-desktop: {{ base_gap_desktop }}px;
+    --ticker-gap-mobile: {{ gap_mobile }}px;
+    --ticker-gap-desktop: {{ gap_desktop }}px;
+    {%- if s.show_divider -%}
+      --ticker-divider-color: {{ s.divider_color }};
+    {%- endif -%}
+    --ticker-edge-fade-desktop: {% if s.edge_fade %}64px{% else %}0px{% endif %};
+    --ticker-edge-fade-mobile: {% if s.mobile_edge_fade %}64px{% else %}0px{% endif %};
+  "
+  data-settings="{{ ticker_settings | strip_newlines | escape }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="swiper ticker__swiper">
+    <div class="swiper-wrapper ticker__wrapper {% if s.enable_motion == false %}ticker__wrapper--desktop-no-motion{% endif %}">
+      {%- capture ticker_slides_once -%}{% content_for 'blocks' %}{%- endcapture -%}
+      {{ ticker_slides_once }}
+      {%- assign base = block.blocks.size -%}
+      {%- if base == 0 -%}{%- assign base = 1 -%}{%- endif -%}
+      {%- assign copies = 24 | divided_by: base | ceil | minus: 1 -%}
+      {%- if copies < 1 -%}{%- assign copies = 1 -%}{%- endif -%}
+      {%- assign ticker_slides_clone = ticker_slides_once | replace: 'class="swiper-slide ticker__slide"', 'class="swiper-slide ticker__slide ticker__slide--clone"' -%}
+      {%- for i in (1..copies) -%}{{ ticker_slides_clone }}{%- endfor -%}
+    </div>
+  </div>
+</ticker-component>
+
+<script src="{{ 'ticker-component.js' | asset_url }}" type="module" fetchpriority="low"></script>
+
+{% stylesheet %}
+  .ticker {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    padding: var(--ticker-m-pt) var(--ticker-m-pr) var(--ticker-m-pb) var(--ticker-m-pl);
+    margin-bottom: var(--ticker-m-mb);
+  }
+
+  @media screen and (min-width: 750px) {
+    .ticker {
+      padding: var(--ticker-d-pt) var(--ticker-d-pr) var(--ticker-d-pb) var(--ticker-d-pl);
+      margin-bottom: var(--ticker-d-mb);
+    }
+  }
+
+  .ticker__swiper {
+    width: 100%;
+    --ticker-edge-fade: var(--ticker-edge-fade-mobile, 0px);
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--ticker-edge-fade),
+      #000 calc(100% - var(--ticker-edge-fade)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--ticker-edge-fade),
+      #000 calc(100% - var(--ticker-edge-fade)),
+      transparent 100%
+    );
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+  }
+
+  .ticker__wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--ticker-gap-mobile);
+    transition-timing-function: linear !important;
+  }
+
+  .ticker__wrapper > * {
+    flex-shrink: 0;
+  }
+
+  .ticker__swiper.swiper-initialized .ticker__wrapper {
+    gap: 0;
+  }
+
+  @media (min-width: 750px) {
+    .ticker__wrapper {
+      gap: var(--ticker-gap-desktop);
+    }
+
+    .ticker__swiper {
+      --ticker-edge-fade: var(--ticker-edge-fade-desktop, 0px);
+    }
+
+    .ticker__wrapper--desktop-no-motion {
+      justify-content: center;
+    }
+
+    .ticker__wrapper--desktop-no-motion .ticker__slide--clone {
+      display: none;
+    }
+  }
+
+  .ticker--show-divider .ticker__slide {
+    position: relative;
+  }
+
+  .ticker--show-divider .ticker__slide::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    inset-inline-end: calc((var(--ticker-side-space-mobile) + 36px) * -1);
+    height: 1px;
+    width: 36px;
+    background: var(--ticker-divider-color, currentColor);
+    transform: translateY(-50%);
+  }
+
+  @media (min-width: 750px) {
+    .ticker--show-divider .ticker__slide::after {
+      inset-inline-end: calc((var(--ticker-side-space-desktop) + 72px) * -1);
+      width: 72px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker .swiper-wrapper {
+      transition-duration: 0ms !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Ticker",
+  "tag": null,
+  "blocks": [{ "type": "_ticker-slide" }],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show divider between callouts",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "alpha": true,
+      "default": "#000000",
+      "visible_if": "{{ block.settings.show_divider }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "Inherit color scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "header",
+      "content": "Motion Settings"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Speed",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "info": "Lower values scroll slower for better readability."
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse",
+      "label": "Reverse direction",
+      "default": false
+    },
+
+    { "type": "header", "content": "Desktop behavior" },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "checkbox",
+      "id": "edge_fade",
+      "label": "Fade edges",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_motion",
+      "label": "Enable motion",
+      "default": true
+    },
+
+    { "type": "header", "content": "Mobile behavior" },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Gap",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_edge_fade",
+      "label": "Fade edges",
+      "default": false
+    },
+
+    { "type": "header", "content": "Desktop — Spacing" },
+    {
+      "type": "range",
+      "id": "desktop_padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_right",
+      "label": "Padding right",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "desktop_padding_left",
+      "label": "Padding left",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "desktop_margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+
+    { "type": "header", "content": "Mobile — Spacing" },
+    {
+      "type": "range",
+      "id": "mobile_padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_right",
+      "label": "Padding right",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_left",
+      "label": "Padding left",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile_margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ticker",
+      "blocks": [
+        {
+          "type": "_ticker-slide",
+          "blocks": [{ "type": "text", "settings": { "text": "<p>Free shipping on orders over $50</p>" } }]
+        },
+        {
+          "type": "_ticker-slide",
+          "blocks": [{ "type": "text", "settings": { "text": "<p>30-day returns</p>" } }]
+        },
+        {
+          "type": "_ticker-slide",
+          "blocks": [{ "type": "text", "settings": { "text": "<p>Made with care</p>" } }]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

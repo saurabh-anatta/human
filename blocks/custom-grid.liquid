@@ -1,0 +1,147 @@
+{% doc %}
+  Block: Custom Grid
+
+  A 12-column CSS grid container. Place Custom Grid Column blocks inside
+  to compose layouts (e.g. two columns spanning 6 each = 50/50). Holds no
+  visual styles of its own — purely a layout primitive.
+{% enddoc %}
+
+{% liquid
+  assign s = block.settings
+%}
+
+{% capture inline_styles %}
+  --cg-row-gap-mobile: {{ s.row_gap_mobile }}px;
+  --cg-col-gap-mobile: {{ s.column_gap_mobile }}px;
+  --cg-align-mobile: {{ s.vertical_alignment_mobile }};
+  --cg-mb-mobile: {{ s.margin_bottom_mobile }}px;
+  --cg-row-gap-desktop: {{ s.row_gap_desktop }}px;
+  --cg-col-gap-desktop: {{ s.column_gap_desktop }}px;
+  --cg-align-desktop: {{ s.vertical_alignment_desktop }};
+  --cg-mb-desktop: {{ s.margin_bottom_desktop }}px;
+{% endcapture %}
+
+{% stylesheet %}
+  .custom-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    row-gap: var(--cg-row-gap-mobile);
+    column-gap: var(--cg-col-gap-mobile);
+    align-items: var(--cg-align-mobile);
+    margin-bottom: var(--cg-mb-mobile);
+    width: 100%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    .custom-grid {
+      row-gap: var(--cg-row-gap-desktop);
+      column-gap: var(--cg-col-gap-desktop);
+      align-items: var(--cg-align-desktop);
+      margin-bottom: var(--cg-mb-desktop);
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+<div
+  class="custom-grid"
+  style="{{ inline_styles | strip_newlines }}"
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% schema %}
+{
+  "name": "Grid",
+  "tag": null,
+  "blocks": [
+    { "type": "_custom-grid-column" }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment_desktop",
+      "label": "Vertical alignment",
+      "default": "start",
+      "options": [
+        { "value": "start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "Bottom" }
+      ]
+    },
+    {
+      "type": "number",
+      "id": "row_gap_desktop",
+      "label": "Row gap (px)",
+      "default": 24
+    },
+    {
+      "type": "number",
+      "id": "column_gap_desktop",
+      "label": "Column gap (px)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment_mobile",
+      "label": "Vertical alignment",
+      "default": "start",
+      "options": [
+        { "value": "start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "Bottom" }
+      ]
+    },
+    {
+      "type": "number",
+      "id": "row_gap_mobile",
+      "label": "Row gap (px)",
+      "default": 12
+    },
+    {
+      "type": "number",
+      "id": "column_gap_mobile",
+      "label": "Column gap (px)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Grid",
+      "blocks": [
+        { "type": "_custom-grid-column" },
+        { "type": "_custom-grid-column" }
+      ]
+    }
+  ]
+}
+{% endschema %}

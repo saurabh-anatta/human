@@ -1,0 +1,21 @@
+{%- if block.settings.question != blank -%}
+  <template data-question="{{ block.settings.question | escape }}" {{ block.shopify_attributes }}></template>
+{%- else -%}
+  <template {{ block.shopify_attributes }}></template>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "KC — Rotating Question",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "question",
+      "label": "Question",
+      "placeholder": "How does blood flow support energy?"
+    }
+  ],
+  "presets": []
+}
+{% endschema %}

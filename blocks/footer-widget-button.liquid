@@ -1,0 +1,109 @@
+{% assign block_settings = block.settings %}
+
+<button
+  class="footer-widget-btn-block"
+  style="
+    --fwb-color: {{ block_settings.text_color }};
+    --fwb-bg: {{ block_settings.background_color }};
+    --fwb-radius: {{ block_settings.border_radius }}px;
+  "
+  data-widget-type="{{ block_settings.widget_type }}"
+  type="button"
+  {{ block.shopify_attributes }}
+>
+  {{ block_settings.label }}
+</button>
+
+{% stylesheet %}
+  .footer-widget-btn-block {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    background: var(--fwb-bg);
+    color: var(--fwb-color);
+    border: none;
+    border-radius: var(--fwb-radius);
+    font-family: var(--font-subheading--family);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('click', function(event) {
+    const btn = event.target.closest('[data-widget-type]');
+    if (!btn) return;
+
+    if (btn.dataset.widgetType === 'accessibility') {
+      window.openAccessibility?.();
+    } else if (btn.dataset.widgetType === 'chat') {
+      window.openTalkdeskChat?.();
+    }
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Footer Widget Button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "widget_type",
+      "label": "Widget type",
+      "options": [
+        { "value": "accessibility", "label": "Accessibility" },
+        { "value": "chat", "label": "Chat" }
+      ],
+      "default": "accessibility"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Button label",
+      "default": "Accessibility"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer Widget Button",
+      "category": "t:categories.footer",
+      "settings": {
+        "widget_type": "accessibility",
+        "label": "Accessibility"
+      }
+    }
+  ]
+}
+{% endschema %}

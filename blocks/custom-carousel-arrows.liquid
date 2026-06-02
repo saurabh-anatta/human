@@ -1,0 +1,126 @@
+{% doc %}
+  Block: Custom Carousel Arrows
+
+  Previous/next navigation buttons for a Custom Carousel. Place as a
+  sibling of the carousel within the same section, and set the carousel's
+  `arrows` setting to `external`. The carousel finds the buttons via the
+  shared section id.
+{% enddoc %}
+
+{% liquid
+  assign s = block.settings
+
+  capture arrows_style
+    echo '--carousel-arrow-bg:rgb(' | append: s.arrows_color_scheme_desktop.settings.background.rgb | append: ');'
+    echo '--carousel-arrow-color:rgb(' | append: s.arrows_color_scheme_desktop.settings.foreground.rgb | append: ');'
+    echo '--carousel-arrow-bg-mobile:rgb(' | append: s.arrows_color_scheme_mobile.settings.background.rgb | append: ');'
+    echo '--carousel-arrow-color-mobile:rgb(' | append: s.arrows_color_scheme_mobile.settings.foreground.rgb | append: ');'
+  endcapture
+%}
+
+{% stylesheet %}
+  .custom-carousel-arrows {
+    display: none;
+    gap: 2px;
+  }
+
+  .custom-carousel-arrows.is-active {
+    display: flex;
+  }
+
+  .custom-carousel-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 28px;
+    cursor: pointer;
+    background-color: var(--carousel-arrow-bg-mobile, var(--carousel-arrow-bg, transparent));
+    color: var(--carousel-arrow-color-mobile, var(--carousel-arrow-color, currentColor));
+  }
+
+  .custom-carousel-arrow:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .custom-carousel-arrow svg {
+    width: 20px;
+    height: auto;
+  }
+
+  .custom-carousel-arrow--prev svg {
+    transform: rotate(180deg);
+  }
+
+  @media screen and (min-width: 750px) {
+    .custom-carousel-arrow {
+      width: 64px;
+      height: 48px;
+      background-color: var(--carousel-arrow-bg, transparent);
+      color: var(--carousel-arrow-color, currentColor);
+    }
+    .custom-carousel-arrow svg {
+      width: 24px;
+    }
+  }
+{% endstylesheet %}
+
+<div
+  id="carousel-arrows-{{ section.id }}"
+  class="custom-carousel-arrows"
+  style="{{ arrows_style | strip_newlines | strip }}"
+  {{ block.shopify_attributes }}
+>
+  <button
+    type="button"
+    class="custom-carousel-arrow custom-carousel-arrow--prev"
+    data-carousel-arrow="prev"
+    aria-label="{{ 'accessibility.slideshow_previous' | t }}"
+  >
+    {{- 'icon-arrow.svg' | inline_asset_content -}}
+  </button>
+  <button
+    type="button"
+    class="custom-carousel-arrow custom-carousel-arrow--next"
+    data-carousel-arrow="next"
+    aria-label="{{ 'accessibility.slideshow_next' | t }}"
+  >
+    {{- 'icon-arrow.svg' | inline_asset_content -}}
+  </button>
+</div>
+
+{% schema %}
+{
+  "name": "Carousel Arrows",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Arrows — Desktop"
+    },
+    {
+      "type": "color_scheme",
+      "id": "arrows_color_scheme_desktop",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Arrows — Mobile"
+    },
+    {
+      "type": "color_scheme",
+      "id": "arrows_color_scheme_mobile",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    { "name": "Carousel Arrows" }
+  ]
+}
+{% endschema %}

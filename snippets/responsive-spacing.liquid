@@ -1,0 +1,24 @@
+{% doc %}
+  Renders responsive spacing CSS variables (padding + margin-bottom) with separate
+  desktop and mobile values. Intended for blocks that expose `desktop_padding_top`,
+  `desktop_padding_right`, `desktop_padding_bottom`, `desktop_padding_left`,
+  `desktop_margin_bottom` and the matching `mobile_*` settings.
+
+  Outputs --{prefix}-d-pt|pr|pb|pl|mb and --{prefix}-m-pt|pr|pb|pl|mb.
+
+  @param {object} settings - Block or section settings
+  @param {string} prefix - CSS variable prefix (e.g. 'hero')
+
+  @example
+  {% capture vars %}{% render 'responsive-spacing-vars', settings: block.settings, prefix: 'hero' %}{% endcapture %}
+{% enddoc %}
+--{{ prefix }}-d-pt: {{ settings.desktop_padding_top | default: 0 }}px;
+--{{ prefix }}-d-pr: {{ settings.desktop_padding_right | default: 0 }}px;
+--{{ prefix }}-d-pb: {{ settings.desktop_padding_bottom | default: 0 }}px;
+--{{ prefix }}-d-pl: {{ settings.desktop_padding_left | default: 0 }}px;
+--{{ prefix }}-d-mb: {{ settings.desktop_margin_bottom | default: 0 }}px;
+--{{ prefix }}-m-pt: {{ settings.mobile_padding_top | default: 0 }}px;
+--{{ prefix }}-m-pr: {{ settings.mobile_padding_right | default: 0 }}px;
+--{{ prefix }}-m-pb: {{ settings.mobile_padding_bottom | default: 0 }}px;
+--{{ prefix }}-m-pl: {{ settings.mobile_padding_left | default: 0 }}px;
+--{{ prefix }}-m-mb: {{ settings.mobile_margin_bottom | default: 0 }}px;

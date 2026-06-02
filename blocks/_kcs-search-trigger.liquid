@@ -1,0 +1,114 @@
+{% liquid
+  assign s = block.settings
+  assign placeholder = s.placeholder | default: 'Search the Knowledge Center'
+  assign cta_label = s.cta_label | default: 'GO'
+
+  assign use_rotating = false
+  if s.enable_rotating == true
+    assign use_rotating = true
+  endif
+
+  assign hide_go_mobile = s.hide_button_mobile | default: false
+  assign hide_go_desktop = s.hide_button_desktop | default: false
+
+  capture style_variables
+    if s.color_scheme != blank
+      echo '--kcs-bg-color:rgb(' | append: s.color_scheme.settings.background.rgb | append: ');'
+      echo '--kcs-color:rgb(' | append: s.color_scheme.settings.foreground.rgb | append: ');'
+      echo '--kcs-input-border: ' | append: s.color_scheme.settings.border | append: ';'
+      echo '--kcs-go-bg:rgb(' | append: s.color_scheme.settings.primary_button_background.rgb | append: ');'
+      echo '--kcs-go-color:rgb(' | append: s.color_scheme.settings.primary_button_text.rgb | append: ');'
+    endif
+  endcapture
+%}
+
+<div class="kcs-trigger-block">
+  {%-
+    render '_kcs-search-bar',
+    mode: 'trigger',
+    block: block,
+    placeholder: placeholder,
+    cta_label: cta_label,
+    use_rotating: use_rotating,
+    rotating_interval: s.rotating_interval | default: 4,
+    style_variables: style_variables,
+    hide_go_mobile: hide_go_mobile,
+    hide_go_desktop: hide_go_desktop
+  -%}
+  {% content_for 'blocks' %}
+</div>
+
+{% schema %}
+{
+  "name": "KC — Search Trigger",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "GO"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_button_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_button_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder",
+      "info": "Shown when rotating questions are off, or as the trigger's accessible label.",
+      "default": "Search the Knowledge Center"
+    },
+    {
+      "type": "header",
+      "content": "Rotating questions"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_rotating",
+      "label": "Enable rotating questions",
+      "default": false,
+      "info": "Cycles through KC — Rotating Question child blocks. Requires at least 2 questions."
+    },
+    {
+      "type": "range",
+      "id": "rotating_interval",
+      "label": "Rotation interval (seconds)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 3,
+      "visible_if": "{{ block.settings.enable_rotating == true }}"
+    }
+  ],
+  "blocks": [{ "type": "_kcs-rotating-question" }],
+  "presets": []
+}
+{% endschema %}

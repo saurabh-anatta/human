@@ -1,0 +1,486 @@
+{% doc %}
+  Block: Rebuy Product Carousel
+
+  Fetches products from a Rebuy Data Source (ruleset) via client-side API
+  and renders them in a Swiper carousel. Cards show image hover-swap, 1.1x
+  scale on hover, Bazaarvoice inline ratings, and badges/descriptions pulled
+  from Shopify metafields via Storefront API.
+{% enddoc %}
+
+{% liquid
+  assign s = block.settings
+%}
+
+{% stylesheet %}
+  rebuy-product-carousel.custom-carousel {
+    display: block;
+    width: 100%;
+  }
+
+  rebuy-product-carousel.custom-carousel .swiper {
+    width: 100%;
+    overflow: visible !important;
+  }
+
+  rebuy-product-carousel.custom-carousel .swiper:not(.swiper-initialized) .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: var(--rpc-gap-mobile, 8px);
+  }
+
+  rebuy-product-carousel.custom-carousel .swiper:not(.swiper-initialized) .swiper-slide {
+    flex-shrink: 0;
+    width: calc((100% - (var(--rpc-slides-mobile, 1) - 1) * var(--rpc-gap-mobile, 8px)) / var(--rpc-slides-mobile, 1));
+  }
+
+  @media screen and (min-width: 1024px) {
+    rebuy-product-carousel.custom-carousel .swiper:not(.swiper-initialized) .swiper-wrapper {
+      gap: var(--rpc-gap-desktop, 16px);
+    }
+
+    rebuy-product-carousel.custom-carousel .swiper:not(.swiper-initialized) .swiper-slide {
+      width: calc(
+        (100% - (var(--rpc-slides-desktop, 4) - 1) * var(--rpc-gap-desktop, 16px)) / var(--rpc-slides-desktop, 4)
+      );
+    }
+  }
+
+  /* ── Skeleton shimmer ──────────────────────────────────────────────── */
+
+  .rpc-skeleton {
+    background: linear-gradient(90deg, #eee 25%, #ededed 37%, var(--color-neutral-100, rgb(255 255 255 / 1)) 63%);
+    background-size: 400% 100%;
+  }
+  .rpc-skeleton--image {
+    width: 100%;
+    aspect-ratio: var(--rpc-image-ratio, 1);
+  }
+  .rpc-skeleton--text {
+    height: 1rem;
+    margin-top: 0.5rem;
+    width: 100%;
+    border-radius: var(--style-border-radius-xs, 0.2rem);
+  }
+  .rpc-skeleton--text-short {
+    width: 55%;
+  }
+  .rpc-skeleton--text-title {
+    width: 80%;
+    height: 1.1rem;
+  }
+  .rpc-skeleton--text-subtitle {
+    width: 60%;
+    height: 0.9rem;
+  }
+
+  .rpc-card--skeleton {
+    pointer-events: none;
+    min-width: 230px;
+    aspect-ratio: 280 / 420;
+  }
+
+  @media screen and (min-width: 1024px) {
+    .rpc-card--skeleton {
+      aspect-ratio: 374 / 572;
+    }
+  }
+
+  /* ── Slide ─────────────────────────────────────────────────────────── */
+  .rpc-slide {
+    height: auto !important;
+    display: flex;
+  }
+
+  /* ── Card ──────────────────────────────────────────────────────────── */
+  .rpc-card {
+    --background: var(--color-neutral-100);
+    --secondary-foreground: var(--color-neutral-700);
+    background: var(--background);
+    border-radius: var(--style-border-radius-lg, 1rem);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+    transition: transform 0.3s var(--animation-timing-hover, ease), box-shadow 0.3s ease;
+    transform-origin: center center;
+    height: 100%;
+    color: var(--color-neutral-900);
+  }
+
+  .rpc-card--white {
+    --background: white;
+    --secondary-foreground: inherit;
+    --secondary-badge-background: var(--color-neutral-100);
+  }
+
+  @media screen and (pointer: fine) {
+    .rpc-card:hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
+  }
+
+  .rpc-card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ── Image with hover swap ─────────────────────────────────────────── */
+  .rpc-card__image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: var(--rpc-image-ratio, 1);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .rpc-card__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .rpc-card__img--primary {
+    transition: opacity 0.35s ease;
+  }
+  .rpc-card__img--hover {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .rpc-card:hover .rpc-card__img--primary {
+    opacity: 0;
+  }
+  .rpc-card:hover .rpc-card__img--hover {
+    opacity: 1;
+  }
+
+  /* ── Body ──────────────────────────────────────────────────────────── */
+  .rpc-card__body {
+    padding: 16px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--gap-xs);
+  }
+
+  /* Title — Stabil Grotesk Regular */
+  .rpc-card__title {
+    font-family: var(--font-subheading--family, 'Stabil Grotesk Regular', sans-serif);
+    font-weight: var(--font-accent--weight);
+    font-size: var(--font-size--lg);
+    line-height: var(--line-height--body-normal);
+    letter-spacing: 0;
+    margin: 0;
+  }
+
+  /* BV inline rating gate — hidden until BV populates it */
+  .rpc-card__rating {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 1px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    margin-top: var(--padding-xs);
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .rpc-card__badge {
+    padding: var(--padding-2xs) 12px;
+    font-size: var(--font-size--sm);
+    line-height: 18px;
+    letter-spacing: 0;
+    font-weight: var(--font-subheading--weight);
+    font-family: var(--font-subheading--family);
+    text-align: center;
+    width: fit-content;
+    border-radius: 4px;
+  }
+
+  .rpc-card__badge--primary {
+    background: var(--color-neutral-700);
+    color: var(--color-neutral-white);
+  }
+
+  .rpc-card__badge--secondary {
+    background-color: var(--secondary-badge-background, white);
+    color: var(--color-neutral-700);
+  }
+
+  /* Mini description — below badge */
+  .rpc-card__mini-desc {
+    font-family: var(--font-body--family, 'Moderat Serif', serif);
+    font-size: var(--font-size--md);
+    line-height: var(--line-height--body-normal);
+    letter-spacing: var(--letter-spacing--body-tight);
+    color: var(--secondary-foreground);
+    margin-block: var(--margin-xs) 0;
+  }
+
+  /* Price */
+  .rpc-card__price {
+    font-family: var(--font-subheading--family, 'Stabil Grotesk Regular', sans-serif);
+    font-size: var(--font-size--md, 1rem);
+    font-weight: var(--font-subheading--weight, 500);
+    margin: 0;
+  }
+
+  /* CTA — Uniforma Semibold, uppercase, underlined */
+  .rpc-card__cta {
+    display: inline-block;
+    margin-top: auto;
+    margin-block: auto var(--padding-xs);
+    padding-top: var(--padding-xs);
+    padding-bottom: var(--padding-3xs);
+    border-bottom: 1px solid #a0a0a0;
+    font-family: var(--font-labels--family, 'Uniforma Semibold', sans-serif);
+    font-weight: var(--font-labels--weight);
+    font-size: var(--font-size--2xs);
+    line-height: 14px;
+    letter-spacing: var(--letter-spacing--tight);
+    text-transform: uppercase;
+    width: fit-content;
+  }
+
+  @media screen and (min-width: 1024px) {
+    .rpc-card__body {
+      padding: 20px 20px 28px;
+    }
+  }
+{% endstylesheet %}
+
+<rebuy-product-carousel
+  class="custom-carousel"
+  style="
+    --rpc-slides-mobile: {{ s.slides_per_view_mobile | default: 1.275 }};
+    --rpc-gap-mobile: {{ s.gap_mobile | default: 8 }}px;
+    --rpc-slides-desktop: {{ s.slides_per_view | default: 3.288 }};
+    --rpc-gap-desktop: {{ s.gap | default: 16 }}px;
+    --rpc-image-ratio: {{ s.image_ratio | default: '1' }};
+  "
+  {{ block.shopify_attributes }}
+>
+  <script type="application/json">
+    {
+      "rulesetId":               {{ s.rebuy_ruleset_id | default: '' | json }},
+      "apiKey":                  {{ s.rebuy_api_key | default: '' | json }},
+      "storefrontToken":         {{ settings.storefront_access_token | default: '' | json }},
+      "maxItems":                {{ s.max_items | default: 8 }},
+      "slidesPerViewMobile":     {{ s.slides_per_view_mobile | default: 1.275 }},
+      "slidesPerViewDesktop":    {{ s.slides_per_view | default: 3.288 }},
+      "gapMobile":               {{ s.gap_mobile | default: 8 }},
+      "gapDesktop":              {{ s.gap | default: 16 }},
+      "autoplay":                {{ s.autoplay | default: false | json }},
+      "autoplayDelay":           {{ s.autoplay_delay | default: 5 }},
+      "pagination":              false,
+      "showNav":                 false,
+      "showReviews":             {{ s.show_reviews | default: false | json }},
+      "minReviews":              {{ s.min_reviews | default: 10 }},
+      "showBadges":              {{ s.show_badges | default: true | json }},
+      "showDescription":         {{ s.show_description | default: true | json }},
+      "showPrice":               {{ s.show_price | default: false | json }},
+      "appearance":              {{ s.appearance | json }}
+    }
+  </script>
+
+  <div class="swiper" style="position: relative;" ref="swiperContainer">
+    <div class="swiper-wrapper" role="list" ref="swiperWrapper">
+      {%- assign skeleton_count = s.slides_per_view | default: 4 | ceil -%}
+      {%- for i in (1..skeleton_count) -%}
+        <div class="swiper-slide rpc-slide" role="listitem">
+          <div class="rpc-card rpc-card--skeleton {% if s.appearance == 'white' %}rpc-card--white{% endif %}">
+            <div class="rpc-skeleton rpc-skeleton--image"></div>
+            <div class="rpc-card__body">
+              <div class="rpc-skeleton rpc-skeleton--text rpc-skeleton--text-title"></div>
+              <div class="rpc-skeleton rpc-skeleton--text rpc-skeleton--text-subtitle"></div>
+              <div class="rpc-skeleton rpc-skeleton--text rpc-skeleton--text-short"></div>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</rebuy-product-carousel>
+
+<script src="{{ 'rebuy-product-carousel.js' | asset_url }}" type="module" fetchpriority="low"></script>
+
+{% schema %}
+{
+  "name": "Rebuy Product Carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Rebuy Configuration"
+    },
+    {
+      "type": "text",
+      "id": "rebuy_ruleset_id",
+      "label": "Rebuy Data Source ID"
+    },
+    {
+      "type": "text",
+      "id": "rebuy_api_key",
+      "label": "Rebuy Public API Key",
+      "default": "ff2c2b82e23a2adf315988951cdea942692cb74a"
+    },
+    {
+      "type": "range",
+      "id": "max_items",
+      "label": "Max products to show",
+      "min": 1,
+      "max": 24,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Shopify Metafields"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "label": "Show badges",
+      "default": true,
+      "info": "Reads custom.product_badge and custom.product_badge_color metafields."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show short description",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Reviews"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show Bazaarvoice ratings",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "min_reviews",
+      "label": "Minimum reviews to display",
+      "default": 10,
+      "info": "Stars are hidden if a product has fewer than this many reviews.",
+      "visible_if": "{{ block.settings.show_reviews }}"
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "1", "label": "Square (1:1)" },
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "4/3", "label": "Landscape (4:3)" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "appearance",
+      "label": "Appearance",
+      "options": [
+        {
+          "value": "white",
+          "label": "White"
+        },
+        {
+          "value": "gray",
+          "label": "Gray"
+        }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "number",
+      "id": "slides_per_view",
+      "label": "Columns",
+      "info": "Use a decimal like 2.3 to peek the next slide."
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "number",
+      "id": "slides_per_view_mobile",
+      "label": "Columns",
+      "info": "Use a decimal like 1.3 to peek the next slide."
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "label": "Autoplay delay",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5,
+      "visible_if": "{{ block.settings.autoplay }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rebuy Product Carousel"
+    }
+  ]
+}
+{% endschema %}

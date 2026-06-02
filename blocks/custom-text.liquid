@@ -1,0 +1,420 @@
+{% liquid
+  assign block_settings = block.settings
+%}
+
+{% capture style %}
+  --custom-text-font-family: {{ block_settings.font_family }};
+  --custom-text-font-family-strong: {{ block_settings.font_family_strong }};
+  --custom-text-font-weight: {{ block_settings.font_weight }};
+  --custom-text-font-size: {{ block_settings.font_size }};
+  --custom-text-line-height: {{ block_settings.line_height }};
+  --custom-text-letter-spacing: {{ block_settings.letter_spacing }};
+  --custom-text-alignment: {{ block_settings.alignment }};
+  --custom-text-color: {{ block_settings.color }};
+  --custom-text-transform: {{ block_settings.text_transform }};
+  --custom-text-decoration: {{ block_settings.text_decoration }};
+  --custom-text-width: {{ block_settings.width }};
+  --custom-text-max-width: {{ block_settings.max_width }};
+  --custom-text-margin-bottom: {{ block_settings.margin_block_end }}px;
+
+  --custom-text-font-size-mobile: {{ block_settings.font_size_mobile }};
+  --custom-text-font-family-mobile: {{ block_settings.font_family_mobile }};
+  --custom-text-font-family-strong-mobile: {{ block_settings.font_family_strong_mobile }};
+  --custom-text-font-weight-mobile: {{ block_settings.font_weight_mobile }};
+  --custom-text-line-height-mobile: {{ block_settings.line_height_mobile }};
+  --custom-text-letter-spacing-mobile: {{ block_settings.letter_spacing_mobile }};
+  --custom-text-alignment-mobile: {{ block_settings.alignment_mobile }};
+  --custom-text-transform-mobile: {{ block_settings.text_transform_mobile }};
+  --custom-text-decoration-mobile: {{ block_settings.text_decoration_mobile }};
+  --custom-text-width-mobile: {{ block_settings.width_mobile }};
+  --custom-text-max-width-mobile: {{ block_settings.max_width_mobile }};
+  --custom-text-margin-bottom-mobile: {{ block_settings.margin_block_end_mobile }}px;
+  --custom-text-color-mobile: {{ block_settings.color_mobile }};
+{% endcapture %}
+
+{% assign style = style | strip_newlines | strip %}
+{% render 'custom-text', block: block, block_settings: block_settings, style: style %}
+
+{% schema %}
+{
+  "name": "t:names.custom_text",
+  "tag": null,
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:settings.text"
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography_desktop"
+    },
+    {
+      "type": "select",
+      "id": "font_family",
+      "label": "t:settings.font_family",
+      "options": [
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-labels--family)", "label": "t:options.accent" }
+      ],
+      "default": "var(--font-body--family)"
+    },
+    {
+      "type": "select",
+      "id": "font_family_strong",
+      "label": "Bold text font",
+      "options": [
+        { "value": "inherit", "label": "Inherit" },
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-labels--family)", "label": "Label" }
+      ],
+      "default": "inherit"
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "Normal" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "text_decoration",
+      "label": "Text decoration",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "line-through", "label": "Strikethrough" },
+        { "value": "underline", "label": "Underline" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "t:settings.font_weight",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "t:settings.size",
+      "options": [
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "1.75rem", "label": "28px" },
+        { "value": "2rem", "label": "32px" },
+        { "value": "2.5rem", "label": "40px" },
+        { "value": "2.625rem", "label": "42px" },
+        { "value": "3rem", "label": "48px" },
+        { "value": "3.75rem", "label": "60px" }
+      ],
+      "default": "1rem"
+    },
+    {
+      "type": "select",
+      "id": "line_height",
+      "label": "t:settings.line_height",
+      "options": [
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "1.75rem", "label": "28px" },
+        { "value": "2rem", "label": "32px" },
+        { "value": "2.25rem", "label": "36px" },
+        { "value": "2.5rem", "label": "40px" },
+        { "value": "3rem", "label": "48px" },
+        { "value": "3.25rem", "label": "52px" },
+        { "value": "3.75rem", "label": "60px" }
+      ],
+      "default": "1.5rem"
+    },
+    {
+      "type": "select",
+      "id": "letter_spacing",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        { "value": "-1px", "label": "-1px" },
+        { "value": "-0.5px", "label": "-0.5px" },
+        { "value": "0px", "label": "0px" },
+        { "value": "0.75px", "label": "0.75px" }
+      ],
+      "default": "0px"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "t:settings.color",
+      "alpha": true,
+      "default": "#000000"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Text Alignment",
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography_mobile"
+    },
+    {
+      "type": "select",
+      "id": "font_family_mobile",
+      "label": "t:settings.font_family",
+      "options": [
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-labels--family)", "label": "t:options.accent" }
+      ],
+      "default": "var(--font-body--family)"
+    },
+    {
+      "type": "select",
+      "id": "font_family_strong_mobile",
+      "label": "Bold text font",
+      "options": [
+        { "value": "inherit", "label": "Inherit" },
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-labels--family)", "label": "Label" }
+      ],
+      "default": "inherit"
+    },
+    {
+      "type": "select",
+      "id": "text_transform_mobile",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "Normal" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "text_decoration_mobile",
+      "label": "Text decoration",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "line-through", "label": "Strikethrough" },
+        { "value": "underline", "label": "Underline" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "font_weight_mobile",
+      "label": "t:settings.font_weight",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "font_size_mobile",
+      "label": "t:settings.size",
+      "options": [
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "1.75rem", "label": "28px" },
+        { "value": "2rem", "label": "32px" },
+        { "value": "2.5rem", "label": "40px" },
+        { "value": "2.625rem", "label": "42px" },
+        { "value": "3rem", "label": "48px" },
+        { "value": "3.75rem", "label": "60px" }
+      ],
+      "default": "1rem"
+    },
+    {
+      "type": "select",
+      "id": "line_height_mobile",
+      "label": "t:settings.line_height",
+      "options": [
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "1.75rem", "label": "28px" },
+        { "value": "2rem", "label": "32px" },
+        { "value": "2.25rem", "label": "36px" },
+        { "value": "2.5rem", "label": "40px" },
+        { "value": "3rem", "label": "48px" },
+        { "value": "3.25rem", "label": "52px" },
+        { "value": "3.75rem", "label": "60px" }
+      ],
+      "default": "1.5rem"
+    },
+    {
+      "type": "select",
+      "id": "letter_spacing_mobile",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        { "value": "-1px", "label": "-1px" },
+        { "value": "-0.5px", "label": "-0.5px" },
+        { "value": "0px", "label": "0px" },
+        { "value": "0.75px", "label": "0.75px" }
+      ],
+      "default": "0px"
+    },
+    {
+      "type": "color",
+      "id": "color_mobile",
+      "alpha": true,
+      "label": "t:settings.color",
+      "default": "#000000"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment_mobile",
+      "label": "Alignment",
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "t:content.width"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:settings.width_desktop",
+      "options": [
+        { "value": "fit-content", "label": "t:options.auto" },
+        { "value": "100%", "label": "t:options.full" }
+      ],
+      "default": "100%"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "t:settings.max_width",
+      "options": [
+        { "value": "25%", "label": "25%" },
+        { "value": "50%", "label": "50%" },
+        { "value": "75%", "label": "75%" },
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "t:settings.width_mobile",
+      "options": [
+        { "value": "fit-content", "label": "t:options.auto" },
+        { "value": "100%", "label": "t:options.full" }
+      ],
+      "default": "100%"
+    },
+    {
+      "type": "select",
+      "id": "max_width_mobile",
+      "label": "t:settings.max_width_mobile",
+      "options": [
+        { "value": "25%", "label": "25%" },
+        { "value": "50%", "label": "50%" },
+        { "value": "75%", "label": "75%" },
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "t:content.spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_block_end",
+      "label": "t:settings.bottom_margin",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_block_end_mobile",
+      "label": "t:settings.bottom_margin_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.custom_text",
+      "category": "t:categories.basic",
+      "settings": {
+        "text": "t:html_defaults.make_things_better_extended"
+      }
+    },
+    {
+      "name": "Colored Dot",
+      "category": "t:categories.basic",
+      "settings": {
+        "text": "<p>●</p>",
+        "font_family": "var(--font-body--family)",
+        "font_family_strong": "inherit",
+        "font_weight": "400",
+        "font_size": "1.25rem",
+        "line_height": "0.875rem",
+        "letter_spacing": "0px",
+        "color": "#8C0132",
+        "text_transform": "none",
+        "text_decoration": "none",
+        "alignment": "left",
+        "width": "fit-content",
+        "max_width": "none",
+        "margin_block_end": 0,
+        "font_family_mobile": "var(--font-body--family)",
+        "font_family_strong_mobile": "inherit",
+        "font_weight_mobile": "400",
+        "font_size_mobile": "1.25rem",
+        "line_height_mobile": "0.875rem",
+        "letter_spacing_mobile": "0px",
+        "color_mobile": "#8C0132",
+        "text_transform_mobile": "none",
+        "text_decoration_mobile": "none",
+        "alignment_mobile": "left",
+        "width_mobile": "fit-content",
+        "max_width_mobile": "none",
+        "margin_block_end_mobile": 0
+      }
+    }
+  ]
+}
+{% endschema %}

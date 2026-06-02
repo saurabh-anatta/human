@@ -1,0 +1,499 @@
+<info-cards-accordion
+  class="info-cards-block{% unless block.settings.show_index %} info-cards--hide-index{% endunless %}"
+  id="info-cards-block-{{ block.id }}"
+  style="--info-cards-radius-desktop: {{ block.settings.border_radius_desktop }}px; --info-cards-radius-mobile: {{ block.settings.border_radius_mobile }}px;"
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</info-cards-accordion>
+
+<script src="{{ 'info-cards-accordion.js' | asset_url }}" type="module"></script>
+
+{% stylesheet %}
+  info-cards-accordion {
+    display: block;
+    counter-reset: info-card-index;
+  }
+
+  .info-cards--hide-index .info-card-index {
+    display: none !important;
+  }
+
+  .info-card-content__inner {
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media screen and (max-width: 749px) {
+    info-cards-accordion .custom-grid-column + .custom-grid-column .info-card {
+      margin-top: calc(-1 * var(--info-card-padding-block-mobile, 0px) - 4px);
+    }
+
+    info-cards-accordion .custom-grid {
+      column-gap: 0;
+      row-gap: 0;
+    }
+
+    info-cards-accordion .custom-grid-column:not(:last-child) .info-card {
+      padding-bottom: calc(var(--info-card-padding-block-mobile, 0px) * 2);
+    }
+
+    .info-card-content {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 0.35s ease, opacity 0.3s ease;
+    }
+
+    .info-card-content[data-open] {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .info-card-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .info-card-content__inner {
+      overflow: visible;
+      flex: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .info-card-content {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Info Cards",
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" },
+    {
+      "type": "_info-card"
+    }
+  ],
+  "settings": [
+    {
+      "type": "range",
+      "id": "border_radius_desktop",
+      "label": "Border radius (desktop)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "border_radius_mobile",
+      "label": "Border radius (mobile)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "show_index",
+      "label": "Show index numbers",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Info Cards – 3 Column",
+      "category": "Content",
+      "settings": {
+        "border_radius_desktop": 16,
+        "border_radius_mobile": 16,
+        "show_index": true
+      },
+      "blocks": {
+        "grid": {
+          "type": "custom-grid",
+          "settings": {
+            "vertical_alignment_desktop": "start",
+            "row_gap_desktop": 16,
+            "column_gap_desktop": 16,
+            "margin_bottom_desktop": 0,
+            "vertical_alignment_mobile": "start",
+            "row_gap_mobile": 16,
+            "column_gap_mobile": 16,
+            "margin_bottom_mobile": 0
+          },
+          "blocks": {
+            "col_1": {
+              "type": "_custom-grid-column",
+              "settings": {
+                "span_desktop": 4,
+                "order_desktop": 1,
+                "height_desktop": "auto",
+                "span_tablet": 6,
+                "order_tablet": 1,
+                "height_tablet": "auto",
+                "span_mobile": 12,
+                "order_mobile": 1,
+                "height_mobile": "auto"
+              },
+              "blocks": {
+                "card_1": {
+                  "type": "_info-card",
+                  "settings": {
+                    "color_scheme": "scheme-3",
+                    "desktop_padding_block": 32,
+                    "desktop_padding_inline": 32,
+                    "mobile_padding_block": 20,
+                    "mobile_padding_inline": 16
+                  },
+                  "blocks": {
+                    "header_1": {
+                      "type": "_info-card-header",
+                      "blocks": {
+                        "title_1": {
+                          "type": "custom-text",
+                          "settings": {
+                            "text": "<p>Card Title 1</p>",
+                            "font_family": "var(--font-labels--family)",
+                            "font_weight": "400",
+                            "font_size": "1.125rem",
+                            "line_height": "1.25rem",
+                            "letter_spacing": "0.75px",
+                            "color": "#ffffff",
+                            "font_family_mobile": "var(--font-labels--family)",
+                            "font_weight_mobile": "400",
+                            "font_size_mobile": "1rem",
+                            "line_height_mobile": "1.25rem",
+                            "letter_spacing_mobile": "0.75px",
+                            "color_mobile": "#ffffff"
+                          }
+                        }
+                      },
+                      "block_order": ["title_1"]
+                    },
+                    "content_1": {
+                      "type": "_info-card-content",
+                      "blocks": {
+                        "content_group_1": {
+                          "type": "group",
+                          "settings": {
+                            "content_direction": "column",
+                            "horizontal_alignment_flex_direction_column": "flex-start",
+                            "vertical_alignment_flex_direction_column": "center",
+                            "gap": 24,
+                            "gap_mobile": 24,
+                            "width": "fill",
+                            "width_mobile": "fill",
+                            "height": "fit",
+                            "inherit_color_scheme": true,
+                            "padding-block-start": 40,
+                            "padding-block-end": 20,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0,
+                            "padding-block-start-mobile": 28,
+                            "padding-block-end-mobile": 20,
+                            "padding-inline-start-mobile": 0,
+                            "padding-inline-end-mobile": 0
+                          },
+                          "blocks": {
+                            "desc_1": {
+                              "type": "custom-text",
+                              "settings": {
+                                "text": "<p>Add your card description here.</p>",
+                                "font_family": "var(--font-heading--family)",
+                                "font_weight": "400",
+                                "font_size": "1.5rem",
+                                "line_height": "1.75rem",
+                                "letter_spacing": "-1px",
+                                "color": "#ffffff",
+                                "font_family_mobile": "var(--font-heading--family)",
+                                "font_weight_mobile": "400",
+                                "font_size_mobile": "1.25rem",
+                                "line_height_mobile": "1.5rem",
+                                "letter_spacing_mobile": "-1px",
+                                "color_mobile": "#ffffff"
+                              }
+                            },
+                            "btn_1": {
+                              "type": "button-custom",
+                              "settings": {
+                                "label": "Shop now",
+                                "link": "shopify://collections/all",
+                                "type_desktop": "btn--outline",
+                                "style_desktop": "btn--inverse",
+                                "size_desktop": "btn--medium",
+                                "width_desktop": "btn--w-full",
+                                "type_mobile": "btn--outline--mobile",
+                                "style_mobile": "btn--inverse--mobile",
+                                "size_mobile": "btn--medium--mobile",
+                                "width_mobile": "btn--w-full--mobile"
+                              }
+                            }
+                          },
+                          "block_order": ["desc_1", "btn_1"]
+                        }
+                      },
+                      "block_order": ["content_group_1"]
+                    }
+                  },
+                  "block_order": ["header_1", "content_1"]
+                }
+              },
+              "block_order": ["card_1"]
+            },
+            "col_2": {
+              "type": "_custom-grid-column",
+              "settings": {
+                "span_desktop": 4,
+                "order_desktop": 2,
+                "height_desktop": "auto",
+                "span_tablet": 6,
+                "order_tablet": 2,
+                "height_tablet": "auto",
+                "span_mobile": 12,
+                "order_mobile": 2,
+                "height_mobile": "auto"
+              },
+              "blocks": {
+                "card_2": {
+                  "type": "_info-card",
+                  "settings": {
+                    "color_scheme": "scheme-6",
+                    "desktop_padding_block": 32,
+                    "desktop_padding_inline": 32,
+                    "mobile_padding_block": 20,
+                    "mobile_padding_inline": 16
+                  },
+                  "blocks": {
+                    "header_2": {
+                      "type": "_info-card-header",
+                      "blocks": {
+                        "title_2": {
+                          "type": "custom-text",
+                          "settings": {
+                            "text": "<p>Card Title 2</p>",
+                            "font_family": "var(--font-labels--family)",
+                            "font_weight": "400",
+                            "font_size": "1.125rem",
+                            "line_height": "1.25rem",
+                            "letter_spacing": "0.75px",
+                            "color": "#ffffff",
+                            "font_family_mobile": "var(--font-labels--family)",
+                            "font_weight_mobile": "400",
+                            "font_size_mobile": "1rem",
+                            "line_height_mobile": "1.25rem",
+                            "letter_spacing_mobile": "0.75px",
+                            "color_mobile": "#ffffff"
+                          }
+                        }
+                      },
+                      "block_order": ["title_2"]
+                    },
+                    "content_2": {
+                      "type": "_info-card-content",
+                      "blocks": {
+                        "content_group_2": {
+                          "type": "group",
+                          "settings": {
+                            "content_direction": "column",
+                            "horizontal_alignment_flex_direction_column": "flex-start",
+                            "vertical_alignment_flex_direction_column": "space-between",
+                            "gap": 24,
+                            "gap_mobile": 24,
+                            "width": "fill",
+                            "width_mobile": "fill",
+                            "height": "fill",
+                            "inherit_color_scheme": true,
+                            "padding-block-start": 40,
+                            "padding-block-end": 20,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0,
+                            "padding-block-start-mobile": 28,
+                            "padding-block-end-mobile": 20,
+                            "padding-inline-start-mobile": 0,
+                            "padding-inline-end-mobile": 0
+                          },
+                          "blocks": {
+                            "desc_2": {
+                              "type": "custom-text",
+                              "settings": {
+                                "text": "<p>Add your card description here.</p>",
+                                "font_family": "var(--font-heading--family)",
+                                "font_weight": "400",
+                                "font_size": "1.5rem",
+                                "line_height": "1.75rem",
+                                "letter_spacing": "-1px",
+                                "color": "#ffffff",
+                                "font_family_mobile": "var(--font-heading--family)",
+                                "font_weight_mobile": "400",
+                                "font_size_mobile": "1.25rem",
+                                "line_height_mobile": "1.5rem",
+                                "letter_spacing_mobile": "-1px",
+                                "color_mobile": "#ffffff"
+                              }
+                            },
+                            "btn_2": {
+                              "type": "button-custom",
+                              "settings": {
+                                "label": "Shop now",
+                                "link": "shopify://collections/all",
+                                "type_desktop": "btn--outline",
+                                "style_desktop": "btn--inverse",
+                                "size_desktop": "btn--medium",
+                                "width_desktop": "btn--w-full",
+                                "type_mobile": "btn--outline--mobile",
+                                "style_mobile": "btn--inverse--mobile",
+                                "size_mobile": "btn--medium--mobile",
+                                "width_mobile": "btn--w-full--mobile"
+                              }
+                            }
+                          },
+                          "block_order": ["desc_2", "btn_2"]
+                        }
+                      },
+                      "block_order": ["content_group_2"]
+                    }
+                  },
+                  "block_order": ["header_2", "content_2"]
+                }
+              },
+              "block_order": ["card_2"]
+            },
+            "col_3": {
+              "type": "_custom-grid-column",
+              "settings": {
+                "span_desktop": 4,
+                "order_desktop": 3,
+                "height_desktop": "auto",
+                "span_tablet": 6,
+                "order_tablet": 3,
+                "height_tablet": "auto",
+                "span_mobile": 12,
+                "order_mobile": 3,
+                "height_mobile": "auto"
+              },
+              "blocks": {
+                "card_3": {
+                  "type": "_info-card",
+                  "settings": {
+                    "color_scheme": "scheme-5",
+                    "desktop_padding_block": 32,
+                    "desktop_padding_inline": 32,
+                    "mobile_padding_block": 20,
+                    "mobile_padding_inline": 16
+                  },
+                  "blocks": {
+                    "header_3": {
+                      "type": "_info-card-header",
+                      "blocks": {
+                        "title_3": {
+                          "type": "custom-text",
+                          "settings": {
+                            "text": "<p>Card Title 3</p>",
+                            "font_family": "var(--font-labels--family)",
+                            "font_weight": "400",
+                            "font_size": "1.125rem",
+                            "line_height": "1.25rem",
+                            "letter_spacing": "0.75px",
+                            "color": "#ffffff",
+                            "font_family_mobile": "var(--font-labels--family)",
+                            "font_weight_mobile": "400",
+                            "font_size_mobile": "1rem",
+                            "line_height_mobile": "1.25rem",
+                            "letter_spacing_mobile": "0.75px",
+                            "color_mobile": "#ffffff"
+                          }
+                        }
+                      },
+                      "block_order": ["title_3"]
+                    },
+                    "content_3": {
+                      "type": "_info-card-content",
+                      "blocks": {
+                        "content_group_3": {
+                          "type": "group",
+                          "settings": {
+                            "content_direction": "column",
+                            "horizontal_alignment_flex_direction_column": "flex-start",
+                            "vertical_alignment_flex_direction_column": "space-between",
+                            "gap": 24,
+                            "gap_mobile": 24,
+                            "width": "fill",
+                            "width_mobile": "fill",
+                            "height": "fill",
+                            "inherit_color_scheme": true,
+                            "padding-block-start": 40,
+                            "padding-block-end": 20,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0,
+                            "padding-block-start-mobile": 28,
+                            "padding-block-end-mobile": 20,
+                            "padding-inline-start-mobile": 0,
+                            "padding-inline-end-mobile": 0
+                          },
+                          "blocks": {
+                            "desc_3": {
+                              "type": "custom-text",
+                              "settings": {
+                                "text": "<p>Add your card description here.</p>",
+                                "font_family": "var(--font-heading--family)",
+                                "font_weight": "400",
+                                "font_size": "1.5rem",
+                                "line_height": "1.75rem",
+                                "letter_spacing": "-1px",
+                                "color": "#ffffff",
+                                "font_family_mobile": "var(--font-heading--family)",
+                                "font_weight_mobile": "400",
+                                "font_size_mobile": "1.25rem",
+                                "line_height_mobile": "1.5rem",
+                                "letter_spacing_mobile": "-1px",
+                                "color_mobile": "#ffffff"
+                              }
+                            },
+                            "btn_3": {
+                              "type": "button-custom",
+                              "settings": {
+                                "label": "Shop now",
+                                "link": "shopify://collections/all",
+                                "type_desktop": "btn--outline",
+                                "style_desktop": "btn--inverse",
+                                "size_desktop": "btn--medium",
+                                "width_desktop": "btn--w-full",
+                                "type_mobile": "btn--outline--mobile",
+                                "style_mobile": "btn--inverse--mobile",
+                                "size_mobile": "btn--medium--mobile",
+                                "width_mobile": "btn--w-full--mobile"
+                              }
+                            }
+                          },
+                          "block_order": ["desc_3", "btn_3"]
+                        }
+                      },
+                      "block_order": ["content_group_3"]
+                    }
+                  },
+                  "block_order": ["header_3", "content_3"]
+                }
+              },
+              "block_order": ["card_3"]
+            }
+          },
+          "block_order": ["col_1", "col_2", "col_3"]
+        }
+      },
+      "block_order": ["grid"]
+    }
+  ]
+}
+{% endschema %}

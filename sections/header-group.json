@@ -1,0 +1,151 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "header_announcements_9jGBFp": {
+      "type": "header-announcements",
+      "blocks": {
+        "announcement_BxgCk9": {
+          "type": "_announcement",
+          "settings": {
+            "text": "Free Shipping on orders $49.99+ <a href=\"#\" title=\"#\">Shop now</a>",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.875rem",
+            "weight": "600",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
+        "announcement_cFT63Q": {
+          "type": "_announcement",
+          "settings": {
+            "text": "New Bold Pack is here! Same SuperBeets you love. <a href=\"#\" title=\"#\">Shop now</a>",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.875rem",
+            "weight": "600",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "announcement_BxgCk9",
+        "announcement_cFT63Q"
+      ],
+      "name": "t:names.announcement_bar",
+      "settings": {
+        "speed": 5,
+        "link_1": "#",
+        "link_text_1": "Store Locator",
+        "link_2": "#",
+        "link_text_2": "Humann Professional",
+        "section_width": "page-width",
+        "color_scheme": "scheme-3",
+        "divider_width": 0,
+        "padding-block-start": 13,
+        "padding-block-end": 13
+      }
+    },
+    "header_section": {
+      "type": "header",
+      "blocks": {
+        "header-logo": {
+          "type": "_header-logo",
+          "static": true,
+          "settings": {
+            "hide_logo_on_home_page": false,
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          },
+          "blocks": {}
+        },
+        "header-menu": {
+          "type": "_header-menu",
+          "static": true,
+          "settings": {
+            "menu": "mega-menu-desktop-v2",
+            "color_scheme": "",
+            "mega_menu_banner_object": [
+              "get-50-off-our-heart-health-routine",
+              "buy-2-super-beets-get-1-free"
+            ]
+          },
+          "blocks": {}
+        },
+        "mobile-menu-drawer": {
+          "type": "_mobile-menu-drawer",
+          "static": true,
+          "settings": {
+            "menu": "dev-mega-menu-mobile-v2",
+            "color_scheme": "",
+            "drawer_accordion": false,
+            "drawer_accordion_expand_first": false,
+            "drawer_dividers": true,
+            "drawer_slide_submenus": true,
+            "banner_section_title": "Featured",
+            "mega_menu_banner_object": [
+              "get-50-off-our-heart-health-routine",
+              "buy-2-super-beets-get-1-free"
+            ],
+            "bottom_menu_title": "Humann Professional",
+            "bottom_menu_text": "Our program for medical organizations, professional collegiate sports teams, and more.",
+            "secondary_menu": "dev-mobile-menu-bottom"
+          },
+          "blocks": {}
+        }
+      },
+      "settings": {
+        "logo_position": "left",
+        "menu_position": "left",
+        "menu_row": "top",
+        "customer_account_menu": "dev-customer-menu",
+        "show_search": true,
+        "search_position": "right",
+        "search_row": "top",
+        "show_country": false,
+        "country_selector_style": false,
+        "show_language": false,
+        "localization_font": "heading",
+        "localization_font_size": "0.875rem",
+        "localization_position": "right",
+        "localization_row": "top",
+        "section_width": "page-width",
+        "section_height": "standard",
+        "enable_sticky_header": "scroll-up",
+        "divider_width": 0,
+        "divider_size": "page-width",
+        "border_width": 1,
+        "actions_display_style": "icon",
+        "actions_font_size": "0.875rem",
+        "actions_font": "body",
+        "actions_text_case": "none",
+        "color_scheme_top": "scheme-1",
+        "color_scheme_bottom": "",
+        "color_scheme_transparent": "scheme-6",
+        "enable_transparent_header_home": false,
+        "home_color_scheme": "inverse",
+        "enable_transparent_header_product": false,
+        "product_color_scheme": "default",
+        "enable_transparent_header_collection": false,
+        "collection_color_scheme": "default"
+      }
+    }
+  },
+  "order": [
+    "header_announcements_9jGBFp",
+    "header_section"
+  ]
+}

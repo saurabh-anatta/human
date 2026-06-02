@@ -1,0 +1,70 @@
+<button
+  class="info-card-header"
+  data-info-trigger
+  aria-expanded="false"
+  {{ block.shopify_attributes }}
+>
+  <span class="info-card-index" aria-hidden="true"></span>
+  <span class="info-card-header__content">
+    {% content_for 'blocks' %}
+  </span>
+</button>
+
+{% stylesheet %}
+  .info-card-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18px;
+    letter-spacing: 0.75px;
+    font-family: var(--font-labels--family);
+  }
+
+  @media screen and (min-width: 750px) {
+    .info-card-index {
+      font-size: 18px;
+      line-height: 20px;
+    }
+  }
+
+  .info-card-index::before {
+    content: counter(info-card-index);
+  }
+
+  .info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .info-card-header {
+      pointer-events: none;
+      cursor: default;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Card Header",
+  "tag": null,
+  "blocks": [{ "type": "text" }, { "type": "custom-text" }],
+  "settings": []
+}
+{% endschema %}

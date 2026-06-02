@@ -1,0 +1,679 @@
+{% doc %}
+  Block: Video Modal
+{% enddoc %}
+
+{% liquid
+  assign s = block.settings
+
+  assign desktop_video = s.video_desktop
+  assign mobile_video = s.video_mobile
+  assign desktop_poster = desktop_video.preview_image
+  assign mobile_poster = mobile_video.preview_image | default: desktop_poster
+  assign volume_decimal = s.volume | default: 100 | times: 1.0 | divided_by: 100.0
+
+  assign has_thumb_video = false
+  if s.thumbnail_type == 'video' and s.thumbnail_video != blank
+    assign has_thumb_video = true
+  endif
+
+  assign show_play_icon = s.show_play_icon
+
+  assign has_captions = false
+  if s.captions_url != blank
+    assign has_captions = true
+  endif
+
+  assign modal_id = 'video-modal-' | append: block.id
+  assign trigger_label = s.aria_label | default: 'Play video'
+  assign label_play = 'accessibility.play_video' | t
+  assign label_pause = 'accessibility.pause_video' | t
+
+  assign m_thumb_sizes = s.thumbnail_image_sizes_mobile | default: '100vw'
+  assign d_thumb_sizes = s.thumbnail_image_sizes_desktop | default: '(min-width: 750px) 33vw, 100vw'
+%}
+<script src="{{ 'video-modal.js' | asset_url }}" type="module"></script>
+
+<video-modal-component
+  class="video-modal"
+  data-volume="{{ volume_decimal }}"
+  data-start-unmuted="{{ s.start_unmuted }}"
+  data-autoplay="{{ s.autoplay_on_open }}"
+  data-sync-timeline="{{ s.sync_timeline }}"
+  data-label-play="{{ label_play | escape }}"
+  data-label-pause="{{ label_pause | escape }}"
+  {{ block.shopify_attributes }}
+>
+  {%- if s.thumbnail_type == 'image' -%}
+    <div class="video-modal__thumb">
+      {{
+        desktop_poster
+        | image_url: width: 1600
+        | image_tag:
+          widths: '320, 480, 640, 800, 1100, 1400, 1600',
+          sizes: d_thumb_sizes,
+          loading: 'lazy',
+          class: 'video-modal__thumb-media hidden--mobile',
+          alt: desktop_poster.alt
+      }}
+
+      {{
+        mobile_poster
+        | image_url: width: 800
+        | image_tag:
+          widths: '320, 480, 640, 800, 1100, 1400, 1600',
+          sizes: m_thumb_sizes,
+          loading: 'lazy',
+          class: 'video-modal__thumb-media hidden--desktop',
+          alt: mobile_poster.alt
+      }}
+    </div>
+  {%- elsif has_thumb_video -%}
+    <div class="video-modal__thumb">
+      <video
+        ref="thumbVideo"
+        class="video-modal__thumb-media"
+        playsinline
+        muted
+        loop
+        data-autoplay="{{ s.thumbnail_video_autoplay }}"
+        preload="metadata"
+        {% if s.thumbnail_video.preview_image != blank %}
+          poster="{{ s.thumbnail_video.preview_image | image_url: width: 800 }}"
+        {% endif %}
+      >
+        {%- for source in s.thumbnail_video.sources -%}
+          <source src="{{ source.url }}" type="{{ source.mime_type }}">
+        {%- endfor -%}
+      </video>
+    </div>
+  {%- endif -%}
+
+  {%- if block.blocks.size > 0 -%}
+    <div class="video-modal__content">
+      {% content_for 'blocks' %}
+    </div>
+  {%- endif -%}
+
+  {%- if show_play_icon -%}
+    <span class="video-modal__play" aria-hidden="true">
+      {{- 'icon-play.svg' | inline_asset_content -}}
+    </span>
+  {%- endif -%}
+
+  {%- if has_thumb_video -%}
+    <button
+      type="button"
+      class="video-modal__thumb-toggle"
+      on:click="/toggleThumb"
+      aria-label="{{ label_pause | escape }}"
+    >
+      <span
+        ref="thumbToggleIcon[]"
+        class="video-modal__icon"
+        data-state="playing"
+        {% unless s.thumbnail_video_autoplay %}
+          hidden
+        {% endunless %}
+      >
+        {{- 'icon-pause.svg' | inline_asset_content -}}
+      </span>
+      <span
+        ref="thumbToggleIcon[]"
+        class="video-modal__icon"
+        data-state="paused"
+        {% if s.thumbnail_video_autoplay %}
+          hidden
+        {% endif %}
+      >
+        {{- 'icon-play.svg' | inline_asset_content -}}
+      </span>
+    </button>
+  {%- endif -%}
+
+  <button
+    ref="trigger"
+    type="button"
+    class="video-modal__trigger"
+    on:click="/showDialog"
+    aria-label="{{ trigger_label | escape }}"
+    aria-haspopup="dialog"
+    aria-controls="{{ modal_id }}"
+  ></button>
+
+  <dialog
+    id="{{ modal_id }}"
+    ref="dialog"
+    class="video-modal__dialog"
+    aria-label="{{ trigger_label | escape }}"
+    tabindex="-1"
+  >
+    <button
+      type="button"
+      class="video-modal__close"
+      on:click="/closeDialog"
+      aria-label="{{ 'accessibility.close_dialog' | t }}"
+    >
+      {{- 'icon-close.svg' | inline_asset_content -}}
+    </button>
+
+    <div
+      class="video-modal__player"
+      style="
+        {%- if desktop_poster != blank -%}
+          --d-aspect-ratio: {{ desktop_poster.width }} / {{ desktop_poster.height }};
+        {%- endif -%}
+        {%- if mobile_poster != blank -%}
+          --m-aspect-ratio: {{ mobile_poster.width }} / {{ mobile_poster.height }};
+        {%- endif -%}
+      "
+    >
+      {%- if desktop_video != blank -%}
+        <video
+          ref="videoDesktop"
+          class="video-modal__video video-modal__video--desktop"
+          playsinline
+          preload="metadata"
+          {% if has_captions %}
+            crossorigin="anonymous"
+          {% endif %}
+          {% if s.loop %}
+            loop
+          {% endif %}
+          {%- if desktop_poster != blank -%}
+            width="{{ desktop_poster.width }}"
+            height="{{ desktop_poster.height }}"
+            poster="{{ desktop_poster | image_url: width: 1440 }}"
+          {%- endif -%}
+        >
+          {%- for source in desktop_video.sources -%}
+            <source data-src="{{ source.url }}" type="{{ source.mime_type }}">
+          {%- endfor -%}
+          {%- if has_captions -%}
+            <track
+              kind="captions"
+              src="{{ s.captions_url }}"
+              srclang="{{ s.captions_lang | default: 'en' }}"
+              label="{{ s.captions_label | default: 'English' | escape }}"
+              default
+            >
+          {%- endif -%}
+        </video>
+      {%- endif -%}
+
+      {%- if mobile_video != blank -%}
+        <video
+          ref="videoMobile"
+          class="video-modal__video video-modal__video--mobile"
+          playsinline
+          preload="metadata"
+          {% if has_captions %}
+            crossorigin="anonymous"
+          {% endif %}
+          {% if s.loop %}
+            loop
+          {% endif %}
+          {%- if mobile_poster != blank -%}
+            width="{{ mobile_poster.width }}"
+            height="{{ mobile_poster.height }}"
+            poster="{{ mobile_poster | image_url: width: 600 }}"
+          {%- endif -%}
+        >
+          {%- for source in mobile_video.sources -%}
+            <source data-src="{{ source.url }}" type="{{ source.mime_type }}">
+          {%- endfor -%}
+          {%- if has_captions -%}
+            <track
+              kind="captions"
+              src="{{ s.captions_url }}"
+              srclang="{{ s.captions_lang | default: 'en' }}"
+              label="{{ s.captions_label | default: 'English' | escape }}"
+              default
+            >
+          {%- endif -%}
+        </video>
+      {%- endif -%}
+    </div>
+
+    <div class="video-modal__controls" role="group" aria-label="Video controls">
+      <button
+        type="button"
+        class="video-modal__btn video-modal__btn--primary"
+        data-play-button
+        on:click="/togglePlay"
+        aria-label="{{ label_play | escape }}"
+      >
+        <span ref="playIcon[]" class="video-modal__icon" data-state="paused">
+          {{- 'icon-play.svg' | inline_asset_content -}}
+        </span>
+        <span ref="playIcon[]" class="video-modal__icon" data-state="playing" hidden>
+          {{- 'icon-pause.svg' | inline_asset_content -}}
+        </span>
+      </button>
+
+      {%- if s.show_volume -%}
+        <button
+          ref="muteButton"
+          type="button"
+          class="video-modal__btn video-modal__btn--secondary"
+          on:click="/toggleMute"
+          data-label-mute="Mute"
+          data-label-unmute="Unmute"
+          aria-label="Unmute"
+        >
+          <span ref="muteIcon[]" class="video-modal__icon" data-state="unmuted">
+            {{- 'icon-volume.svg' | inline_asset_content -}}
+          </span>
+          <span ref="muteIcon[]" class="video-modal__icon" data-state="muted" hidden>
+            {{- 'icon-mute.svg' | inline_asset_content -}}
+          </span>
+        </button>
+      {%- endif -%}
+    </div>
+  </dialog>
+</video-modal-component>
+
+{% stylesheet %}
+  .video-modal {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .video-modal__thumb,
+  .video-modal__thumb-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .video-modal__thumb-media {
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .video-modal__thumb:has(video.video-modal__thumb-media)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.4) 100%);
+  }
+
+  .video-modal__content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    pointer-events: none;
+    color: #fff;
+  }
+
+  .video-modal__content > * {
+    pointer-events: auto;
+  }
+
+  .video-modal__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .video-modal__play svg {
+    width: 16px;
+    height: 20px;
+  }
+
+  .video-modal__trigger {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .video-modal__trigger:focus-visible {
+    outline: 2px solid var(--color-foreground, #000);
+    outline-offset: -2px;
+  }
+
+  .video-modal__thumb-toggle {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 5;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: none;
+    color: #fff;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .video-modal__thumb-toggle svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ── Dialog ── */
+
+  .video-modal__dialog {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    padding: 16px;
+    background: transparent;
+    border: 0;
+    overflow: hidden;
+    color: #fff;
+  }
+
+  .video-modal__dialog[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .video-modal__dialog::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .video-modal__close {
+    align-self: flex-end;
+    width: 28px;
+    height: auto;
+    padding: 5px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: 0;
+    color: #f5f5f5;
+    opacity: 0.7;
+    cursor: pointer;
+    margin: 0 16px 12px 0;
+  }
+
+  .video-modal__close svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .video-modal__player {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: var(--m-aspect-ratio, 3 / 4);
+
+    @media screen and (min-width: 750px) {
+      aspect-ratio: var(--d-aspect-ratio, 16 / 9);
+    }
+  }
+
+  .video-modal__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .video-modal__video--mobile {
+    display: none;
+  }
+
+  /* ── Controls row (below the player) ── */
+
+  .video-modal__controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .video-modal__btn {
+    display: grid;
+    place-items: center;
+    padding: 16px 25px;
+    border-radius: 28px;
+    border: 0;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+
+  .video-modal__btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .video-modal__btn--primary {
+    background: #fff;
+    color: #111;
+  }
+
+  .video-modal__btn--primary svg {
+    width: 14px;
+    height: 16px;
+  }
+
+  .video-modal__btn--secondary {
+    background: #000;
+    color: #fff;
+  }
+
+  .video-modal__btn--secondary svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .video-modal__icon {
+    display: grid;
+    place-items: center;
+    color: inherit;
+  }
+
+  .video-modal__icon[hidden] {
+    display: none;
+  }
+
+  .video-modal__icon svg {
+    display: block;
+  }
+
+  @media screen and (max-width: 749px) {
+    .video-modal__player:has(.video-modal__video--mobile) .video-modal__video--desktop {
+      display: none;
+    }
+    .video-modal__video--mobile {
+      display: block;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .video-modal__dialog::backdrop {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(12px);
+    }
+
+    .video-modal__close {
+      opacity: 1;
+      fill: white;
+      margin: 0 30px 10px 0;
+    }
+    .video-modal__thumb-toggle {
+      top: 32px;
+      right: 32px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Video Modal",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Modal Video" },
+    {
+      "type": "video",
+      "id": "video_desktop",
+      "label": "Desktop video",
+      "info": "Aspect ratio is preserved — landscape or portrait videos render uncropped."
+    },
+    {
+      "type": "video",
+      "id": "video_mobile",
+      "label": "Mobile video",
+      "info": "Optional. Falls back to the desktop video if empty."
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_on_open",
+      "label": "Autoplay on open",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "start_unmuted",
+      "label": "Unmute on open",
+      "info": "Some browsers require user interaction; opening the modal counts as a gesture.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sync_timeline",
+      "label": "Sync timeline across breakpoints",
+      "info": "When resizing across the mobile/desktop breakpoint, resume the new video from the previous video's playback time. Only enable if the mobile and desktop videos are the same cut/duration — otherwise playback will jump to unrelated frames.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "volume",
+      "label": "Volume",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "checkbox",
+      "id": "show_volume",
+      "label": "Show volume in the modal",
+      "default": true
+    },
+
+    { "type": "header", "content": "Captions" },
+    {
+      "type": "url",
+      "id": "captions_url",
+      "label": "Captions file URL (.vtt)",
+      "info": "Upload a .vtt file in Settings → Files and paste its URL here."
+    },
+    {
+      "type": "text",
+      "id": "captions_label",
+      "label": "Captions label",
+      "default": "English"
+    },
+    {
+      "type": "text",
+      "id": "captions_lang",
+      "label": "Captions language code",
+      "default": "en"
+    },
+
+    { "type": "header", "content": "Thumbnail" },
+    {
+      "type": "select",
+      "id": "thumbnail_type",
+      "label": "Thumbnail type",
+      "default": "image",
+      "options": [
+        { "value": "image", "label": "Video Poster Image" },
+        { "value": "video", "label": "Video" },
+        { "value": "none", "label": "None (use nested blocks only)" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "thumbnail_image_sizes_mobile",
+      "label": "Thumbnail image sizes (mobile)",
+      "info": "HTML sizes attribute for responsive loading. Match the thumbnail's rendered width, e.g. '(min-width: 750px) 33vw, 100vw' for a 3-column grid.",
+      "default": "100vw",
+      "visible_if": "{{ block.settings.thumbnail_type == 'image' }}"
+    },
+    {
+      "type": "text",
+      "id": "thumbnail_image_sizes_desktop",
+      "label": "Thumbnail image sizes (desktop)",
+      "info": "HTML sizes attribute for responsive loading. Match the thumbnail's rendered width, e.g. '(min-width: 750px) 33vw, 100vw' for a 3-column grid.",
+      "default": "(min-width: 750px) 33vw, 100vw",
+      "visible_if": "{{ block.settings.thumbnail_type == 'image' }}"
+    },
+    {
+      "type": "video",
+      "id": "thumbnail_video",
+      "label": "Thumbnail video",
+      "visible_if": "{{ block.settings.thumbnail_type == 'video' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "thumbnail_video_autoplay",
+      "label": "Autoplay thumbnail",
+      "default": true,
+      "visible_if": "{{ block.settings.thumbnail_type == 'video' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_play_icon",
+      "label": "Show play icon on thumbnail",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessibility label",
+      "info": "Read by screen readers when the card is focused.",
+      "default": "Play video"
+    }
+  ],
+  "blocks": [{ "type": "@theme" }],
+  "presets": [
+    {
+      "name": "Video Modal",
+      "category": "Media"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,82 @@
+{% liquid
+  assign plain_text = block_settings.text | strip_newlines | strip
+  assign visible_text = plain_text | strip_html
+%}
+
+{% if visible_text != blank %}
+  <rte-formatter
+    class="custom-text-block custom-text-block--{{ block.id }} rte"
+    style="{{ style | strip_newlines | strip }}"
+    {{ block.shopify_attributes }}
+  >
+    {{ block_settings.text }}
+  </rte-formatter>
+{% endif %}
+
+{% stylesheet %}
+  .custom-text-block,
+  .custom-text-block h1,
+  .custom-text-block h2,
+  .custom-text-block h3,
+  .custom-text-block h4,
+  .custom-text-block h5,
+  .custom-text-block h6 {
+    display: block;
+    width: var(--custom-text-width);
+    max-width: var(--custom-text-max-width);
+    margin-bottom: var(--custom-text-margin-bottom);
+    color: var(--custom-text-color);
+    font-family: var(--custom-text-font-family);
+    font-weight: var(--custom-text-font-weight);
+    font-size: var(--custom-text-font-size);
+    line-height: var(--custom-text-line-height);
+    letter-spacing: var(--custom-text-letter-spacing);
+    text-align: var(--custom-text-alignment);
+    text-transform: var(--custom-text-transform, none);
+    text-decoration: var(--custom-text-decoration, none);
+  }
+
+  .custom-text-block strong {
+    font-family: var(--custom-text-font-family-strong, inherit);
+  }
+
+  .custom-text-block > *:first-child {
+    margin-block-start: 0;
+  }
+
+  .custom-text-block > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .custom-text-block a {
+    text-decoration: inherit;
+    color: inherit;
+  }
+
+  @media screen and (max-width: 749px) {
+    .custom-text-block strong {
+      font-family: var(--custom-text-font-family-strong-mobile, var(--custom-text-font-family-strong, inherit));
+    }
+
+    .custom-text-block,
+    .custom-text-block h1,
+    .custom-text-block h2,
+    .custom-text-block h3,
+    .custom-text-block h4,
+    .custom-text-block h5,
+    .custom-text-block h6 {
+      width: var(--custom-text-width-mobile);
+      max-width: var(--custom-text-max-width-mobile);
+      margin-bottom: var(--custom-text-margin-bottom-mobile);
+      font-size: var(--custom-text-font-size-mobile);
+      line-height: var(--custom-text-line-height-mobile);
+      letter-spacing: var(--custom-text-letter-spacing-mobile);
+      color: var(--custom-text-color-mobile);
+      font-family: var(--custom-text-font-family-mobile);
+      font-weight: var(--custom-text-font-weight-mobile);
+      text-align: var(--custom-text-alignment-mobile);
+      text-transform: var(--custom-text-transform-mobile, none);
+      text-decoration: var(--custom-text-decoration-mobile, none);
+    }
+  }
+{% endstylesheet %}

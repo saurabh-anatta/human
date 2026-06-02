@@ -1,0 +1,68 @@
+
+{% liquid
+  assign resource =  product | default: page | default: collection | default: article | default: blog | default: shop
+  assign disclaimer = resource.metafields.legal.disclaimer
+%}
+
+{% if disclaimer != blank %}
+  <div class="footer-utilities__disclaimer" {{ block.shopify_attributes }}>
+    <div class="footer-utilities__disclaimer-box">
+      {{ disclaimer |  metafield_tag}}
+    </div>
+  </div>
+{% endif %}
+{% stylesheet %}
+   .footer-utilities__disclaimer {
+    width: 100%;
+  }
+
+  .footer-utilities__disclaimer-box {
+    border: 1px solid #A0A0A0;
+    border-radius: 4px;
+    padding: 16px;
+    font-family: var(--font-subheading--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0;
+    color: #767676;
+    text-wrap: wrap;
+    overflow-wrap: break-word;
+    text-align: left;
+  }
+
+  .footer-utilities__disclaimer-box p {
+    margin-bottom: 8px;
+  }
+
+  .footer-utilities__disclaimer-box {
+    ol,
+    ul{
+      padding-left: 16px;
+      margin: 0;
+
+      li:not(:last-child){
+        padding-bottom: 8px;
+      }
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.disclaimer",
+  "tag": null,
+  "settings": [
+    {
+        "type": "paragraph",
+        "content": "Manage the disclaimer text from metafields of respective resource."
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.disclaimer",
+      "category": "t:categories.footer"
+    }
+  ]
+}
+{% endschema %}

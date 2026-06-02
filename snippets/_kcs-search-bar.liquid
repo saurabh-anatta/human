@@ -1,0 +1,87 @@
+{%- if mode == 'trigger' -%}
+  {%- assign trigger_classes = 'kcs-bar kcs-bar--trigger' -%}
+  {%- if hide_go_mobile -%}
+    {%- assign trigger_classes = trigger_classes | append: ' kcs-bar--hide-go-mobile' -%}
+  {%- endif -%}
+  {%- if hide_go_desktop -%}
+    {%- assign trigger_classes = trigger_classes | append: ' kcs-bar--hide-go-desktop' -%}
+  {%- endif -%}
+
+  <button
+    type="button"
+    class="{{ trigger_classes }}"
+    on:click="/showDialog"
+    aria-haspopup="dialog"
+    aria-label="{{ placeholder | escape }}"
+    {% if style_variables != blank %}
+      style="{{ style_variables | strip_newlines | strip }}"
+    {% endif %}
+    {{ block.shopify_attributes }}
+  >
+    <span class="svg-wrapper kcs-bar__icon" aria-hidden="true">
+      <svg
+        width="17"
+        height="14"
+        viewBox="0 0 17 14"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {%- render 'icon', icon: 'book' -%}
+      </svg>
+    </span>
+
+    {%- if use_rotating -%}
+      <kcs-rotating-text
+        class="kcs-bar__text"
+        data-interval="{{ rotating_interval | times: 1000 }}"
+      >
+        {{- placeholder -}}
+      </kcs-rotating-text>
+    {%- else -%}
+      <span class="kcs-bar__text">{{- placeholder -}}</span>
+    {%- endif -%}
+
+    <span class="btn btn--small btn--small--mobile kcs-bar__go" aria-hidden="true">{{- cta_label -}}</span>
+  </button>
+
+{%- elsif mode == 'field' -%}
+  <form
+    class="kcs-bar kcs-bar--field"
+    action="{{ routes.search_url }}"
+    method="get"
+    role="search"
+    {% if style_variables != blank %}
+      style="{{ style_variables | strip_newlines | strip }}"
+    {% endif %}
+    {{ block.shopify_attributes }}
+  >
+    <label for="kcs-field-{{ block.id }}" class="visually-hidden">
+      {{- placeholder -}}
+    </label>
+    <span class="svg-wrapper kcs-bar__icon" aria-hidden="true">
+      <svg
+        width="17"
+        height="14"
+        viewBox="0 0 17 14"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {%- render 'icon', icon: 'book' -%}
+      </svg>
+    </span>
+    <input
+      id="kcs-field-{{ block.id }}"
+      class="kcs-bar__input"
+      type="search"
+      name="q"
+      placeholder="{{ placeholder | escape }}"
+      autocomplete="off"
+      autofocus
+    >
+    <button type="submit" class="btn btn--small btn--small--mobile kcs-bar__go">{{- cta_label -}}</button>
+  </form>
+{%- endif -%}

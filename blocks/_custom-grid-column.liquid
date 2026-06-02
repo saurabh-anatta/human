@@ -1,0 +1,173 @@
+{% doc %}
+  Block: Custom Grid Column
+
+  A column inside a Custom Grid. Controls how many of the 12 grid columns
+  it spans, its visual order, and its height. Must be placed inside a
+  Custom Grid block.
+{% enddoc %}
+
+{% liquid
+  assign s = block.settings
+%}
+
+{% capture inline_styles %}
+  --cgc-span-mobile: {{ s.span_mobile }};
+  --cgc-order-mobile: {{ s.order_mobile }};
+  --cgc-height-mobile: {{ s.height_mobile }};
+  --cgc-span-tablet: {{ s.span_tablet }};
+  --cgc-order-tablet: {{ s.order_tablet }};
+  --cgc-height-tablet: {{ s.height_tablet }};
+  --cgc-span-desktop: {{ s.span_desktop }};
+  --cgc-order-desktop: {{ s.order_desktop }};
+  --cgc-height-desktop: {{ s.height_desktop }};
+{% endcapture %}
+
+{% stylesheet %}
+  .custom-grid-column {
+    grid-column: span var(--cgc-span-mobile);
+    order: var(--cgc-order-mobile);
+    height: var(--cgc-height-mobile);
+  }
+
+  @media screen and (min-width: 750px) and (max-width: 1023px) {
+    .custom-grid-column {
+      grid-column: span var(--cgc-span-tablet);
+      order: var(--cgc-order-tablet);
+      height: var(--cgc-height-tablet);
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .custom-grid-column {
+      grid-column: span var(--cgc-span-desktop);
+      order: var(--cgc-order-desktop);
+      height: var(--cgc-height-desktop);
+    }
+  }
+{% endstylesheet %}
+
+
+<div
+  class="custom-grid-column"
+  style="{{ inline_styles | strip_newlines }}"
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% schema %}
+{
+  "name": "Column",
+  "tag": null,
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "_custom_divider" },
+    { "type": "_info-card" },
+    { "type": "@app" }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "span_desktop",
+      "label": "Span",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 6,
+      "info": "Number of grid columns to span (out of 12)."
+    },
+    {
+      "type": "range",
+      "id": "order_desktop",
+      "label": "Order",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "height_desktop",
+      "label": "Height",
+      "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Auto" },
+        { "value": "100%", "label": "Full" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Tablet"
+    },
+    {
+      "type": "range",
+      "id": "span_tablet",
+      "label": "Span",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 6,
+      "info": "Number of grid columns to span (out of 12)."
+    },
+    {
+      "type": "range",
+      "id": "order_tablet",
+      "label": "Order",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "height_tablet",
+      "label": "Height",
+      "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Auto" },
+        { "value": "100%", "label": "Full" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "span_mobile",
+      "label": "Span",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 12,
+      "info": "Number of grid columns to span (out of 12)."
+    },
+    {
+      "type": "range",
+      "id": "order_mobile",
+      "label": "Order",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "height_mobile",
+      "label": "Height",
+      "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Auto" },
+        { "value": "100%", "label": "Full" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Column" }
+  ]
+}
+{% endschema %}

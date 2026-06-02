@@ -1,0 +1,490 @@
+{% doc %}
+  Block: Custom Carousel
+
+  A Swiper-powered carousel container. Only accepts Custom Carousel Slide
+  blocks as direct children. When `arrows` is set to `external`, place a
+  Custom Carousel Arrows block as a sibling within the same section — it
+  links to this carousel via the section id.
+{% enddoc %}
+
+{% liquid
+  assign s = block.settings
+
+  capture arrow_wrapper_style
+    case s.arrows_position
+      when 'top-right'
+        echo '--carousel-arrow-pos-v:' | append: s.arrows_offset_top | append: 'px;'
+        echo '--carousel-arrow-pos-h:' | append: s.arrows_offset_right | append: 'px;'
+        echo '--carousel-arrow-pos-v-mobile:' | append: s.arrows_offset_top_mobile | append: 'px;'
+        echo '--carousel-arrow-pos-h-mobile:' | append: s.arrows_offset_right_mobile | append: 'px;'
+      when 'top-left'
+        echo '--carousel-arrow-pos-v:' | append: s.arrows_offset_top | append: 'px;'
+        echo '--carousel-arrow-pos-h:' | append: s.arrows_offset_left | append: 'px;'
+        echo '--carousel-arrow-pos-v-mobile:' | append: s.arrows_offset_top_mobile | append: 'px;'
+        echo '--carousel-arrow-pos-h-mobile:' | append: s.arrows_offset_left_mobile | append: 'px;'
+      when 'bottom-left'
+        echo '--carousel-arrow-pos-v:' | append: s.arrows_offset_bottom | append: 'px;'
+        echo '--carousel-arrow-pos-h:' | append: s.arrows_offset_left | append: 'px;'
+        echo '--carousel-arrow-pos-v-mobile:' | append: s.arrows_offset_bottom_mobile | append: 'px;'
+        echo '--carousel-arrow-pos-h-mobile:' | append: s.arrows_offset_left_mobile | append: 'px;'
+      when 'bottom-right'
+        echo '--carousel-arrow-pos-v:' | append: s.arrows_offset_bottom | append: 'px;'
+        echo '--carousel-arrow-pos-h:' | append: s.arrows_offset_right | append: 'px;'
+        echo '--carousel-arrow-pos-v-mobile:' | append: s.arrows_offset_bottom_mobile | append: 'px;'
+        echo '--carousel-arrow-pos-h-mobile:' | append: s.arrows_offset_right_mobile | append: 'px;'
+    endcase
+    echo '--carousel-arrow-bg:rgb(' | append: s.arrows_color_scheme_desktop.settings.background.rgb | append: ');'
+    echo '--carousel-arrow-color:rgb(' | append: s.arrows_color_scheme_desktop.settings.foreground.rgb | append: ');'
+    echo '--carousel-arrow-bg-mobile:rgb(' | append: s.arrows_color_scheme_mobile.settings.background.rgb | append: ');'
+    echo '--carousel-arrow-color-mobile:rgb(' | append: s.arrows_color_scheme_mobile.settings.foreground.rgb | append: ');'
+  endcapture
+%}
+
+{% stylesheet %}
+  .custom-carousel {
+    display: block;
+    width: 100%;
+  }
+
+  .custom-carousel .swiper {
+    width: 100%;
+    position: relative;
+  }
+
+  /* Bleed mode: slides overflow the container edges */
+  @media screen and (max-width: 749px) {
+    .custom-carousel--bleed-mobile,
+    .custom-carousel--bleed-mobile .swiper:not(.swiper-initialized) {
+      overflow: visible;
+    }
+    .custom-carousel--bleed-mobile .swiper {
+      overflow: visible !important;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .custom-carousel--bleed-desktop,
+    .custom-carousel--bleed-desktop .swiper:not(.swiper-initialized) {
+      overflow: visible;
+    }
+    .custom-carousel--bleed-desktop .swiper {
+      overflow: visible !important;
+    }
+  }
+
+  /* Pre-Swiper layout — prevents vertical stacking while JS loads */
+  .custom-carousel .swiper:not(.swiper-initialized) {
+    overflow: hidden;
+  }
+  .custom-carousel .swiper:not(.swiper-initialized) .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: var(--cc-gap-mobile);
+  }
+  .custom-carousel .swiper:not(.swiper-initialized) .swiper-slide {
+    flex-shrink: 0;
+    width: calc((100% - (var(--cc-slides-mobile) - 1) * var(--cc-gap-mobile)) / var(--cc-slides-mobile));
+  }
+
+  @media screen and (min-width: 1024px) {
+    .custom-carousel .swiper:not(.swiper-initialized) .swiper-wrapper {
+      gap: var(--cc-gap-desktop);
+    }
+    .custom-carousel .swiper:not(.swiper-initialized) .swiper-slide {
+      width: calc((100% - (var(--cc-slides-desktop) - 1) * var(--cc-gap-desktop)) / var(--cc-slides-desktop));
+    }
+  }
+
+  .custom-carousel .swiper-pagination {
+    position: relative !important;
+    margin-top: 1.5rem !important;
+    bottom: 0 !important;
+  }
+
+  .custom-carousel .swiper-pagination-bullet-active {
+    background: var(--color-foreground) !important;
+  }
+
+  .custom-carousel .carousel-default-arrows {
+    position: absolute;
+    display: flex;
+    gap: 2px;
+    z-index: 10;
+  }
+
+  .custom-carousel .carousel-default-arrows--top-right {
+    top: var(--carousel-arrow-pos-v, 0px);
+    right: var(--carousel-arrow-pos-h, 0px);
+  }
+  .custom-carousel .carousel-default-arrows--top-left {
+    top: var(--carousel-arrow-pos-v, 0px);
+    left: var(--carousel-arrow-pos-h, 0px);
+  }
+  .custom-carousel .carousel-default-arrows--bottom-left {
+    bottom: var(--carousel-arrow-pos-v, 0px);
+    left: var(--carousel-arrow-pos-h, 0px);
+  }
+  .custom-carousel .carousel-default-arrows--bottom-right {
+    bottom: var(--carousel-arrow-pos-v, 0px);
+    right: var(--carousel-arrow-pos-h, 0px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .custom-carousel .carousel-default-arrows--top-right {
+      top: var(--carousel-arrow-pos-v-mobile, var(--carousel-arrow-pos-v, 0px));
+      right: var(--carousel-arrow-pos-h-mobile, var(--carousel-arrow-pos-h, 0px));
+    }
+    .custom-carousel .carousel-default-arrows--top-left {
+      top: var(--carousel-arrow-pos-v-mobile, var(--carousel-arrow-pos-v, 0px));
+      left: var(--carousel-arrow-pos-h-mobile, var(--carousel-arrow-pos-h, 0px));
+    }
+    .custom-carousel .carousel-default-arrows--bottom-left {
+      bottom: var(--carousel-arrow-pos-v-mobile, var(--carousel-arrow-pos-v, 0px));
+      left: var(--carousel-arrow-pos-h-mobile, var(--carousel-arrow-pos-h, 0px));
+    }
+    .custom-carousel .carousel-default-arrows--bottom-right {
+      bottom: var(--carousel-arrow-pos-v-mobile, var(--carousel-arrow-pos-v, 0px));
+      right: var(--carousel-arrow-pos-h-mobile, var(--carousel-arrow-pos-h, 0px));
+    }
+  }
+
+  .custom-carousel .carousel-arrow-btn {
+    position: static;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 32px;
+    padding: 0;
+    border-radius: 28px;
+  }
+
+  .custom-carousel .carousel-arrow-btn::after {
+    display: none;
+  }
+
+  .custom-carousel .carousel-arrow-btn svg {
+    width: 20px;
+    height: auto;
+  }
+
+  .custom-carousel .carousel-arrow-btn--prev svg {
+    transform: rotate(180deg);
+  }
+
+  .custom-carousel .carousel-arrow-btn--custom {
+    background-color: var(--carousel-arrow-bg-mobile, var(--carousel-arrow-bg, transparent));
+    color: var(--carousel-arrow-color-mobile, var(--carousel-arrow-color, currentColor));
+    border: none;
+    cursor: pointer;
+  }
+
+  @media screen and (min-width: 750px) {
+    .custom-carousel .carousel-arrow-btn--custom {
+      background-color: var(--carousel-arrow-bg, transparent);
+      color: var(--carousel-arrow-color, currentColor);
+    }
+    .custom-carousel .carousel-arrow-btn {
+      width: 64px;
+      height: 48px;
+    }
+    .custom-carousel .carousel-arrow-btn svg {
+      width: 24px;
+    }
+  }
+{% endstylesheet %}
+
+<carousel-component
+  class="custom-carousel{% if s.bleed_mobile %} custom-carousel--bleed-mobile{% endif %}{% if s.bleed_desktop %} custom-carousel--bleed-desktop{% endif %}"
+  style="--cc-slides-mobile:{{ s.slides_per_view_mobile }};--cc-gap-mobile:{{ s.gap_mobile }}px;--cc-slides-desktop:{{ s.slides_per_view }};--cc-gap-desktop:{{ s.gap }}px;"
+  {{ block.shopify_attributes }}
+>
+  <script type="application/json">
+    {
+      "slidesPerViewMobile": {{ s.slides_per_view_mobile }},
+      "slidesPerViewDesktop": {{ s.slides_per_view }},
+      "gapMobile": {{ s.gap_mobile }},
+      "gapDesktop": {{ s.gap }},
+      "autoplay": {{ s.autoplay }},
+      "autoplayDelay": {{ s.autoplay_delay }},
+      "pagination": {{ s.pagination }},
+      "arrows": {{ s.arrows | json }},
+      "externalRoot": "carousel-arrows-{{ section.id }}"
+    }
+  </script>
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      {% content_for 'blocks' %}
+    </div>
+
+    {% if s.pagination %}
+      <div class="swiper-pagination"></div>
+    {% endif %}
+
+    {% if s.arrows == 'default' %}
+      <div
+        class="carousel-default-arrows carousel-default-arrows--{{ s.arrows_position }}"
+        style="{{ arrow_wrapper_style | strip_newlines | strip }}"
+      >
+        <button
+          type="button"
+          class="carousel-arrow-btn carousel-arrow-btn--custom carousel-arrow-btn--prev swiper-button-prev"
+          aria-label="{{ 'accessibility.slideshow_previous' | t }}"
+        >
+          {{- 'icon-arrow.svg' | inline_asset_content -}}
+        </button>
+        <button
+          type="button"
+          class="carousel-arrow-btn carousel-arrow-btn--custom carousel-arrow-btn--next swiper-button-next"
+          aria-label="{{ 'accessibility.slideshow_next' | t }}"
+        >
+          {{- 'icon-arrow.svg' | inline_asset_content -}}
+        </button>
+      </div>
+    {% endif %}
+  </div>
+</carousel-component>
+
+<script src="{{ 'carousel-component.js' | asset_url }}" type="module" fetchpriority="low"></script>
+
+{% schema %}
+{
+  "name": "Carousel",
+  "tag": null,
+  "blocks": [{ "type": "_custom-carousel-slide" }],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "number",
+      "id": "slides_per_view_mobile",
+      "label": "Columns",
+      "default": 1,
+      "info": "Use a decimal like 2.3 to peek the next slide (2 full slides + 30% of the next)"
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "bleed_mobile",
+      "label": "Bleed",
+      "info": "Edge to edge carousels",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "number",
+      "id": "slides_per_view",
+      "label": "Columns",
+      "default": 4,
+      "info": "Use a decimal like 2.3 to peek the next slide (2 full slides + 30% of the next)"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "bleed_desktop",
+      "label": "Bleed",
+      "info": "Edge to edge carousels",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "label": "Autoplay delay",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5,
+      "visible_if": "{{ block.settings.autoplay }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "pagination",
+      "label": "Pagination",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "arrows",
+      "label": "Arrows",
+      "info": "Choose External to render arrows from a sibling Carousel Arrows block. The Carousel Arrows block is hidden on the storefront unless this is set to External.",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "external", "label": "External" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "arrows_position",
+      "label": "Position",
+      "options": [
+        { "value": "top-right", "label": "Top right" },
+        { "value": "top-left", "label": "Top left" },
+        { "value": "bottom-left", "label": "Bottom left" },
+        { "value": "bottom-right", "label": "Bottom right" }
+      ],
+      "default": "top-right",
+      "visible_if": "{{ block.settings.arrows == 'default' }}"
+    },
+    {
+      "type": "header",
+      "content": "Arrows — Desktop",
+      "visible_if": "{{ block.settings.arrows == 'default' }}"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset_top",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.arrows == 'default' and block.settings.arrows_position == 'top-right' or block.settings.arrows == 'default' and block.settings.arrows_position == 'top-left' }}"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.arrows == 'default' and block.settings.arrows_position == 'bottom-right' or block.settings.arrows == 'default' and block.settings.arrows_position == 'bottom-left' }}"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset_left",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.arrows == 'default' and block.settings.arrows_position == 'top-left' or block.settings.arrows == 'default' and block.settings.arrows_position == 'bottom-left' }}"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset_right",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.arrows == 'default' and block.settings.arrows_position == 'top-right' or block.settings.arrows == 'default' and block.settings.arrows_position == 'bottom-right' }}"
+    },
+    {
+      "type": "color_scheme",
+      "id": "arrows_color_scheme_desktop",
+      "label": "Color scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.arrows == 'default' }}"
+    },
+    {
+      "type": "header",
+      "content": "Arrows — Mobile",
+      "visible_if": "{{ block.settings.arrows == 'default' }}"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset_top_mobile",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.arrows == 'default' and block.settings.arrows_position == 'top-right' or block.settings.arrows == 'default' and block.settings.arrows_position == 'top-left' }}"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset_bottom_mobile",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.arrows == 'default' and block.settings.arrows_position == 'bottom-right' or block.settings.arrows == 'default' and block.settings.arrows_position == 'bottom-left' }}"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset_left_mobile",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.arrows == 'default' and block.settings.arrows_position == 'top-left' or block.settings.arrows == 'default' and block.settings.arrows_position == 'bottom-left' }}"
+    },
+    {
+      "type": "range",
+      "id": "arrows_offset_right_mobile",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.arrows == 'default' and block.settings.arrows_position == 'top-right' or block.settings.arrows == 'default' and block.settings.arrows_position == 'bottom-right' }}"
+    },
+    {
+      "type": "color_scheme",
+      "id": "arrows_color_scheme_mobile",
+      "label": "Color scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.arrows == 'default' }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Carousel",
+      "blocks": [
+        { "type": "_custom-carousel-slide" },
+        { "type": "_custom-carousel-slide" },
+        { "type": "_custom-carousel-slide" },
+        { "type": "_custom-carousel-slide" }
+      ]
+    }
+  ]
+}
+{% endschema %}

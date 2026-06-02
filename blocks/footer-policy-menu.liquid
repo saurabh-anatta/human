@@ -1,0 +1,59 @@
+{% assign policy_menu = block.settings.policy_menu %}
+
+{% if policy_menu != blank %}
+  <div class="footer__policies">
+    {% for link in policy_menu.links %}
+      {% if forloop.index > 1 %}
+        <span class="footer__policy-separator">|</span>
+      {% endif %}
+      <a href="{{ link.url }}" class="footer__policy-link">{{ link.title }}</a>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+    .footer__policies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .footer__policy-link {
+    font-family:var(--font-subheading--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: var(--color-neutral-700);
+    letter-spacing: 0;
+    text-decoration: underline;
+  }
+
+  .footer__policy-separator {
+    font-family:var(--font-subheading--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: var(--color-neutral-700);
+  }
+{% endstylesheet %}
+
+{% schema %}
+  {
+    "name": "t:names.policy_list",
+    "tag": null,
+    "settings": [
+      {
+      "type": "link_list",
+      "id": "policy_menu",
+      "label": "Policy Menu"
+    }
+     ],
+    "presets": [
+      {
+        "name": "t:names.policy_list",
+        "category": "t:categories.footer"
+      }
+    ]
+  }
+  {% endschema %}

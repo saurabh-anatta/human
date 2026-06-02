@@ -1,0 +1,52 @@
+{% doc %}
+  Block: Ticker Slide
+
+  A single callout in the Ticker. Accepts text and image blocks. Must be
+  placed inside a Ticker block.
+{% enddoc %}
+
+<div class="swiper-slide ticker__slide" {{ block.shopify_attributes }}>
+  {% content_for 'blocks' %}
+</div>
+
+{% stylesheet %}
+  .swiper-slide.ticker__slide {
+    width: max-content;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .ticker__slide :is(p, h1, h2, h3, h4, h5, h6) {
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  .ticker__slide img,
+  .ticker__slide svg {
+    display: block;
+    max-width: none;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Slide",
+  "tag": null,
+  "blocks": [
+    { "type": "text" }, 
+    { "type": "image" }, 
+    { "type": "icon" }, 
+    { "type": "custom-text" },
+    { "type": "custom-liquid" }
+  ],
+  "settings": [],
+  "presets": [
+    {
+      "name": "Slide",
+      "blocks": [{ "type": "text", "settings": { "text": "<p>Free shipping</p>" } }]
+    }
+  ]
+}
+{% endschema %}

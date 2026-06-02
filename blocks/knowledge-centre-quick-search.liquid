@@ -1,0 +1,188 @@
+<script src="{{ 'kc-quick-search.js' | asset_url }}" type="module"></script>
+
+{% stylesheet %}
+  kcs-search-component.kcs-wrapper {
+    display: block;
+    width: 100%;
+  }
+
+  .kcs-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 8px 8px 8px 16px;
+    border-radius: 100px;
+    font-family: inherit;
+    text-align: left;
+    overflow: hidden;
+    transition: outline-color var(--animation-speed-fast) var(--animation-easing);
+  }
+
+  .kcs-bar--trigger {
+    cursor: pointer;
+    appearance: none;
+    outline: 2px solid transparent;
+    border: none;
+    background-color: var(--kcs-bg-color, var(--kcs-bar-bg));
+    color: var(--kcs-color, var(--kcs-bar-color));
+    min-height: 48px;
+  }
+
+  .kcs-bar--field {
+    background-color: var(--kcs-bg-color, transparent);
+    color: var(--kcs-color, currentColor);
+    outline: 2px solid transparent;
+    border: none;
+  }
+
+  .kcs-bar--trigger:hover,
+  .kcs-bar--trigger:focus-visible {
+    outline-color: var(--kcs-input-border, rgba(245, 245, 245, 0.7));
+  }
+
+  .kcs-bar--field:focus-within,
+  .kcs-bar--field:hover {
+    outline-color: var(--kcs-input-border, rgba(245, 245, 245, 0.7));
+  }
+
+  .kcs-bar__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .kcs-bar__icon svg {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+  }
+
+  .kcs-bar__text,
+  kcs-rotating-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+    font-family: var(--font-subheading--family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+  }
+
+  .kcs-bar__input {
+    flex: 1;
+    padding-inline-end: var(--padding-sm);
+    border: none;
+    background: transparent;
+    color: var(--color-input-text, var(--color-foreground));
+    font-family: var(--font-subheading--family);
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: -0.5px;
+    outline: none;
+    min-width: 0;
+  }
+
+  .kcs-bar__input::placeholder {
+    color: rgb(var(--color-input-text-rgb, var(--color-foreground-rgb)) / 0.5);
+  }
+
+  .kcs-bar__input::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  .kcs-bar__go {
+    background-color: var(--kcs-go-bg, var(--color-foreground, currentColor));
+    color: var(--kcs-go-color, var(--color-background, #fff));
+    cursor: pointer;
+    transition: opacity var(--animation-speed) var(--animation-easing);
+  }
+
+  @media screen and (min-width: 750px) {
+    .kcs-bar__input {
+      font-size: var(--font-size--md);
+      line-height: 1.5;
+    }
+
+    .kcs-bar__text,
+    kcs-rotating-text {
+      font-size: 18px;
+      line-height: 24px;
+      letter-spacing: -0.5px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .kcs-bar--hide-go-mobile .kcs-bar__go {
+      display: none;
+    }
+
+    .kcs-bar--hide-go-mobile {
+      padding-right: 16px;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .kcs-bar--hide-go-desktop .kcs-bar__go {
+      display: none;
+    }
+
+    .kcs-bar--hide-go-desktop {
+      padding-right: 16px;
+    }
+  }
+{% endstylesheet %}
+
+<kcs-search-component
+  class="kcs-wrapper"
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</kcs-search-component>
+
+{% schema %}
+{
+  "name": "Knowledge Center Widget",
+  "tag": null,
+  "blocks": [{ "type": "_kcs-search-trigger" }, { "type": "_kcs-search-drawer" }],
+  "presets": [
+    {
+      "name": "Knowledge Center Widget",
+      "category": "Custom",
+      "blocks": {
+        "trigger": {
+          "type": "_kcs-search-trigger",
+          "settings": {
+            "enable_rotating": true,
+            "rotating_interval": 4
+          },
+          "blocks": {
+            "q1": {
+              "type": "_kcs-rotating-question",
+              "settings": { "question": "How does blood flow support energy?" }
+            },
+            "q2": {
+              "type": "_kcs-rotating-question",
+              "settings": { "question": "What is nitric oxide?" }
+            }
+          },
+          "block_order": ["q1", "q2"]
+        },
+        "drawer": {
+          "type": "_kcs-search-drawer",
+          "blocks": {
+            "field": {
+              "type": "_kcs-search-field"
+            }
+          },
+          "block_order": ["field"]
+        }
+      },
+      "block_order": ["trigger", "drawer"]
+    }
+  ]
+}
+{% endschema %}

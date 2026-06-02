@@ -1,0 +1,56 @@
+{%- liquid
+-%}
+
+{%- capture inline_style -%}
+  {%- render 'responsive-spacing', settings: settings, prefix: 'divider' -%}
+  --divider-d-color: {{ settings.desktop_divider_color | default: '#e8e8e8' }};
+  --divider-m-color: {{ settings.mobile_divider_color | default: '#e8e8e8' }};
+  --divider-justify-content: {{ settings.alignment_horizontal | default: 'center' }};
+  --divider-border-thickness: {{ settings.thickness }}px;
+  {% unless full_width %}
+    --divider-border-rounded: {% if settings.corner_radius == 'rounded' %}1{% else %}0{% endif %};
+  {% endunless %}
+  --divider-flex-basis: {{ settings.width_percent }}%;
+{%- endcapture -%}
+
+<div
+  class="custom-divider custom-divider-{{ id }}"
+  style="{{ inline_style | strip_newlines }}"
+  {% if attributes %}
+    {{- block.shopify_attributes -}}
+  {% endif %}
+>
+  <span class="custom-divider__line"></span>
+</div>
+
+{% stylesheet %}
+  .custom-divider {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: var(--divider-justify-content);
+    padding: var(--divider-m-pt) var(--divider-m-pr) var(--divider-m-pb) var(--divider-m-pl);
+    margin-bottom: var(--divider-m-mb);
+  }
+
+  .custom-divider__line {
+    border-bottom: var(--divider-border-thickness) solid var(--divider-m-color);
+    border-right: var(--divider-border-thickness) solid var(--divider-m-color);
+    border-radius: calc(var(--style-border-radius-sm) * var(--divider-border-rounded));
+    flex-basis: var(--divider-flex-basis);
+    min-height: var(--divider-flex-basis);
+  }
+
+  @media screen and (min-width: 750px) {
+    .custom-divider {
+      padding: var(--divider-d-pt) var(--divider-d-pr) var(--divider-d-pb) var(--divider-d-pl);
+      margin-bottom: var(--divider-d-mb);
+    }
+
+    .custom-divider__line {
+      border-bottom-color: var(--divider-d-color);
+      border-right-color: var(--divider-d-color);
+    }
+
+  }
+{% endstylesheet %}

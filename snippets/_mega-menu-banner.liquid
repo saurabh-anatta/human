@@ -1,0 +1,258 @@
+{%- doc -%}
+  Renders promotional banner cards from the mega_menu_banner metaobject list.
+  The caller is responsible for the outer container element and layout.
+
+  @param {object} block - Block settings object (must expose mega_menu_banner_object)
+  @param {string} [class] - Additional classes to add to the banner wrapper (mobile)
+  @param {object} [parent_link] - When provided, renders desktop variant filtered by parent_link
+
+  @example
+  {% render '_mega-menu-banner', block: block_settings, class: 'mega-menu-banner__mobile' %}
+  {% render '_mega-menu-banner', block: block_settings, parent_link: link %}
+{%- enddoc -%}
+
+{% if parent_link != blank %}
+  {% if block.mega_menu_banner_object != blank %}
+    {% capture desktop_banners_html %}
+      {% for banner in block.mega_menu_banner_object %}
+        {% liquid
+          assign banner_parent = banner.parent_link
+          assign banner_image = banner.image
+          assign banner_title = banner.title
+          assign banner_badge = banner.badge
+          assign banner_url = banner.link
+        %}
+        {% if banner_parent == parent_link.title %}
+          <a
+            href="{{ banner_url | default: '#' }}"
+            class="mega-menu-banner__wrapper mega-menu-banner__wrapper--desktop"
+            {% if banner_url == blank %}aria-hidden="true"{% endif %}
+          >
+            <div class="mega-menu-banner__image-wrap">
+              {% if banner_badge %}
+                <span class="mega-menu-banner__badge">{{ banner_badge }}</span>
+              {% endif %}
+              {% if banner_image %}
+                {% render 'image', image: banner_image, height: 500 %}
+              {% endif %}
+            </div>
+            {% if banner_title != blank %}
+              <div class="mega-menu-banner__rte">
+                <p class="mega-menu-banner__title">{{ banner_title }}</p>
+              </div>
+            {% endif %}
+          </a>
+        {% endif %}
+      {% endfor %}
+    {% endcapture %}
+    {% unless desktop_banners_html == blank %}
+      <div class="mega-menu-banner__desktop-column">
+        <p class="mega-menu-banner__desktop-label">Featured</p>
+        <div class="mega-menu-banner__desktop-grid">
+          {{ desktop_banners_html }}
+        </div>
+      </div>
+    {% endunless %}
+  {% endif %}
+{% else %}
+  {% if block.mega_menu_banner_object != blank %}
+    <div class="mega-menu-banner__container {{ class }}">
+      {% if block.banner_section_title != blank %}
+        <p class="menu-drawer__section-title">{{ block.banner_section_title | escape }}</p>
+      {% endif %}
+      <div class="mega-menu-banner">
+        {% for banner in block.mega_menu_banner_object %}
+          {% liquid
+            assign banner_url = banner.link
+            assign banner_image = banner.image
+            assign banner_title = banner.title
+            assign banner_badge = banner.badge
+          %}
+          <a
+            href="{{ banner_url | default: '#' }}"
+            class="mega-menu-banner__wrapper"
+            {% if banner_url == blank %}
+              aria-hidden="true"
+            {% endif %}
+          >
+            {% if banner_badge %}
+              <span class="mega-menu-banner__badge">{{ banner_badge }}</span>
+            {% endif %}
+            {% if banner_image %}
+              {% render 'image', image: banner_image, height: 500 %}
+            {% endif %}
+            {% if banner_title != blank %}
+              <div class="mega-menu-banner__rte">
+                <h3 class="mega-menu-banner__title">{{ banner_title }}</h3>
+              </div>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+
+{% stylesheet %}
+  .menu-drawer__section-title {
+    font-family: var(--font-labels--family);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #767676;
+    margin: 0;
+    padding-inline: var(--padding-2xl);
+  }
+
+  .mega-menu-banner__wrapper {
+    position: relative;
+    display: block;
+    text-decoration: none;
+  }
+
+  .mega-menu-banner__wrapper img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px;
+  }
+
+  .mega-menu-banner__badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: var(--font-subheading--family);
+    background-color: rgba(245, 245, 245, 0.72);
+    color: var(--color-foreground);
+    padding: 4px 12px;
+    border-radius: 4px;
+    white-space: initial;
+  }
+
+  .mega-menu-banner__rte {
+    margin-top: 16px;
+    color: var(--color-foreground);
+    width: 100%;
+  }
+
+  .mega-menu-banner__title {
+    white-space: normal;
+    font-size: 16px;
+    line-height: 20px;
+    font-family: var(--font-subheading--family);
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: 0;
+  }
+
+  .mega-menu-banner__mobile .mega-menu-banner {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-top: 16px;
+    padding-inline: 24px;
+    scroll-padding-inline-start: 24px;
+  }
+
+  .mega-menu-banner__mobile .mega-menu-banner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mega-menu-banner__mobile .mega-menu-banner__wrapper {
+    scroll-snap-align: start;
+    height: auto;
+    width: 100%;
+    max-width: 254px;
+    flex-shrink: 0;
+  }
+
+  .mega-menu-banner__desktop-column {
+    min-width: 0;
+  }
+
+  .mega-menu-banner__desktop-label {
+    font-family: var(--font-labels--family);
+    font-size: 14px;
+    font-weight: 600;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    line-height: 16px;
+    color: #9a9a9a;
+    margin: 0;
+    padding-bottom: 24px;
+  }
+
+  .mega-menu-banner__desktop-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .mega-menu-banner__wrapper--desktop {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    max-width: 314px;
+    text-decoration: none;
+  }
+
+  .mega-menu-banner__image-wrap {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 244px;
+    flex-shrink: 0;
+  }
+
+  .mega-menu-banner__image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .mega-menu-banner__wrapper--desktop .mega-menu-banner__badge {
+    z-index: 1;
+  }
+
+  .mega-menu-banner__wrapper--desktop .mega-menu-banner__rte {
+    margin-top: 16px;
+  }
+
+  .mega-menu-banner__wrapper--desktop .mega-menu-banner__title {
+    font-size: 16px;
+    line-height: 20px;
+    font-family: var(--font-subheading--family);
+    font-weight: 500;
+    color: var(--color-foreground);
+    margin: 0;
+    letter-spacing: 0;
+    white-space: normal;
+    transition: color 0.3s ease;
+  }
+
+  .mega-menu-banner__wrapper--desktop .mega-menu-banner__image-wrap img {
+    transition: transform 0.4s ease;
+  }
+
+  .mega-menu-banner__wrapper--desktop:hover .mega-menu-banner__title {
+    color: var(--color-brand-red);
+  }
+
+  .mega-menu-banner__wrapper--desktop:hover .mega-menu-banner__image-wrap img {
+    transform: scale(1.05);
+  }
+{% endstylesheet %}

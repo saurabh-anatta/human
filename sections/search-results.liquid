@@ -1,0 +1,366 @@
+
+
+<script
+  src="{{ 'results-list.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
+<results-list
+  class="section product-grid-container spacing-style color-{{ section.settings.color_scheme }}"
+  style="--padding-block-start: {{ section.settings.padding-block-start }}px; --padding-block-end: {{ section.settings.padding-block-end }}px;"
+  section-id="{{ section.id }}"
+  infinite-scroll="{{ section.settings.enable_infinite_scroll }}"
+>
+  {% render 'skip-to-content-link', href: '#ResultsList', text: 'accessibility.skip_to_results_list' %}
+
+  <div
+    class="collection-wrapper grid gap-style"
+  >
+    {% assign products_per_page = 24 %}
+
+    {% if section.settings.enable_infinite_scroll == false %}
+      {% assign products_per_page = section.settings.products_per_page %}
+    {% endif %}
+
+    {% paginate search.results by products_per_page %}
+      {% if search.results_count > 0 %}
+        {% content_for 'block', type: 'filters', id: 'filters', results: search, results_size: search.results_count %}
+        {% assign products = search.results | where: 'object_type', 'product' %}
+        {% assign articles = search.results | where: 'object_type', 'article' %}
+      {% else %}
+        {% assign collection = settings.empty_state_collection | default: collections.all %}
+        {% assign default_title = 'content.search_results_resource_products' | t %}
+        {% assign title = settings.empty_state_collection.title | default: default_title %}
+        {% assign products = collection.products %}
+      {% endif %}
+
+      {% capture children %}
+        {% for product in products %}
+          <li
+            id="{{ section.id }}-{{ product.id }}"
+            class="product-grid__item product-grid__item--{{ forloop.index0 }}"
+            data-page="{{ paginate.current_page }}"
+            data-product-id="{{ product.id }}"
+            ref="cards[]"
+          >
+            {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
+          </li>
+        {% endfor %}
+      {% endcapture %}
+
+      <div
+        class="search-results__split-layout{% if articles.size == 0 %} search-results__split-layout--products-only{% endif %}"
+        style="
+          --grid-column--mobile: var(--{% if section.settings.full_width_on_mobile %}full-width{% else %}{% if section.settings.product_grid_width == 'centered' %}centered{% else %}full-width{% endif %}{% endif %});
+          --grid-column--desktop: var(--{% if section.settings.product_grid_width == 'centered' %}centered{% else %}full-width{% endif %});
+          --grid--margin--mobile: 0{% if section.settings.product_grid_width == 'centered' and section.settings.full_width_on_mobile == false %} var(--margin-lg){% else %} 0{% endif %};
+          --padding-inline-start: {{ section.settings.padding-inline-start }}px;
+          --padding-inline-end: {{ section.settings.padding-inline-end }}px;
+        "
+      >
+        <div class="search-results__col--products">
+          {% render 'product-grid',
+            section: section,
+            children: children,
+            products: products,
+            paginate: paginate,
+            enable_infinite_scroll: section.settings.enable_infinite_scroll,
+            title: title
+          %}
+        </div>
+
+        {%- if articles.size > 0 -%}
+          <div class="search-results__col--articles">
+            <h2 class="search-results__articles-heading">Blog Posts</h2>
+            <ul class="search-results__articles-grid list-unstyled">
+              {%- for article in articles -%}
+                <li class="predictive-search-results__article-card">
+                  <a
+                    href="{{ article.url }}"
+                    class="predictive-search-results__article-link"
+                  >
+                    <div class="predictive-search-results__article-image">
+                      {%- if article.image -%}
+                        {{
+                          article.image
+                          | image_url: width: 800
+                          | image_tag:
+                            loading: 'lazy',
+                            sizes: '(min-width: 750px) 25vw, 50vw',
+                            widths: '300,400,600,800',
+                            alt: article.image.alt
+                        }}
+                      {%- else -%}
+                        <div class="predictive-search-results__article-image-placeholder" aria-hidden="true"></div>
+                      {%- endif -%}
+                    </div>
+                    <div class="predictive-search-results__article-content">
+                      {%- assign word_count = article.content | strip_html | split: ' ' | size -%}
+                      {%- assign read_time = word_count | divided_by: 200 -%}
+                      {%- if read_time < 1 -%}{%- assign read_time = 1 -%}{%- endif -%}
+                      <div class="predictive-search-results__article-meta">
+                        {%- if article.tags.size > 0 -%}
+                          <span class="predictive-search-results__article-category">{{ article.tags | first }}</span>
+                        {%- endif -%}
+                        <span class="predictive-search-results__article-read-time">{{ read_time }} min read</span>
+                      </div>
+                      <h3 class="predictive-search-results__article-title">{{ article.title }}</h3>
+                      {%- if article.excerpt != blank -%}
+                        <p class="search-results__article-excerpt">{{ article.excerpt | strip_html | truncate: 120 }}</p>
+                      {%- endif -%}
+                    </div>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+    {% endpaginate %}
+  </div>
+</results-list>
+
+{% stylesheet %}
+  /* Takes the same grid-column position that #ResultsList would have had */
+  .search-results__split-layout {
+    grid-column: var(--grid-column--mobile, 1 / -1);
+    padding: var(--grid--margin--mobile, 0);
+  }
+
+  @media screen and (min-width: 750px) {
+    .search-results__split-layout {
+      grid-column: var(--grid-column--desktop, 2 / -2);
+      padding: 0 var(--padding-inline-end, 0) 0 var(--padding-inline-start, 0);
+
+      /* 50-50 flex split on desktop */
+      display: flex;
+      gap: var(--gap-xl, 40px);
+      align-items: start;
+    }
+
+    .search-results__col--products,
+    .search-results__col--articles {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .search-results__split-layout {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap-xl, 40px);
+    }
+  }
+
+  /* Reset product-grid's own grid-column — it's no longer a direct .collection-wrapper child */
+  .search-results__split-layout .main-collection-grid {
+    grid-column: unset;
+    padding: 0;
+  }
+
+  .search-results__articles-heading {
+    font-size: var(--font-size--heading-sm);
+    margin-block: 0 var(--padding-md);
+  }
+
+  /* Articles: 2-column grid inside their 50% column on both desktop and mobile */
+  .search-results__articles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-md, 16px);
+  }
+
+  .search-results__article-excerpt {
+    font-size: var(--font-size--body-sm);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+    margin-block: var(--padding-3xs) 0;
+    line-height: var(--line-height--body);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.search_results",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:content.edit_empty_state_collection_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "t:settings.type",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:options.grid"
+        },
+        {
+          "value": "organic",
+          "label": "t:options.editorial"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "product_card_size",
+      "label": "t:settings.card_size",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:options.small"
+        },
+        {
+          "value": "medium",
+          "label": "t:options.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:options.large"
+        },
+        {
+          "value": "extra-large",
+          "label": "t:options.extra_large"
+        }
+      ],
+      "default": "medium",
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_product_card_size",
+      "label": "t:settings.mobile_card_size",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:options.small"
+        },
+        {
+          "value": "large",
+          "label": "t:options.large"
+        }
+      ],
+      "default": "small"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_infinite_scroll",
+      "label": "t:settings.auto_load_products",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "t:settings.products_per_page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 24,
+      "visible_if": "{{ section.settings.enable_infinite_scroll == false }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "product_grid_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "centered",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "centered"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_on_mobile",
+      "label": "t:settings.full_width_on_mobile",
+      "default": true,
+      "visible_if": "{{ section.settings.product_grid_width != 'full-width' }}"
+    },
+    {
+      "type": "range",
+      "id": "columns_gap_horizontal",
+      "label": "t:settings.horizontal_gap",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "columns_gap_vertical",
+      "label": "t:settings.vertical_gap",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left_padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right_padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.section_layout"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top_padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom_padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": []
+}
+{% endschema %}
