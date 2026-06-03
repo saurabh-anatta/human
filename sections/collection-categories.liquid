@@ -1,12 +1,6 @@
 {{ 'collection-categories.css' | asset_url | stylesheet_tag }}
 
-<div
-  class="collection-categories-wrapper color-{{ section.settings.color_scheme }}"
-  style="
-    --padding-block-start: {{ section.settings.padding-block-start }}px;
-    --padding-block-end: {{ section.settings.padding-block-end }}px;
-  "
->
+<div class="section collection-categories-wrapper color-{{ section.settings.color_scheme }}">
   <div class="collection-categories" role="navigation" aria-label="Collection categories">
     {% if section.settings.shop_all_link != blank %}
       {% liquid
@@ -58,13 +52,6 @@
     {% endfor %}
   </div>
 </div>
-
-{% stylesheet %}
-  .collection-categories-wrapper {
-    padding-block-start: var(--padding-block-start, 12px);
-    padding-block-end: var(--padding-block-end, 12px);
-  }
-{% endstylesheet %}
 
 {% schema %}
 {

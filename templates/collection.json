@@ -214,6 +214,13 @@
                 "padding-inline-end": 24
               },
               "blocks": {}
+            },
+            "quick_view_pill": {
+              "type": "custom-liquid",
+              "settings": {
+                "custom_liquid": "{% if closest.product.available %}<div class=\"plp-quick-view\">{% render 'quick-add', product: closest.product, section_id: section.id, block: block %}</div>{% endif %}"
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -221,7 +228,8 @@
             "review_block",
             "product_title_4nY4eT",
             "description_custom",
-            "price_EzJzMm"
+            "price_EzJzMm",
+            "quick_view_pill"
           ]
         }
       },

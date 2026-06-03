@@ -119,6 +119,67 @@
     padding-inline: 24px;
   }
 
+  /* Fixed product image ratio to match design (Figma img frame: 426x310) */
+  #shopify-section-{{ section.id }} product-card .card-gallery {
+    --gallery-aspect-ratio: 426 / 310 !important;
+  }
+
+  /* Keep the full product visible inside the fixed-ratio frame (no cropping) */
+  #shopify-section-{{ section.id }} product-card .card-gallery .product-media-container {
+    --product-media-fit: contain !important;
+  }
+
+  /* Hide the floating quick-add icon over the image — replaced by the Quick View pill below */
+  #shopify-section-{{ section.id }} product-card .card-gallery .quick-add {
+    display: none;
+  }
+
+  /* Quick View pill in card content (Figma: red pill, pad 8/16, radius 28, #BC0F0F) */
+  #shopify-section-{{ section.id }} .plp-quick-view .quick-add {
+    position: static;
+    inset: auto;
+    pointer-events: auto;
+  }
+
+  #shopify-section-{{ section.id }} .plp-quick-view .quick-add__product-form-component .shopify-product-form {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  /* Always use the "choose" button so the pill opens the quick view modal */
+  #shopify-section-{{ section.id }} .plp-quick-view add-to-cart-component {
+    display: none !important;
+  }
+
+  #shopify-section-{{ section.id }} .plp-quick-view .quick-add__button--choose {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    position: static;
+    opacity: 1;
+    height: 32px;
+    padding: 8px 16px;
+    background: var(--color-brand-red, #bc0f0f);
+    color: #ffffff;
+    border: none;
+    border-radius: 28px;
+    backdrop-filter: none;
+  }
+
+  #shopify-section-{{ section.id }} .plp-quick-view .quick-add__button--choose .add-to-cart-text {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .plp-quick-view .quick-add__button--choose::after {
+    content: 'Quick View';
+    font-family: var(--font-accent--family);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    text-transform: uppercase;
+    color: #ffffff;
+  }
+
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .product-grid__item--promo {
       min-height: 380px;

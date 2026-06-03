@@ -5,7 +5,6 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-inline: var(--page-margin, 1.5rem);
 }
 
 .collection-categories::-webkit-scrollbar {
