@@ -64,9 +64,13 @@
   assign should_show_pane = true
   if block_settings.filter_style == 'vertical'
     assign should_show_pane = block_settings.enable_filtering
-    if block_settings.desktop_drawer
-      assign should_show_pane = false
-    endif
+  endif
+
+  # Collapsible mode: the vertical pane renders inline next to the product grid,
+  # closed by default and toggled by the Filter button (state lives on <body>).
+  assign is_collapsible = false
+  if block_settings.filter_style == 'vertical' and block_settings.desktop_drawer and block_settings.enable_filtering
+    assign is_collapsible = true
   endif
 
   assign should_use_select_on_mobile = true
@@ -83,35 +87,42 @@
       style="{% render 'spacing-style', settings: block_settings %}{% if block_settings.text_label_case == 'uppercase' %} --facet-label-transform: uppercase;{% endif %}"
     >
       {% if block_settings.enable_filtering %}
-        {% if block_settings.desktop_drawer %}
-          <button
-            class="button-unstyled button-unstyled--with-icon facets-desktop-toggle"
-            on:click="#filters-drawer/showDialog"
-            type="button"
-            aria-haspopup="dialog"
-          >
-            <span class="svg-wrapper">
-              {{ 'icon-filter.svg' | inline_asset_content }}
-            </span>
+        {% if is_collapsible %}
+          <script
+            src="{{ 'facets-inline-toggle.js' | asset_url }}"
+            type="module"
+            fetchpriority="low"
+          ></script>
+          <facets-inline-toggle>
+            <button
+              class="button-unstyled button-unstyled--with-icon facets-desktop-toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="facets-inline-panel-{{ section.id }}"
+            >
+              <span class="svg-wrapper">
+                {{ 'icon-filter.svg' | inline_asset_content }}
+              </span>
 
-            {{ 'actions.show_filters' | t }}
+              {{ 'actions.show_filters' | t }}
 
-            {% if total_active_values > 0 %}
-              <div
-                class="filter-count-bubble"
-                aria-label="{{ 'accessibility.filter_count' | t: count: total_active_values }}"
-              >
-                <span class="filter-count-bubble__background"></span>
-
-                <span
-                  class="filter-count-bubble__text"
-                  aria-hidden="true"
+              {% if total_active_values > 0 %}
+                <div
+                  class="filter-count-bubble"
+                  aria-label="{{ 'accessibility.filter_count' | t: count: total_active_values }}"
                 >
-                  {{ total_active_values }}
-                </span>
-              </div>
-            {% endif %}
-          </button>
+                  <span class="filter-count-bubble__background"></span>
+
+                  <span
+                    class="filter-count-bubble__text"
+                    aria-hidden="true"
+                  >
+                    {{ total_active_values }}
+                  </span>
+                </div>
+              {% endif %}
+            </button>
+          </facets-inline-toggle>
         {% else %}
           <h4 class="facets--filters-title">{{ 'content.filters' | t }}</h4>
         {% endif %}
@@ -149,12 +160,16 @@
   {% endif %}
 
   <div
+    {% if is_collapsible %}
+      id="facets-inline-panel-{{ section.id }}"
+    {% endif %}
     class="
       {% if should_show_pane == false %}
         hidden
       {% endif %}
       facets-block-wrapper
       facets-block-wrapper--{{ block_settings.filter_style }}
+      {%- if is_collapsible %} facets-block-wrapper--collapsible{% endif %}
       {%- if block_settings.inherit_color_scheme == false %} color-{{ block_settings.color_scheme }}{% endif %}
       {%- if block_settings.filter_width == 'full-width' %} facets-block-wrapper--full-width{% endif %}
     "
@@ -574,7 +589,22 @@
     margin-left: var(--icon-offset);
   }
 
-  /* Desktop drawer toggle (filter icon + label) shown in the controls bar */
+  /* Collapsible inline filter pane — closed by default on desktop, revealed when
+     the Filter button toggles .filters-panel-open on <body>. State lives on body
+     so it survives the section morphs triggered by facet updates. */
+  .facets-block-wrapper--collapsible {
+    @media screen and (min-width: 750px) {
+      display: none;
+    }
+  }
+
+  body.filters-panel-open .facets-block-wrapper--collapsible {
+    @media screen and (min-width: 750px) {
+      display: block;
+    }
+  }
+
+  /* Desktop toggle (filter icon + label) shown in the controls bar */
   .facets-desktop-toggle {
     display: none;
 
@@ -1391,8 +1421,8 @@
     {
       "type": "checkbox",
       "id": "desktop_drawer",
-      "label": "Open filters in drawer on desktop",
-      "info": "Hides the sidebar filters and shows a Filter button that opens the filter drawer.",
+      "label": "Collapsible filters on desktop",
+      "info": "Hides the sidebar filters behind a Filter button. Clicking it opens the filters inline next to the product grid.",
       "default": false,
       "visible_if": "{{ block.settings.enable_filtering == true and block.settings.filter_style == 'vertical' }}"
     },

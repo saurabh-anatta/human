@@ -120,10 +120,17 @@
   }
 
   @media screen and (min-width: 750px) {
-    /* When the vertical filter pane is hidden (drawer mode), the grid spans the full
+    /* When the vertical filter pane is hidden, the grid spans the full
        page width — the base.css offset rule still matches via the drawer sibling,
        which also carries .facets-block-wrapper--vertical, so override it here. */
     #shopify-section-{{ section.id }} .facets-block-wrapper--vertical.hidden ~ .main-collection-grid {
+      grid-column: var(--grid-column--desktop);
+    }
+
+    /* Collapsible inline filter pane: keep the grid full width while the pane is
+       closed (no .filters-panel-open on body). When open, base.css narrows the
+       grid to sit beside the pane inside this same section. */
+    body:not(.filters-panel-open) #shopify-section-{{ section.id }} .facets-block-wrapper--collapsible ~ .main-collection-grid {
       grid-column: var(--grid-column--desktop);
     }
   }
