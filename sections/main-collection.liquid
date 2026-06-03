@@ -119,6 +119,22 @@
     padding-inline: 24px;
   }
 
+  @media screen and (min-width: 750px) {
+    /* When the vertical filter pane is hidden (drawer mode), the grid spans the full
+       page width — the base.css offset rule still matches via the drawer sibling,
+       which also carries .facets-block-wrapper--vertical, so override it here. */
+    #shopify-section-{{ section.id }} .facets-block-wrapper--vertical.hidden ~ .main-collection-grid {
+      grid-column: var(--grid-column--desktop);
+    }
+  }
+
+  /* Fixed 3-column product grid per design */
+  @media screen and (min-width: 990px) {
+    #shopify-section-{{ section.id }} .product-grid--grid:not([product-grid-view='zoom-out']) {
+      --product-grid-columns-desktop: repeat(3, 1fr);
+    }
+  }
+
   /* Fixed product image ratio to match design (Figma img frame: 426x310) */
   #shopify-section-{{ section.id }} product-card .card-gallery {
     --gallery-aspect-ratio: 426 / 310 !important;
