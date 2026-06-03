@@ -70,7 +70,7 @@
               "type": "image",
               "name": "t:names.image",
               "settings": {
-                "image": "shopify://shop_images/logo_646d6054-c661-4de7-a473-78df252df926.png",
+                "image": "shopify://shop_images/logo.png",
                 "custom_mobile_image": false,
                 "link": "",
                 "image_ratio": "adapt",
@@ -403,7 +403,7 @@
               "type": "menu",
               "name": "t:names.menu",
               "settings": {
-                "menu": "dev-mobile-menu-bottom",
+                "menu": "",
                 "heading": "Shop",
                 "menu_spacing": 8,
                 "show_as_accordion": true,
@@ -424,7 +424,7 @@
               "type": "menu",
               "name": "t:names.menu",
               "settings": {
-                "menu": "about-footer",
+                "menu": "",
                 "heading": "Learn",
                 "menu_spacing": 8,
                 "show_as_accordion": true,
@@ -445,7 +445,7 @@
               "type": "menu",
               "name": "t:names.menu",
               "settings": {
-                "menu": "support-menu-footer",
+                "menu": "",
                 "heading": "Support",
                 "menu_spacing": 8,
                 "show_as_accordion": true,
@@ -735,7 +735,7 @@
           "type": "footer-policy-menu",
           "name": "t:names.policy_list",
           "settings": {
-            "policy_menu": "policy-menu"
+            "policy_menu": ""
           },
           "blocks": {}
         },

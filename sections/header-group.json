@@ -76,7 +76,7 @@
           "type": "_header-menu",
           "static": true,
           "settings": {
-            "menu": "mega-menu-desktop-v2",
+            "menu": "main-menu",
             "color_scheme": "",
             "mega_menu_banner_object": [
               "get-50-off-our-heart-health-routine",
@@ -89,7 +89,7 @@
           "type": "_mobile-menu-drawer",
           "static": true,
           "settings": {
-            "menu": "dev-mega-menu-mobile-v2",
+            "menu": "",
             "color_scheme": "",
             "drawer_accordion": false,
             "drawer_accordion_expand_first": false,
@@ -102,7 +102,7 @@
             ],
             "bottom_menu_title": "Humann Professional",
             "bottom_menu_text": "Our program for medical organizations, professional collegiate sports teams, and more.",
-            "secondary_menu": "dev-mobile-menu-bottom"
+            "secondary_menu": ""
           },
           "blocks": {}
         }
@@ -111,7 +111,7 @@
         "logo_position": "left",
         "menu_position": "left",
         "menu_row": "top",
-        "customer_account_menu": "dev-customer-menu",
+        "customer_account_menu": "",
         "show_search": true,
         "search_position": "right",
         "search_row": "top",

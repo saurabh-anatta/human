@@ -111,7 +111,8 @@
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
-              }
+              },
+              "blocks": {}
             },
             "learn_more_btn": {
               "type": "button",
@@ -124,7 +125,8 @@
                 "custom_width": 100,
                 "width_mobile": "fit-content",
                 "custom_width_mobile": 100
-              }
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -164,6 +166,88 @@
         "gradient_direction": "to top",
         "padding-block-start": 48,
         "padding-block-end": 48
+      }
+    },
+    "divider_rTp8K6": {
+      "type": "divider",
+      "name": "t:names.divider_section",
+      "settings": {
+        "color_scheme": "",
+        "section_width": "full-width",
+        "thickness": 1,
+        "corner_radius": "square",
+        "width_percent": 100,
+        "alignment_horizontal": "center",
+        "padding-block-start": 16,
+        "padding-block-end": 16
+      }
+    },
+    "collection_categories": {
+      "type": "collection-categories",
+      "blocks": {
+        "cat_blood_pressure": {
+          "type": "category-link",
+          "settings": {
+            "collection": "",
+            "label": "Blood Pressure",
+            "dot_color": "#8c0132"
+          }
+        },
+        "cat_blood_flow": {
+          "type": "category-link",
+          "settings": {
+            "collection": "",
+            "label": "Blood Flow",
+            "dot_color": "#d72a2a"
+          }
+        },
+        "cat_metabolic": {
+          "type": "category-link",
+          "settings": {
+            "collection": "",
+            "label": "Metabolic",
+            "dot_color": "#e62f5e"
+          }
+        },
+        "cat_cholesterol": {
+          "type": "category-link",
+          "settings": {
+            "collection": "",
+            "label": "Cholesterol",
+            "dot_color": "#d54427"
+          }
+        },
+        "cat_cognitive": {
+          "type": "category-link",
+          "settings": {
+            "collection": "",
+            "label": "Cognitive",
+            "dot_color": "#b1369a"
+          }
+        },
+        "cat_sports": {
+          "type": "category-link",
+          "settings": {
+            "collection": "",
+            "label": "Sports",
+            "dot_color": "#e9ff6d"
+          }
+        }
+      },
+      "block_order": [
+        "cat_blood_pressure",
+        "cat_blood_flow",
+        "cat_metabolic",
+        "cat_cholesterol",
+        "cat_cognitive",
+        "cat_sports"
+      ],
+      "settings": {
+        "shop_all_link": "/collections/all",
+        "shop_all_label": "Shop All",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 12,
+        "padding-block-end": 12
       }
     },
     "main": {
@@ -227,7 +311,14 @@
             },
             "review_block": {
               "type": "review",
-              "settings": {},
+              "settings": {
+                "stars_style": "shaded",
+                "show_number": true,
+                "rating_color": "primary",
+                "type_preset": "paragraph",
+                "width": "100%",
+                "alignment": "left"
+              },
               "blocks": {}
             },
             "product_title_4nY4eT": {
@@ -322,73 +413,13 @@
         "promo_1_heading": "Get 50% off our starter routine",
         "promo_1_text": "#1 Doctor Recommended",
         "promo_1_link_text": "Shop the Routine",
+        "promo_1_link_url": "",
         "promo_2_position": 7,
         "promo_2_image": "shopify://shop_images/portraits-living-room-9222-1-link-1-415214069.png",
         "promo_2_heading": "Discover the Blood Pressure Science",
         "promo_2_text": "How our ingredients deliver lasting benefit.",
-        "promo_2_link_text": "Learn more"
-      }
-    },
-    "collection_categories": {
-      "type": "collection-categories",
-      "blocks": {
-        "cat_blood_pressure": {
-          "type": "category-link",
-          "settings": {
-            "label": "Blood Pressure",
-            "dot_color": "#8C0132"
-          }
-        },
-        "cat_blood_flow": {
-          "type": "category-link",
-          "settings": {
-            "label": "Blood Flow",
-            "dot_color": "#D72A2A"
-          }
-        },
-        "cat_metabolic": {
-          "type": "category-link",
-          "settings": {
-            "label": "Metabolic",
-            "dot_color": "#E62F5E"
-          }
-        },
-        "cat_cholesterol": {
-          "type": "category-link",
-          "settings": {
-            "label": "Cholesterol",
-            "dot_color": "#D54427"
-          }
-        },
-        "cat_cognitive": {
-          "type": "category-link",
-          "settings": {
-            "label": "Cognitive",
-            "dot_color": "#B1369A"
-          }
-        },
-        "cat_sports": {
-          "type": "category-link",
-          "settings": {
-            "label": "Sports",
-            "dot_color": "#E9FF6D"
-          }
-        }
-      },
-      "block_order": [
-        "cat_blood_pressure",
-        "cat_blood_flow",
-        "cat_metabolic",
-        "cat_cholesterol",
-        "cat_cognitive",
-        "cat_sports"
-      ],
-      "settings": {
-        "shop_all_link": "/collections/all",
-        "shop_all_label": "Shop All",
-        "color_scheme": "scheme-1",
-        "padding-block-start": 12,
-        "padding-block-end": 12
+        "promo_2_link_text": "Learn more",
+        "promo_2_link_url": ""
       }
     },
     "generic_section_rGrPyx": {
@@ -673,7 +704,6 @@
                         "desktop_width": "100",
                         "desktop_custom_width": 600,
                         "desktop_background_color": "#ffffff",
-                        "desktop_image": "shopify://shop_images/img_c9076e07-6747-4812-96b7-9523726237c5.png",
                         "desktop_enable_gradient": true,
                         "desktop_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "desktop_content_width": 100,
@@ -689,7 +719,6 @@
                         "mobile_width": "100",
                         "mobile_custom_width": 360,
                         "mobile_background_color": "#ffffff",
-                        "mobile_image": "shopify://shop_images/img_c9076e07-6747-4812-96b7-9523726237c5.png",
                         "mobile_enable_gradient": true,
                         "mobile_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "mobile_content_width": 100,
@@ -814,7 +843,6 @@
                                   "name": "t:names.icon",
                                   "settings": {
                                     "icon": "price_tag",
-                                    "image_upload": "shopify://shop_images/Frame_308.png",
                                     "width": 20,
                                     "width_mobile": 20,
                                     "link": "",
@@ -861,7 +889,6 @@
                         "desktop_width": "100",
                         "desktop_custom_width": 600,
                         "desktop_background_color": "#ffffff",
-                        "desktop_image": "shopify://shop_images/img_1_088be386-839c-470c-b3ce-ba86cedf99e7.png",
                         "desktop_enable_gradient": true,
                         "desktop_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "desktop_content_width": 100,
@@ -877,7 +904,6 @@
                         "mobile_width": "100",
                         "mobile_custom_width": 360,
                         "mobile_background_color": "#ffffff",
-                        "mobile_image": "shopify://shop_images/img_1_088be386-839c-470c-b3ce-ba86cedf99e7.png",
                         "mobile_enable_gradient": true,
                         "mobile_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "mobile_content_width": 100,
@@ -1002,7 +1028,6 @@
                                   "name": "t:names.icon",
                                   "settings": {
                                     "icon": "price_tag",
-                                    "image_upload": "shopify://shop_images/Frame_308.png",
                                     "width": 20,
                                     "width_mobile": 20,
                                     "link": "",
@@ -1049,7 +1074,6 @@
                         "desktop_width": "100",
                         "desktop_custom_width": 600,
                         "desktop_background_color": "#ffffff",
-                        "desktop_image": "shopify://shop_images/img_2_824071e7-a202-4ef4-83f8-094ce15c4ee1.png",
                         "desktop_enable_gradient": true,
                         "desktop_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "desktop_content_width": 100,
@@ -1065,7 +1089,6 @@
                         "mobile_width": "100",
                         "mobile_custom_width": 360,
                         "mobile_background_color": "#ffffff",
-                        "mobile_image": "shopify://shop_images/img_2_824071e7-a202-4ef4-83f8-094ce15c4ee1.png",
                         "mobile_enable_gradient": true,
                         "mobile_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "mobile_content_width": 100,
@@ -1190,7 +1213,6 @@
                                   "name": "t:names.icon",
                                   "settings": {
                                     "icon": "price_tag",
-                                    "image_upload": "shopify://shop_images/Frame_308.png",
                                     "width": 20,
                                     "width_mobile": 20,
                                     "link": "",
@@ -1237,7 +1259,6 @@
                         "desktop_width": "100",
                         "desktop_custom_width": 600,
                         "desktop_background_color": "#ffffff",
-                        "desktop_image": "shopify://shop_images/img_3.png",
                         "desktop_enable_gradient": true,
                         "desktop_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "desktop_content_width": 100,
@@ -1253,7 +1274,6 @@
                         "mobile_width": "100",
                         "mobile_custom_width": 360,
                         "mobile_background_color": "#ffffff",
-                        "mobile_image": "shopify://shop_images/img_3.png",
                         "mobile_enable_gradient": true,
                         "mobile_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "mobile_content_width": 100,
@@ -1378,7 +1398,6 @@
                                   "name": "t:names.icon",
                                   "settings": {
                                     "icon": "price_tag",
-                                    "image_upload": "shopify://shop_images/Frame_308.png",
                                     "width": 20,
                                     "width_mobile": 20,
                                     "link": "",
@@ -1425,7 +1444,6 @@
                         "desktop_width": "100",
                         "desktop_custom_width": 600,
                         "desktop_background_color": "#ffffff",
-                        "desktop_image": "shopify://shop_images/img_c9076e07-6747-4812-96b7-9523726237c5.png",
                         "desktop_enable_gradient": true,
                         "desktop_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "desktop_content_width": 100,
@@ -1441,7 +1459,6 @@
                         "mobile_width": "100",
                         "mobile_custom_width": 360,
                         "mobile_background_color": "#ffffff",
-                        "mobile_image": "shopify://shop_images/img_c9076e07-6747-4812-96b7-9523726237c5.png",
                         "mobile_enable_gradient": true,
                         "mobile_gradient_color": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
                         "mobile_content_width": 100,
@@ -1566,7 +1583,6 @@
                                   "name": "t:names.icon",
                                   "settings": {
                                     "icon": "price_tag",
-                                    "image_upload": "shopify://shop_images/Frame_308.png",
                                     "width": 20,
                                     "width_mobile": 20,
                                     "link": "",
@@ -1728,7 +1744,6 @@
                     "image_6Vgt4b": {
                       "type": "image",
                       "settings": {
-                        "image": "shopify://shop_images/Screenshot_2026-04-09_at_12.48.21_1.png",
                         "custom_mobile_image": false,
                         "link": "",
                         "image_ratio": "adapt",
@@ -1942,7 +1957,6 @@
                     "image_caqBe6": {
                       "type": "image",
                       "settings": {
-                        "image": "shopify://shop_images/Screenshot_2026-04-09_at_12.48.21_1_1.png",
                         "custom_mobile_image": false,
                         "link": "",
                         "image_ratio": "adapt",
@@ -2156,7 +2170,6 @@
                     "image_YBUjLR": {
                       "type": "image",
                       "settings": {
-                        "image": "shopify://shop_images/Screenshot_2026-04-09_at_12.48.21_1_2.png",
                         "custom_mobile_image": false,
                         "link": "",
                         "image_ratio": "adapt",
@@ -2370,7 +2383,6 @@
                     "image_iRgDRT": {
                       "type": "image",
                       "settings": {
-                        "image": "shopify://shop_images/Screenshot_2026-04-09_at_12.48.21_1_3.png",
                         "custom_mobile_image": false,
                         "link": "",
                         "image_ratio": "adapt",
@@ -2902,6 +2914,7 @@
   },
   "order": [
     "section",
+    "divider_rTp8K6",
     "collection_categories",
     "main",
     "generic_section_rGrPyx",
