@@ -70,7 +70,7 @@
 {% endstylesheet %}
 
 <div
-  id="carousel-arrows-{{ section.id }}"
+  id="carousel-arrows-{{ section.id }}{% if s.arrows_group_key != blank %}-{{ s.arrows_group_key | handleize }}{% endif %}"
   class="custom-carousel-arrows"
   style="{{ arrows_style | strip_newlines | strip }}"
   {{ block.shopify_attributes }}
@@ -98,6 +98,12 @@
   "name": "Carousel Arrows",
   "tag": null,
   "settings": [
+    {
+      "type": "text",
+      "id": "arrows_group_key",
+      "label": "Arrows group key",
+      "info": "When a section has multiple carousels with external arrows, give each carousel and its Carousel Arrows block the same key to pair them."
+    },
     {
       "type": "header",
       "content": "Arrows — Desktop"

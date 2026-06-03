@@ -207,6 +207,13 @@
     #shopify-section-{{ section.id }} .product-grid__item--promo {
       min-height: 380px;
     }
+
+    /* Mobile grid per Figma (node 3914-8951): 2-col, 4px row gap, 5px column gap,
+       4px side inset (385px grid on 393px viewport) */
+    #shopify-section-{{ section.id }} .product-grid {
+      --product-grid-gap: 4px 5px;
+      padding-inline: 4px;
+    }
   }
 {% endstyle %}
 

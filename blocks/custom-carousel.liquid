@@ -210,7 +210,7 @@
       "autoplayDelay": {{ s.autoplay_delay }},
       "pagination": {{ s.pagination }},
       "arrows": {{ s.arrows | json }},
-      "externalRoot": "carousel-arrows-{{ section.id }}"
+      "externalRoot": "carousel-arrows-{{ section.id }}{% if s.arrows_group_key != blank %}-{{ s.arrows_group_key | handleize }}{% endif %}"
     }
   </script>
   <div class="swiper">
@@ -348,6 +348,13 @@
         { "value": "none", "label": "None" }
       ],
       "default": "default"
+    },
+    {
+      "type": "text",
+      "id": "arrows_group_key",
+      "label": "Arrows group key",
+      "info": "When a section has multiple carousels with external arrows, give each carousel and its Carousel Arrows block the same key to pair them.",
+      "visible_if": "{{ block.settings.arrows == 'external' }}"
     },
     {
       "type": "select",
