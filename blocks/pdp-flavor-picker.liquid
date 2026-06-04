@@ -1,0 +1,193 @@
+{% liquid
+  assign label_text = block.settings.label_text
+  assign show_images = block.settings.show_images
+  assign product = closest.product
+  assign current_variant = product.selected_or_first_available_variant
+%}
+
+<pdp-flavor-picker class="pdp-flavor-picker" {{ block.shopify_attributes }}>
+  {% if label_text != blank %}
+    <span class="pdp-flavor-picker__label">{{ label_text }}</span>
+  {% endif %}
+
+  <div class="pdp-flavor-picker__cards">
+    {% for variant in product.variants %}
+      {% liquid
+        assign is_selected = false
+        if variant.id == current_variant.id
+          assign is_selected = true
+        endif
+        assign subtitle = variant.metafields.custom.flavor_subtitle | default: variant.option1
+      %}
+      <button
+        type="button"
+        class="pdp-flavor-picker__card"
+        data-variant-id="{{ variant.id }}"
+        data-selected="{{ is_selected }}"
+        {% unless variant.available %}disabled{% endunless %}
+      >
+        {% if show_images and variant.image != blank %}
+          <div class="pdp-flavor-picker__card-img">
+            {{
+              variant.image
+              | image_url: width: 86
+              | image_tag:
+                loading: 'lazy',
+                widths: '43,86',
+                sizes: '43px',
+                alt: variant.title,
+                class: 'pdp-flavor-picker__card-img-el'
+            }}
+          </div>
+        {% elsif show_images %}
+          <div class="pdp-flavor-picker__card-img pdp-flavor-picker__card-img--placeholder">
+            <img src="{{ 'img.svg' | asset_url }}" alt="" width="43" height="36" loading="lazy" />
+          </div>
+        {% endif %}
+        <div class="pdp-flavor-picker__card-content">
+          <span class="pdp-flavor-picker__card-name">{{ variant.title }}</span>
+          {% if subtitle != blank %}
+            <span class="pdp-flavor-picker__card-subtitle">{{ subtitle }}</span>
+          {% endif %}
+        </div>
+      </button>
+    {% endfor %}
+  </div>
+
+  <script type="application/json" data-variant-json>
+    [
+      {%- for variant in product.variants -%}
+        {
+          "id": {{ variant.id | json }},
+          "title": {{ variant.title | json }},
+          "available": {{ variant.available | json }},
+          "price": {{ variant.price | json }},
+          "compare_at_price": {{ variant.compare_at_price | json }},
+          "image": {% if variant.image %}{{ variant.image | image_url: width: 800 | json }}{% else %}null{% endif %}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  </script>
+</pdp-flavor-picker>
+
+<script src="{{ 'pdp-buybox.js' | asset_url }}" type="module"></script>
+
+{% stylesheet %}
+  pdp-flavor-picker {
+    display: block;
+  }
+
+  .pdp-flavor-picker__label {
+    display: block;
+    font-family: var(--font-accent--family, var(--font-subheading--family));
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #767676;
+    margin-block-end: 8px;
+  }
+
+  .pdp-flavor-picker__cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pdp-flavor-picker__card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 12px 16px 12px;
+    border-radius: 8px;
+    border: 1px solid #D9D9DB;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    text-align: start;
+    flex: 1 1 calc(50% - 4px);
+    min-width: 180px;
+  }
+
+  .pdp-flavor-picker__card[data-selected="true"] {
+    background-color: #FCF3F3;
+    border-color: #BC0F0F;
+  }
+
+  .pdp-flavor-picker__card:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .pdp-flavor-picker__card:hover:not(:disabled):not([data-selected="true"]) {
+    border-color: #A0A0A0;
+  }
+
+  .pdp-flavor-picker__card-img {
+    width: 43px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pdp-flavor-picker__card-img-el {
+    width: 43px;
+    height: 36px;
+    object-fit: contain;
+  }
+
+  .pdp-flavor-picker__card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .pdp-flavor-picker__card-name {
+    font-family: var(--font-heading--family);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #414141;
+  }
+
+  .pdp-flavor-picker__card-subtitle {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #414141;
+  }
+
+  @media screen and (max-width: 749px) {
+    .pdp-flavor-picker__card {
+      flex: 1 1 100%;
+      min-width: unset;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP Flavor Picker",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label_text",
+      "label": "Label text",
+      "default": "Select Flavor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_images",
+      "label": "Show images",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

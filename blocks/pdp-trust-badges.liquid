@@ -1,0 +1,189 @@
+{% liquid
+  assign image_1 = block.settings.image_1
+  assign text_1 = block.settings.text_1
+  assign image_2 = block.settings.image_2
+  assign text_2 = block.settings.text_2
+  assign image_3 = block.settings.image_3
+  assign text_3 = block.settings.text_3
+%}
+
+<div class="pdp-trust-badges" {{ block.shopify_attributes }}>
+  <div class="pdp-trust-badges__row">
+    {% if text_1 != blank or text_2 != blank or text_3 != blank %}
+      <div class="pdp-trust-badges__texts">
+        {% if text_1 != blank %}
+          <span class="pdp-trust-badges__text">{{ text_1 }}</span>
+        {% endif %}
+        {% if text_2 != blank %}
+          <span class="pdp-trust-badges__text">{{ text_2 }}</span>
+        {% endif %}
+        {% if text_3 != blank %}
+          <span class="pdp-trust-badges__text">{{ text_3 }}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="pdp-trust-badges__images">
+    {% if image_1 != blank %}
+      <div class="pdp-trust-badges__img-wrap">
+        {{
+          image_1
+          | image_url: width: 94
+          | image_tag:
+            loading: 'lazy',
+            widths: '47,94',
+            sizes: '47px',
+            alt: text_1,
+            class: 'pdp-trust-badges__img'
+        }}
+      </div>
+    {% endif %}
+    {% if image_2 != blank %}
+      <div class="pdp-trust-badges__img-wrap">
+        {{
+          image_2
+          | image_url: width: 94
+          | image_tag:
+            loading: 'lazy',
+            widths: '47,94',
+            sizes: '47px',
+            alt: text_2,
+            class: 'pdp-trust-badges__img'
+        }}
+      </div>
+    {% endif %}
+    {% if image_3 != blank %}
+      <div class="pdp-trust-badges__img-wrap">
+        {{
+          image_3
+          | image_url: width: 106
+          | image_tag:
+            loading: 'lazy',
+            widths: '53,106',
+            sizes: '53px',
+            alt: text_3,
+            class: 'pdp-trust-badges__img'
+        }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .pdp-trust-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+  }
+
+  .pdp-trust-badges__row {
+    width: 100%;
+  }
+
+  .pdp-trust-badges__texts {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+
+  .pdp-trust-badges__text {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    text-align: center;
+    color: #414141;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .pdp-trust-badges__images {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    justify-content: center;
+    align-items: center;
+    margin-block-start: -4px;
+  }
+
+  .pdp-trust-badges__img-wrap {
+    width: 47px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #D9D9D9;
+    flex-shrink: 0;
+    margin-inline-start: -4px;
+  }
+
+  .pdp-trust-badges__img-wrap:first-child {
+    margin-inline-start: 0;
+  }
+
+  .pdp-trust-badges__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP Trust Badges",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Trust Item 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "text",
+      "id": "text_1",
+      "label": "Text 1",
+      "default": "Developed with University of Texas"
+    },
+    {
+      "type": "header",
+      "content": "Trust Item 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "text",
+      "id": "text_2",
+      "label": "Text 2",
+      "default": "Backed by 6000+ Medical Practitioners"
+    },
+    {
+      "type": "header",
+      "content": "Trust Item 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3"
+    },
+    {
+      "type": "text",
+      "id": "text_3",
+      "label": "Text 3",
+      "default": "Based on Nobel-Prize Winning Science"
+    }
+  ]
+}
+{% endschema %}

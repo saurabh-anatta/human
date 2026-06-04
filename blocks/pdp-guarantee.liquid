@@ -1,0 +1,51 @@
+{% liquid
+  assign guarantee_text = block.settings.guarantee_text
+%}
+
+<div class="pdp-guarantee" {{ block.shopify_attributes }}>
+  <span class="pdp-guarantee__line" aria-hidden="true"></span>
+  <span class="pdp-guarantee__text">{{ guarantee_text }}</span>
+  <span class="pdp-guarantee__line" aria-hidden="true"></span>
+</div>
+
+{% stylesheet %}
+  .pdp-guarantee {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .pdp-guarantee__line {
+    flex: 1;
+    height: 1px;
+    background-color: #A0A0A0;
+  }
+
+  .pdp-guarantee__text {
+    font-family: var(--font-accent--family, var(--font-subheading--family));
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #414141;
+    white-space: nowrap;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP Guarantee",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "guarantee_text",
+      "label": "Guarantee text",
+      "default": "90 Day Money Back Guarantee"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,340 @@
+{% liquid
+  assign doctor_image = block.settings.doctor_image
+  assign doctor_name = block.settings.doctor_name
+  assign recommendation_text = block.settings.recommendation_text
+  assign hero_heading = block.settings.hero_heading
+  assign background_image = block.settings.background_image
+  assign upsell_button_text = block.settings.upsell_button_text
+  assign info_heading = block.settings.info_heading
+  assign info_text = block.settings.info_text
+%}
+
+<div class="pdp-doctor-rec" {{ block.shopify_attributes }}>
+  <div class="pdp-doctor-rec__header">
+    <div class="pdp-doctor-rec__doctor-photo">
+      {% if doctor_image != blank %}
+        {{
+          doctor_image
+          | image_url: width: 56
+          | image_tag:
+            loading: 'lazy',
+            widths: '28,56',
+            sizes: '28px',
+            alt: doctor_name,
+            class: 'pdp-doctor-rec__doctor-img'
+        }}
+      {% endif %}
+      <span class="pdp-doctor-rec__check-badge">
+        {{ 'check-solid.svg' | inline_asset_content }}
+      </span>
+    </div>
+    <span class="pdp-doctor-rec__rec-text">{{ recommendation_text }}</span>
+  </div>
+
+  <div class="pdp-doctor-rec__body">
+    {% if background_image != blank %}
+      <div class="pdp-doctor-rec__body-bg">
+        {{
+          background_image
+          | image_url: width: 1028
+          | image_tag:
+            loading: 'lazy',
+            widths: '514,1028',
+            sizes: '(min-width: 750px) 514px, 100vw',
+            alt: hero_heading,
+            class: 'pdp-doctor-rec__body-bg-img'
+        }}
+      </div>
+    {% endif %}
+
+    <div class="pdp-doctor-rec__body-content">
+      <div class="pdp-doctor-rec__hero">
+        {% if hero_heading != blank %}
+          <p class="pdp-doctor-rec__hero-heading">{{ hero_heading }}</p>
+        {% endif %}
+        {% if upsell_button_text != blank %}
+          <div class="pdp-doctor-rec__hero-actions">
+            <button type="button" class="pdp-doctor-rec__upsell-btn">
+              {{ upsell_button_text }}
+            </button>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if info_heading != blank or info_text != blank %}
+        <div class="pdp-doctor-rec__info-card">
+          {% if info_heading != blank %}
+            <div class="pdp-doctor-rec__info-header">
+              <span class="pdp-doctor-rec__info-icon">{{ 'lightbulb.svg' | inline_asset_content }}</span>
+              <span class="pdp-doctor-rec__info-title">{{ info_heading }}</span>
+            </div>
+          {% endif %}
+          {% if info_text != blank %}
+            <p class="pdp-doctor-rec__info-text">{{ info_text }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .pdp-doctor-rec {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .pdp-doctor-rec__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    height: 40px;
+    background-color: #691211;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .pdp-doctor-rec__doctor-photo {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .pdp-doctor-rec__doctor-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .pdp-doctor-rec__check-badge {
+    position: absolute;
+    bottom: 0;
+    inset-inline-end: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #BC0F0F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pdp-doctor-rec__check-badge svg {
+    width: 8px;
+    height: 8px;
+  }
+
+  .pdp-doctor-rec__check-badge svg path {
+    fill: #FFFFFF;
+    stroke: #FFFFFF;
+  }
+
+  .pdp-doctor-rec__rec-text {
+    font-family: var(--font-accent--family, var(--font-subheading--family));
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #F5F5F5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pdp-doctor-rec__body {
+    position: relative;
+    padding: 24px 24px 44px 24px;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    min-height: 308px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pdp-doctor-rec__body-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .pdp-doctor-rec__body-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pdp-doctor-rec__body-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    flex: 1;
+  }
+
+  .pdp-doctor-rec__hero {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pdp-doctor-rec__hero-heading {
+    font-family: var(--font-heading--family);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  .pdp-doctor-rec__hero-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 19px;
+    align-items: center;
+  }
+
+  .pdp-doctor-rec__upsell-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 28px;
+    background-color: #FFFFFF;
+    color: #000000;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-accent--family, var(--font-subheading--family));
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+  }
+
+  .pdp-doctor-rec__upsell-btn:hover {
+    opacity: 0.9;
+  }
+
+  .pdp-doctor-rec__info-card {
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(36px);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .pdp-doctor-rec__info-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .pdp-doctor-rec__info-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .pdp-doctor-rec__info-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .pdp-doctor-rec__info-title {
+    font-family: var(--font-heading--family);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    color: #FFFFFF;
+  }
+
+  .pdp-doctor-rec__info-text {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    color: #FFFFFF;
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP Doctor Rec",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "image_picker",
+      "id": "doctor_image",
+      "label": "Doctor photo"
+    },
+    {
+      "type": "text",
+      "id": "doctor_name",
+      "label": "Doctor name",
+      "default": "DR. DAVIS"
+    },
+    {
+      "type": "text",
+      "id": "recommendation_text",
+      "label": "Recommendation text",
+      "default": "Our Chief Cardiologist DR. DAVIS recommends"
+    },
+    {
+      "type": "header",
+      "content": "Body"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "hero_heading",
+      "label": "Hero heading",
+      "default": "Get a Clinical Dose of CoQ10 for $5 more"
+    },
+    {
+      "type": "text",
+      "id": "upsell_button_text",
+      "label": "Upsell button text",
+      "default": "Add - $39.99"
+    },
+    {
+      "type": "header",
+      "content": "Info Card"
+    },
+    {
+      "type": "text",
+      "id": "info_heading",
+      "label": "Info heading",
+      "default": "Did you know?"
+    },
+    {
+      "type": "textarea",
+      "id": "info_text",
+      "label": "Info text",
+      "default": "CoQ10 - that fuels cellular energy - naturally declines with age and statin use - our formula helps replenish them."
+    }
+  ]
+}
+{% endschema %}

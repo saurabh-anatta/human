@@ -1,0 +1,55 @@
+{% doc %}
+  PDP Benefit Card
+
+  Renders a benefit card for the knowledge panel carousel.
+
+  @param {object} image - Shopify image object for background
+  @param {string} icon_asset - SVG asset filename (e.g. '64px.svg')
+  @param {string} heading - Card heading text
+  @param {string} [heading_font] - Font style: 'serif' or 'sans' (default: 'sans')
+
+  @example
+  {% render 'pdp-benefit-card',
+    image: block.settings.benefit_card_1_image,
+    icon_asset: '64px.svg',
+    heading: 'Better blood pressure support',
+    heading_font: 'serif'
+  %}
+{% enddoc %}
+
+{% liquid
+  assign heading = heading | default: ''
+  assign heading_font = heading_font | default: 'sans'
+  assign icon_asset = icon_asset | default: ''
+%}
+
+<div class="pdp-benefit-card">
+  {% if image != blank %}
+    <div class="pdp-benefit-card__bg">
+      {{
+        image
+        | image_url: width: 506
+        | image_tag:
+          loading: 'lazy',
+          sizes: '253px',
+          widths: '253,506',
+          class: 'pdp-benefit-card__bg-img',
+          alt: heading
+      }}
+    </div>
+  {% else %}
+    <div class="pdp-benefit-card__bg pdp-benefit-card__bg--placeholder"></div>
+  {% endif %}
+  <div class="pdp-benefit-card__overlay">
+    {% if icon_asset != blank %}
+      <div class="pdp-benefit-card__icon">
+        <img src="{{ icon_asset | asset_url }}" alt="" width="34" height="34" loading="lazy" />
+      </div>
+    {% endif %}
+    {% if heading != blank %}
+      <p class="pdp-benefit-card__heading {% if heading_font == 'serif' %}pdp-benefit-card__heading--serif{% endif %}">
+        {{ heading }}
+      </p>
+    {% endif %}
+  </div>
+</div>

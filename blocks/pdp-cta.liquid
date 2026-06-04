@@ -1,0 +1,257 @@
+{% liquid
+  assign product = closest.product
+  assign current_variant = product.selected_or_first_available_variant
+  assign button_text = block.settings.button_text
+  assign claim_1 = block.settings.claim_1
+  assign claim_2 = block.settings.claim_2
+  assign claim_3 = block.settings.claim_3
+  assign show_buy_once = block.settings.show_buy_once
+  assign buy_once_label = block.settings.buy_once_label
+  assign buy_once_button_text = block.settings.buy_once_button_text
+%}
+
+<pdp-purchase-form class="pdp-cta" {{ block.shopify_attributes }}>
+  <div class="pdp-cta__main">
+    {%- form 'product', product, class: 'pdp-cta__form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+      <input type="hidden" name="id" value="{{ current_variant.id }}" />
+      <button
+        type="submit"
+        class="pdp-cta__submit"
+        data-submit-btn
+        data-default-text="{{ button_text }}"
+        {% unless current_variant.available %}disabled{% endunless %}
+        on:click="/handleSubmit"
+      >
+        {{ button_text }}
+      </button>
+    {%- endform -%}
+
+    {% if claim_1 != blank or claim_2 != blank or claim_3 != blank %}
+      <div class="pdp-cta__claims">
+        {% if claim_1 != blank %}
+          <span class="pdp-cta__claim">{{ claim_1 }}</span>
+        {% endif %}
+        {% if claim_2 != blank %}
+          <span class="pdp-cta__claim">{{ claim_2 }}</span>
+        {% endif %}
+        {% if claim_3 != blank %}
+          <span class="pdp-cta__claim">{{ claim_3 }}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  {% if show_buy_once %}
+    <div class="pdp-cta__buy-once">
+      <div class="pdp-cta__buy-once-label">
+        <span class="pdp-cta__buy-once-text">{{ buy_once_label }}</span>
+      </div>
+      <button type="button" class="pdp-cta__buy-once-btn">
+        {{ buy_once_button_text }}
+      </button>
+    </div>
+  {% endif %}
+</pdp-purchase-form>
+
+{% stylesheet %}
+  pdp-purchase-form {
+    display: block;
+  }
+
+  .pdp-cta__main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .pdp-cta__form {
+    width: 100%;
+  }
+
+  .pdp-cta__submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 48px;
+    padding: 16px 28px;
+    border-radius: 28px;
+    background-color: #BC0F0F;
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-accent--family, var(--font-subheading--family));
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+  }
+
+  .pdp-cta__submit:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  .pdp-cta__submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .pdp-cta__submit.is-loading {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .pdp-cta__claims {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    flex-wrap: wrap;
+  }
+
+  .pdp-cta__claim {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    text-align: center;
+    color: #414141;
+  }
+
+  .pdp-cta__buy-once {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    margin-block-start: 24px;
+  }
+
+  .pdp-cta__buy-once-label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #A0A0A0;
+    min-height: 40px;
+  }
+
+  .pdp-cta__buy-once-text {
+    font-family: var(--font-heading--family);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #414141;
+  }
+
+  .pdp-cta__buy-once-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border-radius: 28px;
+    border: 2px solid #000000;
+    background-color: transparent;
+    cursor: pointer;
+    font-family: var(--font-accent--family, var(--font-subheading--family));
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #000000;
+    white-space: nowrap;
+    height: 40px;
+  }
+
+  .pdp-cta__buy-once-btn:hover {
+    background-color: #000000;
+    color: #FFFFFF;
+  }
+
+  @media screen and (max-width: 749px) {
+    .pdp-cta__claims {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pdp-cta__buy-once {
+      flex-direction: column;
+    }
+
+    .pdp-cta__buy-once-label {
+      width: 100%;
+    }
+
+    .pdp-cta__buy-once-btn {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP CTA",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Primary Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "header",
+      "content": "Claims"
+    },
+    {
+      "type": "text",
+      "id": "claim_1",
+      "label": "Claim 1",
+      "default": "Free Shipping on Subscription"
+    },
+    {
+      "type": "text",
+      "id": "claim_2",
+      "label": "Claim 2",
+      "default": "Skip or Cancel Anytime"
+    },
+    {
+      "type": "text",
+      "id": "claim_3",
+      "label": "Claim 3",
+      "default": "HSA-FSA Eligible Learn More"
+    },
+    {
+      "type": "header",
+      "content": "Buy Once"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buy_once",
+      "label": "Show buy once",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "buy_once_label",
+      "label": "Buy once label",
+      "default": "Buy Once: 1 Bag - $39.95"
+    },
+    {
+      "type": "text",
+      "id": "buy_once_button_text",
+      "label": "Buy once button text",
+      "default": "Add to Cart"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,204 @@
+{% liquid
+  assign usp_1 = block.settings.usp_1
+  assign usp_2 = block.settings.usp_2
+  assign usp_3 = block.settings.usp_3
+  assign pill_1_text = block.settings.pill_1_text
+  assign pill_2_text = block.settings.pill_2_text
+  assign pill_3_text = block.settings.pill_3_text
+%}
+
+<div class="pdp-usp-list" {{ block.shopify_attributes }}>
+  <div class="pdp-usp-list__items">
+    {% if usp_1 != blank %}
+      <div class="pdp-usp-list__item">
+        <span class="pdp-usp-list__icon">{{ 'check-solid.svg' | inline_asset_content }}</span>
+        <span class="pdp-usp-list__text">{{ usp_1 }}</span>
+      </div>
+    {% endif %}
+    {% if usp_2 != blank %}
+      <div class="pdp-usp-list__item">
+        <span class="pdp-usp-list__icon">{{ 'check-solid.svg' | inline_asset_content }}</span>
+        <span class="pdp-usp-list__text">{{ usp_2 }}</span>
+      </div>
+    {% endif %}
+    {% if usp_3 != blank %}
+      <div class="pdp-usp-list__item">
+        <span class="pdp-usp-list__icon">{{ 'check-solid.svg' | inline_asset_content }}</span>
+        <span class="pdp-usp-list__text">{{ usp_3 }}</span>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if pill_1_text != blank or pill_2_text != blank or pill_3_text != blank %}
+    <div class="pdp-usp-list__pills">
+      {% if pill_1_text != blank %}
+        <button type="button" class="pdp-usp-list__pill" data-pill-question="{{ pill_1_text }}">
+          <span class="pdp-usp-list__pill-icon">{{ 'stars.svg' | inline_asset_content }}</span>
+          <span class="pdp-usp-list__pill-text">{{ pill_1_text }}</span>
+        </button>
+      {% endif %}
+      {% if pill_2_text != blank %}
+        <button type="button" class="pdp-usp-list__pill" data-pill-question="{{ pill_2_text }}">
+          <span class="pdp-usp-list__pill-icon">{{ 'stars.svg' | inline_asset_content }}</span>
+          <span class="pdp-usp-list__pill-text">{{ pill_2_text }}</span>
+        </button>
+      {% endif %}
+      {% if pill_3_text != blank %}
+        <button type="button" class="pdp-usp-list__pill" data-pill-question="{{ pill_3_text }}">
+          <span class="pdp-usp-list__pill-icon">{{ 'stars.svg' | inline_asset_content }}</span>
+          <span class="pdp-usp-list__pill-text">{{ pill_3_text }}</span>
+        </button>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .pdp-usp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pdp-usp-list__items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pdp-usp-list__item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .pdp-usp-list__icon {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+  }
+
+  .pdp-usp-list__icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .pdp-usp-list__text {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #414141;
+  }
+
+  .pdp-usp-list__pills {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .pdp-usp-list__pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-usp-list__pill {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: #F5F5F5;
+    border: 1px solid #D9D9DB;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .pdp-usp-list__pill:hover {
+    background-color: #EBEBEB;
+  }
+
+  .pdp-usp-list__pill-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pdp-usp-list__pill-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pdp-usp-list__pill-text {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #414141;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP USP List",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "USP Bullets"
+    },
+    {
+      "type": "textarea",
+      "id": "usp_1",
+      "label": "USP 1",
+      "default": "Nearly 2x more effective support than diet & exercise alone.*"
+    },
+    {
+      "type": "textarea",
+      "id": "usp_2",
+      "label": "USP 2",
+      "default": "2 Tasty Chews a day for longevity & sustained energy."
+    },
+    {
+      "type": "textarea",
+      "id": "usp_3",
+      "label": "USP 3",
+      "default": "Developed in partnership with the University of Texas."
+    },
+    {
+      "type": "header",
+      "content": "Question Pills"
+    },
+    {
+      "type": "text",
+      "id": "pill_1_text",
+      "label": "Pill 1 text",
+      "default": "What are the main benefits?"
+    },
+    {
+      "type": "text",
+      "id": "pill_2_text",
+      "label": "Pill 2 text",
+      "default": "How will this support my health goals?"
+    },
+    {
+      "type": "text",
+      "id": "pill_3_text",
+      "label": "Pill 3 text"
+    }
+  ]
+}
+{% endschema %}

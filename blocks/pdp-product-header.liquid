@@ -1,0 +1,200 @@
+{% liquid
+  assign show_rating = block.settings.show_rating
+  assign show_badges = block.settings.show_badges
+  assign rating_value = block.settings.rating_value
+  assign review_count = block.settings.review_count
+  assign badge_1_text = block.settings.badge_1_text
+  assign badge_1_style = block.settings.badge_1_style
+  assign badge_2_text = block.settings.badge_2_text
+  assign badge_2_style = block.settings.badge_2_style
+%}
+
+<div class="pdp-product-header" {{ block.shopify_attributes }}>
+  {% if show_rating %}
+    <div class="pdp-product-header__rating">
+      <div class="pdp-product-header__stars">
+        {{ 'star-solid-3.svg' | inline_asset_content }}
+        {{ 'star-solid-3.svg' | inline_asset_content }}
+        {{ 'star-solid-3.svg' | inline_asset_content }}
+        {{ 'star-solid-3.svg' | inline_asset_content }}
+        {{ 'star-solid-3.svg' | inline_asset_content }}
+      </div>
+      <a href="#reviews" class="pdp-product-header__review-link">
+        {{ rating_value }} ({{ review_count }})
+      </a>
+    </div>
+  {% endif %}
+
+  <h1 class="pdp-product-header__title">{{ closest.product.title }}</h1>
+
+  {% if show_badges %}
+    <div class="pdp-product-header__badges">
+      {% if badge_1_text != blank %}
+        <span class="pdp-product-header__badge pdp-product-header__badge--{{ badge_1_style }}">
+          {{ badge_1_text }}
+        </span>
+      {% endif %}
+      {% if badge_2_text != blank %}
+        <span class="pdp-product-header__badge pdp-product-header__badge--{{ badge_2_style }}">
+          {{ badge_2_text }}
+        </span>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .pdp-product-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pdp-product-header__rating {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .pdp-product-header__stars {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .pdp-product-header__stars svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .pdp-product-header__review-link {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #414141;
+    text-decoration: underline;
+    margin-inline-start: 4px;
+  }
+
+  .pdp-product-header__title {
+    font-family: var(--font-heading--family);
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 52px;
+    color: var(--color-foreground);
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .pdp-product-header__title {
+      font-size: 32px;
+      line-height: 38px;
+    }
+  }
+
+  .pdp-product-header__badges {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .pdp-product-header__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+  }
+
+  .pdp-product-header__badge--dark {
+    background-color: #767676;
+    color: #FFFFFF;
+  }
+
+  .pdp-product-header__badge--light {
+    background-color: #F5F5F5;
+    color: #414141;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP Product Header",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "rating_value",
+      "label": "Rating value",
+      "default": "4.3"
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Review count",
+      "default": "223 Reviews"
+    },
+    {
+      "type": "header",
+      "content": "Badges"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "label": "Show badges",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_1_text",
+      "label": "Badge 1 text",
+      "default": "Bestseller"
+    },
+    {
+      "type": "select",
+      "id": "badge_1_style",
+      "label": "Badge 1 style",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_text",
+      "label": "Badge 2 text",
+      "default": "65k+ Subscribers"
+    },
+    {
+      "type": "select",
+      "id": "badge_2_style",
+      "label": "Badge 2 style",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "light"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,664 @@
+{% liquid
+  assign section_1_title = block.settings.section_1_title
+  assign benefits_description = block.settings.benefits_description
+  assign benefit_card_1_image = block.settings.benefit_card_1_image
+  assign benefit_card_1_heading = block.settings.benefit_card_1_heading
+  assign benefit_card_2_image = block.settings.benefit_card_2_image
+  assign benefit_card_2_heading = block.settings.benefit_card_2_heading
+  assign benefit_card_3_image = block.settings.benefit_card_3_image
+  assign benefit_card_3_heading = block.settings.benefit_card_3_heading
+  assign section_2_title = block.settings.section_2_title
+  assign ingredients_text = block.settings.ingredients_text
+  assign full_ingredients_link_text = block.settings.full_ingredients_link_text
+  assign supplement_facts_text = block.settings.supplement_facts_text
+  assign section_3_title = block.settings.section_3_title
+  assign how_to_use_text = block.settings.how_to_use_text
+  assign how_to_use_image_1 = block.settings.how_to_use_image_1
+  assign how_to_use_caption_1 = block.settings.how_to_use_caption_1
+  assign how_to_use_image_2 = block.settings.how_to_use_image_2
+  assign how_to_use_caption_2 = block.settings.how_to_use_caption_2
+  assign section_4_title = block.settings.section_4_title
+  assign science_text = block.settings.science_text
+  assign pill_1_text = block.settings.pill_1_text
+  assign pill_2_text = block.settings.pill_2_text
+%}
+
+<pdp-knowledge-panel class="pdp-knowledge-panel" {{ block.shopify_attributes }}>
+  {%- comment -%} Section 1: Benefits {%- endcomment -%}
+  <div class="pdp-knowledge-panel__section">
+    <button type="button" class="pdp-knowledge-panel__header" data-accordion-header="benefits">
+      <span class="pdp-knowledge-panel__title">{{ section_1_title }}</span>
+      <span class="pdp-knowledge-panel__icon" data-accordion-icon data-open="true">
+        {{ 'minus-solid.svg' | inline_asset_content }}
+      </span>
+    </button>
+    <div class="pdp-knowledge-panel__content" data-accordion-content="benefits" data-open="true" style="max-height: none;">
+      <div class="pdp-knowledge-panel__inner">
+        {% if benefit_card_1_image != blank or benefit_card_2_image != blank or benefit_card_3_image != blank %}
+          <div class="pdp-knowledge-panel__carousel">
+            {% if benefit_card_1_image != blank %}
+              {% render 'pdp-benefit-card',
+                image: benefit_card_1_image,
+                icon_asset: '64px.svg',
+                heading: benefit_card_1_heading,
+                heading_font: 'serif'
+              %}
+            {% endif %}
+            {% if benefit_card_2_image != blank %}
+              {% render 'pdp-benefit-card',
+                image: benefit_card_2_image,
+                icon_asset: '64px-2.svg',
+                heading: benefit_card_2_heading,
+                heading_font: 'sans'
+              %}
+            {% endif %}
+            {% if benefit_card_3_image != blank %}
+              {% render 'pdp-benefit-card',
+                image: benefit_card_3_image,
+                icon_asset: 'frame-1000005160.svg',
+                heading: benefit_card_3_heading,
+                heading_font: 'sans'
+              %}
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if benefits_description != blank %}
+          <div class="pdp-knowledge-panel__description">
+            {{ benefits_description }}
+          </div>
+        {% endif %}
+
+        {% if pill_1_text != blank or pill_2_text != blank %}
+          <div class="pdp-knowledge-panel__pills">
+            {% if pill_1_text != blank %}
+              <button type="button" class="pdp-knowledge-panel__pill">
+                <span class="pdp-knowledge-panel__pill-icon">{{ 'book-open-solid.svg' | inline_asset_content }}</span>
+                <span class="pdp-knowledge-panel__pill-text">{{ pill_1_text }}</span>
+              </button>
+            {% endif %}
+            {% if pill_2_text != blank %}
+              <button type="button" class="pdp-knowledge-panel__pill">
+                <span class="pdp-knowledge-panel__pill-icon">{{ 'book-open-solid.svg' | inline_asset_content }}</span>
+                <span class="pdp-knowledge-panel__pill-text">{{ pill_2_text }}</span>
+              </button>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Section 2: Ingredients {%- endcomment -%}
+  <div class="pdp-knowledge-panel__section">
+    <button type="button" class="pdp-knowledge-panel__header" data-accordion-header="ingredients">
+      <span class="pdp-knowledge-panel__title">{{ section_2_title }}</span>
+      <span class="pdp-knowledge-panel__icon" data-accordion-icon data-open="false">
+        {{ 'minus-solid.svg' | inline_asset_content }}
+      </span>
+    </button>
+    <div class="pdp-knowledge-panel__content" data-accordion-content="ingredients" data-open="false" style="max-height: 0px;">
+      <div class="pdp-knowledge-panel__inner pdp-knowledge-panel__inner--ingredients">
+        {% if ingredients_text != blank %}
+          <div class="pdp-knowledge-panel__text-content">
+            {{ ingredients_text }}
+          </div>
+        {% endif %}
+        {% if full_ingredients_link_text != blank %}
+          <a href="#" class="pdp-knowledge-panel__link">{{ full_ingredients_link_text }}</a>
+        {% endif %}
+        {% if supplement_facts_text != blank %}
+          <div class="pdp-knowledge-panel__supplement-facts">
+            <p class="pdp-knowledge-panel__supplement-title">Supplement Facts</p>
+            <div class="pdp-knowledge-panel__facts-table">
+              {{ supplement_facts_text }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Section 3: How to Use {%- endcomment -%}
+  <div class="pdp-knowledge-panel__section">
+    <button type="button" class="pdp-knowledge-panel__header" data-accordion-header="how-to-use">
+      <span class="pdp-knowledge-panel__title">{{ section_3_title }}</span>
+      <span class="pdp-knowledge-panel__icon" data-accordion-icon data-open="false">
+        {{ 'minus-solid.svg' | inline_asset_content }}
+      </span>
+    </button>
+    <div class="pdp-knowledge-panel__content" data-accordion-content="how-to-use" data-open="false" style="max-height: 0px;">
+      <div class="pdp-knowledge-panel__inner">
+        {% if how_to_use_text != blank %}
+          <div class="pdp-knowledge-panel__text-content">
+            {{ how_to_use_text }}
+          </div>
+        {% endif %}
+
+        {% if how_to_use_image_1 != blank or how_to_use_image_2 != blank %}
+          <div class="pdp-knowledge-panel__how-to-carousel">
+            {% if how_to_use_image_1 != blank %}
+              <div class="pdp-knowledge-panel__how-to-card">
+                <div class="pdp-knowledge-panel__how-to-img">
+                  {{
+                    how_to_use_image_1
+                    | image_url: width: 480
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '240,480',
+                      sizes: '240px',
+                      alt: how_to_use_caption_1,
+                      class: 'pdp-knowledge-panel__how-to-img-el'
+                  }}
+                </div>
+                {% if how_to_use_caption_1 != blank %}
+                  <span class="pdp-knowledge-panel__how-to-caption">{{ how_to_use_caption_1 }}</span>
+                {% endif %}
+              </div>
+            {% endif %}
+            {% if how_to_use_image_2 != blank %}
+              <div class="pdp-knowledge-panel__how-to-card">
+                <div class="pdp-knowledge-panel__how-to-img">
+                  {{
+                    how_to_use_image_2
+                    | image_url: width: 480
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '240,480',
+                      sizes: '240px',
+                      alt: how_to_use_caption_2,
+                      class: 'pdp-knowledge-panel__how-to-img-el'
+                  }}
+                </div>
+                {% if how_to_use_caption_2 != blank %}
+                  <span class="pdp-knowledge-panel__how-to-caption">{{ how_to_use_caption_2 }}</span>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Section 4: The Science {%- endcomment -%}
+  <div class="pdp-knowledge-panel__section">
+    <button type="button" class="pdp-knowledge-panel__header" data-accordion-header="the-science">
+      <span class="pdp-knowledge-panel__title">{{ section_4_title }}</span>
+      <span class="pdp-knowledge-panel__icon" data-accordion-icon data-open="false">
+        {{ 'minus-solid.svg' | inline_asset_content }}
+      </span>
+    </button>
+    <div class="pdp-knowledge-panel__content" data-accordion-content="the-science" data-open="false" style="max-height: 0px;">
+      <div class="pdp-knowledge-panel__inner">
+        {% if science_text != blank %}
+          <div class="pdp-knowledge-panel__text-content">
+            {{ science_text }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</pdp-knowledge-panel>
+
+{% stylesheet %}
+  pdp-knowledge-panel {
+    display: block;
+  }
+
+  .pdp-knowledge-panel__section {
+    border-bottom: 1px solid #D9D9DB;
+  }
+
+  .pdp-knowledge-panel__section:first-child {
+    border-top: 1px solid #D9D9DB;
+  }
+
+  .pdp-knowledge-panel__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    gap: 8px;
+  }
+
+  .pdp-knowledge-panel__header:hover {
+    opacity: 0.8;
+  }
+
+  .pdp-knowledge-panel__title {
+    font-family: var(--font-accent--family, var(--font-subheading--family));
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #414141;
+    text-align: start;
+  }
+
+  .pdp-knowledge-panel__icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+
+  .pdp-knowledge-panel__icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pdp-knowledge-panel__icon[data-open="false"] {
+    transform: rotate(-90deg);
+  }
+
+  .pdp-knowledge-panel__content {
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .pdp-knowledge-panel__content[data-open="false"] {
+    max-height: 0;
+  }
+
+  .pdp-knowledge-panel__inner {
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pdp-knowledge-panel__inner--ingredients {
+    gap: 24px;
+  }
+
+  .pdp-knowledge-panel__carousel {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-block-end: 4px;
+  }
+
+  .pdp-knowledge-panel__carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-benefit-card {
+    position: relative;
+    width: 253px;
+    min-width: 253px;
+    height: 338px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .pdp-benefit-card__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .pdp-benefit-card__bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pdp-benefit-card__bg--placeholder {
+    background-color: #E0E0E0;
+  }
+
+  .pdp-benefit-card__overlay {
+    position: relative;
+    z-index: 1;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 218px;
+  }
+
+  .pdp-benefit-card__icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+
+  .pdp-benefit-card__icon img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .pdp-benefit-card__heading {
+    font-family: var(--font-heading--family);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  .pdp-benefit-card__heading--serif {
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    letter-spacing: -1px;
+  }
+
+  .pdp-knowledge-panel__description {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #767676;
+    padding: 12px 0;
+  }
+
+  .pdp-knowledge-panel__pills {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: wrap;
+  }
+
+  .pdp-knowledge-panel__pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-knowledge-panel__pill {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #D9D9DB;
+    background-color: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .pdp-knowledge-panel__pill:hover {
+    background-color: #F5F5F5;
+  }
+
+  .pdp-knowledge-panel__pill-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pdp-knowledge-panel__pill-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pdp-knowledge-panel__pill-text {
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #414141;
+  }
+
+  .pdp-knowledge-panel__text-content {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #767676;
+  }
+
+  .pdp-knowledge-panel__link {
+    font-family: var(--font-heading--family);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #414141;
+    text-decoration: underline;
+  }
+
+  .pdp-knowledge-panel__supplement-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pdp-knowledge-panel__supplement-title {
+    font-family: var(--font-heading--family);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #767676;
+    margin: 0;
+  }
+
+  .pdp-knowledge-panel__facts-table {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #767676;
+  }
+
+  .pdp-knowledge-panel__how-to-carousel {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .pdp-knowledge-panel__how-to-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-knowledge-panel__how-to-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+    width: 240px;
+  }
+
+  .pdp-knowledge-panel__how-to-img {
+    width: 240px;
+    height: 320px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .pdp-knowledge-panel__how-to-img-el {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pdp-knowledge-panel__how-to-caption {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #414141;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP Knowledge Panel",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Benefits Section"
+    },
+    {
+      "type": "text",
+      "id": "section_1_title",
+      "label": "Benefits title",
+      "default": "SUPERBEETS Benefits"
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_card_1_image",
+      "label": "Benefit card 1 image"
+    },
+    {
+      "type": "text",
+      "id": "benefit_card_1_heading",
+      "label": "Benefit card 1 heading",
+      "default": "Better blood pressure support from rich polyphenol antioxidants."
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_card_2_image",
+      "label": "Benefit card 2 image"
+    },
+    {
+      "type": "text",
+      "id": "benefit_card_2_heading",
+      "label": "Benefit card 2 heading",
+      "default": "2x more effective blood pressure support when compared to diet & exercise alone"
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_card_3_image",
+      "label": "Benefit card 3 image"
+    },
+    {
+      "type": "text",
+      "id": "benefit_card_3_heading",
+      "label": "Benefit card 3 heading",
+      "default": "Improves blood flow by boosting nitric oxide availability"
+    },
+    {
+      "type": "textarea",
+      "id": "benefits_description",
+      "label": "Benefits description",
+      "default": "SuperBeets didn't just launch the beets category. It launched a movement in heart health—supporting healthy blood pressure through nitric oxide availability and healthy blood flow. Born out of research from The University of Texas. New look, same SuperBeets formula. Packaging updated in 2026."
+    },
+    {
+      "type": "text",
+      "id": "pill_1_text",
+      "label": "Pill 1 text",
+      "default": "What are the main benefits?"
+    },
+    {
+      "type": "text",
+      "id": "pill_2_text",
+      "label": "Pill 2 text",
+      "default": "How will this support my health goals?"
+    },
+    {
+      "type": "header",
+      "content": "Ingredients Section"
+    },
+    {
+      "type": "text",
+      "id": "section_2_title",
+      "label": "Ingredients title",
+      "default": "Ingredients"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredients_text",
+      "label": "Ingredients text",
+      "default": "Grape Seed Extract\n150 mg per serving Grape seed extract is rich in powerful antioxidants, sourced from Southern France, and clinically studied to help support healthy blood pressure.\n\nBeet Root Powder\n500 mg per serving Beetroot from high-quality non-GMO beets sustainably sourced from renowned growing regions. SuperBeets® Heart Chews are third-party tested for purity and potency—because credibility matters in heart health."
+    },
+    {
+      "type": "text",
+      "id": "full_ingredients_link_text",
+      "label": "Full ingredients link",
+      "default": "Full Ingredients list"
+    },
+    {
+      "type": "textarea",
+      "id": "supplement_facts_text",
+      "label": "Supplement facts"
+    },
+    {
+      "type": "header",
+      "content": "How to Use Section"
+    },
+    {
+      "type": "text",
+      "id": "section_3_title",
+      "label": "How to Use title",
+      "default": "How to Use"
+    },
+    {
+      "type": "textarea",
+      "id": "how_to_use_text",
+      "label": "How to use text",
+      "default": "Take 2 delicious Pomegranate Berry flavored chews daily to help support healthy blood pressure and heart-healthy energy. For best results, take them together and at the same time each day. Stay consistent. Make it a routine."
+    },
+    {
+      "type": "image_picker",
+      "id": "how_to_use_image_1",
+      "label": "How to use image 1"
+    },
+    {
+      "type": "text",
+      "id": "how_to_use_caption_1",
+      "label": "How to use caption 1",
+      "default": "Take two chews daily"
+    },
+    {
+      "type": "image_picker",
+      "id": "how_to_use_image_2",
+      "label": "How to use image 2"
+    },
+    {
+      "type": "text",
+      "id": "how_to_use_caption_2",
+      "label": "How to use caption 2",
+      "default": "Stay consistent"
+    },
+    {
+      "type": "header",
+      "content": "The Science Section"
+    },
+    {
+      "type": "text",
+      "id": "section_4_title",
+      "label": "The Science title",
+      "default": "The Science"
+    },
+    {
+      "type": "textarea",
+      "id": "science_text",
+      "label": "Science text",
+      "default": "For decades, supporting heart health meant diet, exercise, and under-dosed supplements that may have lacked impact. Now, there's more. Science shows that specific nutrients derived from nature—delivered at clinically researched doses—can provide cardiovascular support beyond what the body typically gets from diet alone."
+    }
+  ]
+}
+{% endschema %}

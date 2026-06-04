@@ -1,0 +1,407 @@
+{% liquid
+  assign tier_1_name = block.settings.tier_1_name
+  assign tier_1_subtitle = block.settings.tier_1_subtitle
+  assign tier_1_price = block.settings.tier_1_price
+  assign tier_1_compare_price = block.settings.tier_1_compare_price
+  assign tier_1_savings = block.settings.tier_1_savings
+  assign tier_2_name = block.settings.tier_2_name
+  assign tier_2_subtitle = block.settings.tier_2_subtitle
+  assign tier_2_price = block.settings.tier_2_price
+  assign tier_2_compare_price = block.settings.tier_2_compare_price
+  assign tier_2_savings = block.settings.tier_2_savings
+  assign tier_3_name = block.settings.tier_3_name
+  assign tier_3_subtitle = block.settings.tier_3_subtitle
+  assign tier_3_price = block.settings.tier_3_price
+  assign tier_3_compare_price = block.settings.tier_3_compare_price
+  assign tier_3_savings = block.settings.tier_3_savings
+  assign tier_3_badge_text = block.settings.tier_3_badge_text
+  assign show_badge = block.settings.show_badge
+  assign label_text = block.settings.label_text
+%}
+
+<pdp-subscribe-options class="pdp-subscribe-options" {{ block.shopify_attributes }}>
+  {% if label_text != blank %}
+    <span class="pdp-subscribe-options__label">{{ label_text }}</span>
+  {% endif %}
+
+  <div class="pdp-subscribe-options__tiers">
+    {% if tier_1_name != blank %}
+      <button type="button" class="pdp-subscribe-options__tier" data-plan-tier="1" data-selected="true">
+        <div class="pdp-subscribe-options__radio">
+          <div class="pdp-subscribe-options__radio-dot"></div>
+        </div>
+        <div class="pdp-subscribe-options__tier-content">
+          <span class="pdp-subscribe-options__tier-name">{{ tier_1_name }}</span>
+          <span class="pdp-subscribe-options__tier-subtitle">{{ tier_1_subtitle }}</span>
+        </div>
+        <div class="pdp-subscribe-options__tier-pricing">
+          <div class="pdp-subscribe-options__tier-prices">
+            {% if tier_1_compare_price != blank %}
+              <span class="pdp-subscribe-options__tier-compare">{{ tier_1_compare_price }}</span>
+            {% endif %}
+            <span class="pdp-subscribe-options__tier-price">{{ tier_1_price }}</span>
+          </div>
+          {% if tier_1_savings != blank %}
+            <span class="pdp-subscribe-options__tier-savings">{{ tier_1_savings }}</span>
+          {% endif %}
+        </div>
+      </button>
+    {% endif %}
+
+    {% if tier_2_name != blank %}
+      <button type="button" class="pdp-subscribe-options__tier" data-plan-tier="2" data-selected="false">
+        <div class="pdp-subscribe-options__radio">
+          <div class="pdp-subscribe-options__radio-dot"></div>
+        </div>
+        <div class="pdp-subscribe-options__tier-content">
+          <span class="pdp-subscribe-options__tier-name">{{ tier_2_name }}</span>
+          <span class="pdp-subscribe-options__tier-subtitle">{{ tier_2_subtitle }}</span>
+        </div>
+        <div class="pdp-subscribe-options__tier-pricing">
+          <div class="pdp-subscribe-options__tier-prices">
+            {% if tier_2_compare_price != blank %}
+              <span class="pdp-subscribe-options__tier-compare">{{ tier_2_compare_price }}</span>
+            {% endif %}
+            <span class="pdp-subscribe-options__tier-price">{{ tier_2_price }}</span>
+          </div>
+          {% if tier_2_savings != blank %}
+            <span class="pdp-subscribe-options__tier-savings">{{ tier_2_savings }}</span>
+          {% endif %}
+        </div>
+      </button>
+    {% endif %}
+
+    {% if tier_3_name != blank %}
+      <button type="button" class="pdp-subscribe-options__tier pdp-subscribe-options__tier--has-badge" data-plan-tier="3" data-selected="false">
+        <div class="pdp-subscribe-options__radio">
+          <div class="pdp-subscribe-options__radio-dot"></div>
+        </div>
+        <div class="pdp-subscribe-options__tier-content">
+          <span class="pdp-subscribe-options__tier-name">{{ tier_3_name }}</span>
+          <span class="pdp-subscribe-options__tier-subtitle">{{ tier_3_subtitle }}</span>
+          {% if show_badge and tier_3_badge_text != blank %}
+            <span class="pdp-subscribe-options__badge">{{ tier_3_badge_text }}</span>
+          {% endif %}
+        </div>
+        <div class="pdp-subscribe-options__tier-pricing">
+          <div class="pdp-subscribe-options__tier-prices">
+            {% if tier_3_compare_price != blank %}
+              <span class="pdp-subscribe-options__tier-compare">{{ tier_3_compare_price }}</span>
+            {% endif %}
+            <span class="pdp-subscribe-options__tier-price">{{ tier_3_price }}</span>
+          </div>
+          {% if tier_3_savings != blank %}
+            <span class="pdp-subscribe-options__tier-savings">{{ tier_3_savings }}</span>
+          {% endif %}
+        </div>
+      </button>
+    {% endif %}
+  </div>
+</pdp-subscribe-options>
+
+{% stylesheet %}
+  pdp-subscribe-options {
+    display: block;
+  }
+
+  .pdp-subscribe-options__label {
+    display: block;
+    font-family: var(--font-accent--family, var(--font-subheading--family));
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #767676;
+    margin-block-end: 8px;
+  }
+
+  .pdp-subscribe-options__tiers {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pdp-subscribe-options__tier {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #D9D9DB;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    text-align: start;
+    margin-block-start: -1px;
+    position: relative;
+  }
+
+  .pdp-subscribe-options__tier:first-child {
+    border-radius: 8px 8px 0 0;
+    margin-block-start: 0;
+  }
+
+  .pdp-subscribe-options__tier:last-child {
+    border-radius: 0 0 8px 8px;
+  }
+
+  .pdp-subscribe-options__tier:only-child {
+    border-radius: 8px;
+  }
+
+  .pdp-subscribe-options__tier[data-selected="true"] {
+    border-color: #414141;
+    z-index: 1;
+  }
+
+  .pdp-subscribe-options__radio {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #414141;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .pdp-subscribe-options__radio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: transparent;
+  }
+
+  .pdp-subscribe-options__tier[data-selected="true"] .pdp-subscribe-options__radio-dot {
+    background-color: #414141;
+  }
+
+  .pdp-subscribe-options__tier-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .pdp-subscribe-options__tier-name {
+    font-family: var(--font-heading--family);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #414141;
+  }
+
+  .pdp-subscribe-options__tier-subtitle {
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #414141;
+  }
+
+  .pdp-subscribe-options__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: #BC0F0F;
+    color: #FFFFFF;
+    font-family: var(--font-heading--family);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    width: fit-content;
+    margin-block-start: 4px;
+  }
+
+  .pdp-subscribe-options__tier-pricing {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+
+  .pdp-subscribe-options__tier-prices {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pdp-subscribe-options__tier-compare {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    text-align: end;
+    text-decoration: line-through;
+    color: #A0A0A0;
+  }
+
+  .pdp-subscribe-options__tier-price {
+    font-family: var(--font-heading--family);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    text-align: end;
+    color: #414141;
+  }
+
+  .pdp-subscribe-options__tier-savings {
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    text-align: end;
+    color: #BC0F0F;
+  }
+
+  @media screen and (max-width: 749px) {
+    .pdp-subscribe-options__tier-name {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .pdp-subscribe-options__tier-subtitle {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .pdp-subscribe-options__tier-compare,
+    .pdp-subscribe-options__tier-price {
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP Subscribe Options",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label_text",
+      "label": "Label text",
+      "default": "Subscribe & Save"
+    },
+    {
+      "type": "header",
+      "content": "Tier 1"
+    },
+    {
+      "type": "text",
+      "id": "tier_1_name",
+      "label": "Tier 1 name",
+      "default": "Buy 1"
+    },
+    {
+      "type": "text",
+      "id": "tier_1_subtitle",
+      "label": "Tier 1 subtitle",
+      "default": "1 Bottle every 30 Days"
+    },
+    {
+      "type": "text",
+      "id": "tier_1_price",
+      "label": "Tier 1 price",
+      "default": "$35.96"
+    },
+    {
+      "type": "text",
+      "id": "tier_1_compare_price",
+      "label": "Tier 1 compare price",
+      "default": "$39.95"
+    },
+    {
+      "type": "text",
+      "id": "tier_1_savings",
+      "label": "Tier 1 savings",
+      "default": "Save 40%"
+    },
+    {
+      "type": "header",
+      "content": "Tier 2"
+    },
+    {
+      "type": "text",
+      "id": "tier_2_name",
+      "label": "Tier 2 name",
+      "default": "Buy 2 get 1 Free"
+    },
+    {
+      "type": "text",
+      "id": "tier_2_subtitle",
+      "label": "Tier 2 subtitle",
+      "default": "3 Bottles every 90 Days"
+    },
+    {
+      "type": "text",
+      "id": "tier_2_price",
+      "label": "Tier 2 price",
+      "default": "$66.48"
+    },
+    {
+      "type": "text",
+      "id": "tier_2_compare_price",
+      "label": "Tier 2 compare price",
+      "default": "$39.95"
+    },
+    {
+      "type": "text",
+      "id": "tier_2_savings",
+      "label": "Tier 2 savings",
+      "default": "Save 40%"
+    },
+    {
+      "type": "header",
+      "content": "Tier 3"
+    },
+    {
+      "type": "text",
+      "id": "tier_3_name",
+      "label": "Tier 3 name",
+      "default": "Buy 4 Get 2 Free"
+    },
+    {
+      "type": "text",
+      "id": "tier_3_subtitle",
+      "label": "Tier 3 subtitle",
+      "default": "6 Bottles every 90 Days"
+    },
+    {
+      "type": "text",
+      "id": "tier_3_price",
+      "label": "Tier 3 price",
+      "default": "$132.96"
+    },
+    {
+      "type": "text",
+      "id": "tier_3_compare_price",
+      "label": "Tier 3 compare price",
+      "default": "$39.95"
+    },
+    {
+      "type": "text",
+      "id": "tier_3_savings",
+      "label": "Tier 3 savings",
+      "default": "Save 40%"
+    },
+    {
+      "type": "text",
+      "id": "tier_3_badge_text",
+      "label": "Tier 3 badge text",
+      "default": "Most Popular"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

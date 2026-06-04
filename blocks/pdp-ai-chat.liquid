@@ -1,0 +1,229 @@
+{% liquid
+  assign trust_image = block.settings.trust_image
+  assign stat_text = block.settings.stat_text
+  assign pill_1_text = block.settings.pill_1_text
+  assign pill_2_text = block.settings.pill_2_text
+  assign placeholder_text = block.settings.placeholder_text
+%}
+
+<pdp-ai-chat class="pdp-ai-chat" {{ block.shopify_attributes }}>
+  {% if trust_image != blank %}
+    <div class="pdp-ai-chat__trust-image">
+      {{
+        trust_image
+        | image_url: width: 646
+        | image_tag:
+          loading: 'lazy',
+          widths: '323,646',
+          sizes: '(min-width: 750px) 323px, 100vw',
+          alt: 'Customer ratings',
+          class: 'pdp-ai-chat__trust-img'
+      }}
+    </div>
+  {% endif %}
+
+  {% if stat_text != blank %}
+    <p class="pdp-ai-chat__stat">{{ stat_text }}</p>
+  {% endif %}
+
+  {% if pill_1_text != blank or pill_2_text != blank %}
+    <div class="pdp-ai-chat__pills">
+      {% if pill_1_text != blank %}
+        <button type="button" class="pdp-ai-chat__pill" data-chat-pill="{{ pill_1_text }}">
+          <span class="pdp-ai-chat__pill-icon">{{ 'stars.svg' | inline_asset_content }}</span>
+          <span class="pdp-ai-chat__pill-text">{{ pill_1_text }}</span>
+        </button>
+      {% endif %}
+      {% if pill_2_text != blank %}
+        <button type="button" class="pdp-ai-chat__pill" data-chat-pill="{{ pill_2_text }}">
+          <span class="pdp-ai-chat__pill-icon">{{ 'stars.svg' | inline_asset_content }}</span>
+          <span class="pdp-ai-chat__pill-text">{{ pill_2_text }}</span>
+        </button>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="pdp-ai-chat__input-wrap">
+    <input
+      type="text"
+      class="pdp-ai-chat__input"
+      data-chat-input
+      placeholder="{{ placeholder_text }}"
+      aria-label="{{ placeholder_text }}"
+    />
+    <button type="button" class="pdp-ai-chat__send" aria-label="Send">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.5 1.5L7 9M14.5 1.5L10 14.5L7 9M14.5 1.5L1.5 6L7 9" stroke="#767676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</pdp-ai-chat>
+
+{% stylesheet %}
+  pdp-ai-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 23px;
+    padding: 24px 0;
+    background-color: #FFFFFF;
+  }
+
+  .pdp-ai-chat__trust-image {
+    max-width: 323px;
+  }
+
+  .pdp-ai-chat__trust-img {
+    width: 100%;
+    height: auto;
+  }
+
+  .pdp-ai-chat__stat {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #767676;
+    margin: 0;
+  }
+
+  .pdp-ai-chat__pills {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: wrap;
+  }
+
+  .pdp-ai-chat__pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-ai-chat__pill {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: #F5F5F5;
+    border: 1px solid #D9D9DB;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .pdp-ai-chat__pill:hover {
+    background-color: #EBEBEB;
+  }
+
+  .pdp-ai-chat__pill-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pdp-ai-chat__pill-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pdp-ai-chat__pill-text {
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #414141;
+  }
+
+  .pdp-ai-chat__input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .pdp-ai-chat__input {
+    width: 100%;
+    padding: 10px 44px 10px 16px;
+    border-radius: 32px;
+    border: 1px solid #A0A0A0;
+    background-color: #FFFFFF;
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #414141;
+    outline: none;
+  }
+
+  .pdp-ai-chat__input::placeholder {
+    color: #767676;
+  }
+
+  .pdp-ai-chat__input:focus {
+    border-color: #414141;
+  }
+
+  .pdp-ai-chat__send {
+    position: absolute;
+    inset-inline-end: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .pdp-ai-chat__send:hover svg path {
+    stroke: #414141;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PDP AI Chat",
+  "tag": null,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "trust_image",
+      "label": "Trust image"
+    },
+    {
+      "type": "text",
+      "id": "stat_text",
+      "label": "Stat text",
+      "default": "162 customers asked \"What are the top cardiovascular benefits?\""
+    },
+    {
+      "type": "text",
+      "id": "pill_1_text",
+      "label": "Pill 1 text",
+      "default": "What are the main benefits?"
+    },
+    {
+      "type": "text",
+      "id": "pill_2_text",
+      "label": "Pill 2 text",
+      "default": "How will this support my health goals?"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_text",
+      "label": "Placeholder text",
+      "default": "Ask me anything..."
+    }
+  ]
+}
+{% endschema %}
