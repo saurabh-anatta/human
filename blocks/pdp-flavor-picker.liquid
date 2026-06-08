@@ -18,6 +18,7 @@
           assign is_selected = true
         endif
         assign subtitle = variant.metafields.custom.flavor_subtitle | default: variant.option1
+        assign subtitle_highlight = variant.metafields.custom.subtitle_highlight
       %}
       <button
         type="button"
@@ -47,7 +48,7 @@
         <div class="pdp-flavor-picker__card-content">
           <span class="pdp-flavor-picker__card-name">{{ variant.title }}</span>
           {% if subtitle != blank %}
-            <span class="pdp-flavor-picker__card-subtitle">{{ subtitle }}</span>
+            <span class="pdp-flavor-picker__card-subtitle{% if subtitle_highlight %} pdp-flavor-picker__card-subtitle--highlight{% endif %}">{{ subtitle }}</span>
           {% endif %}
         </div>
       </button>
@@ -161,6 +162,10 @@
     font-weight: 500;
     line-height: 16px;
     color: #414141;
+  }
+
+  .pdp-flavor-picker__card-subtitle--highlight {
+    color: #BC0F0F;
   }
 
   @media screen and (max-width: 749px) {
