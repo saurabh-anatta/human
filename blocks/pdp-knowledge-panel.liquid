@@ -10,7 +10,19 @@
   assign section_2_title = block.settings.section_2_title
   assign ingredients_text = block.settings.ingredients_text
   assign full_ingredients_link_text = block.settings.full_ingredients_link_text
-  assign supplement_facts_text = block.settings.supplement_facts_text
+  assign fact_1_label = block.settings.fact_1_label
+  assign fact_1_value = block.settings.fact_1_value
+  assign fact_2_label = block.settings.fact_2_label
+  assign fact_2_value = block.settings.fact_2_value
+  assign fact_3_label = block.settings.fact_3_label
+  assign fact_3_value = block.settings.fact_3_value
+  assign fact_4_label = block.settings.fact_4_label
+  assign fact_4_value = block.settings.fact_4_value
+  assign fact_sub_note = block.settings.fact_sub_note
+  assign fact_5_label = block.settings.fact_5_label
+  assign fact_5_value = block.settings.fact_5_value
+  assign fact_6_label = block.settings.fact_6_label
+  assign fact_6_value = block.settings.fact_6_value
   assign section_3_title = block.settings.section_3_title
   assign how_to_use_text = block.settings.how_to_use_text
   assign how_to_use_image_1 = block.settings.how_to_use_image_1
@@ -107,11 +119,55 @@
         {% if full_ingredients_link_text != blank %}
           <a href="#" class="pdp-knowledge-panel__link">{{ full_ingredients_link_text }}</a>
         {% endif %}
-        {% if supplement_facts_text != blank %}
+        {% if fact_1_label != blank or fact_2_label != blank or fact_3_label != blank or fact_4_label != blank or fact_5_label != blank or fact_6_label != blank %}
           <div class="pdp-knowledge-panel__supplement-facts">
             <p class="pdp-knowledge-panel__supplement-title">Supplement Facts</p>
             <div class="pdp-knowledge-panel__facts-table">
-              {{ supplement_facts_text }}
+              {% if fact_1_label != blank %}
+                <div class="pdp-knowledge-panel__fact-row">
+                  <span class="pdp-knowledge-panel__fact-label">{{ fact_1_label }}</span>
+                  <span class="pdp-knowledge-panel__fact-value">{{ fact_1_value }}</span>
+                </div>
+                <div class="pdp-knowledge-panel__fact-divider"></div>
+              {% endif %}
+              {% if fact_2_label != blank %}
+                <div class="pdp-knowledge-panel__fact-row">
+                  <span class="pdp-knowledge-panel__fact-label">{{ fact_2_label }}</span>
+                  <span class="pdp-knowledge-panel__fact-value">{{ fact_2_value }}</span>
+                </div>
+                <div class="pdp-knowledge-panel__fact-divider"></div>
+              {% endif %}
+              {% if fact_3_label != blank %}
+                <div class="pdp-knowledge-panel__fact-row">
+                  <span class="pdp-knowledge-panel__fact-label">{{ fact_3_label }}</span>
+                  <span class="pdp-knowledge-panel__fact-value">{{ fact_3_value }}</span>
+                </div>
+                <div class="pdp-knowledge-panel__fact-divider"></div>
+              {% endif %}
+              {% if fact_4_label != blank %}
+                <div class="pdp-knowledge-panel__fact-row">
+                  <span class="pdp-knowledge-panel__fact-label">{{ fact_4_label }}</span>
+                  <span class="pdp-knowledge-panel__fact-value">{{ fact_4_value }}</span>
+                </div>
+                {% if fact_sub_note != blank %}
+                  <p class="pdp-knowledge-panel__fact-subnote">{{ fact_sub_note }}</p>
+                {% endif %}
+                <div class="pdp-knowledge-panel__fact-divider"></div>
+              {% endif %}
+              {% if fact_5_label != blank %}
+                <div class="pdp-knowledge-panel__fact-row">
+                  <span class="pdp-knowledge-panel__fact-label">{{ fact_5_label }}</span>
+                  <span class="pdp-knowledge-panel__fact-value">{{ fact_5_value }}</span>
+                </div>
+                <div class="pdp-knowledge-panel__fact-divider"></div>
+              {% endif %}
+              {% if fact_6_label != blank %}
+                <div class="pdp-knowledge-panel__fact-row">
+                  <span class="pdp-knowledge-panel__fact-label">{{ fact_6_label }}</span>
+                  <span class="pdp-knowledge-panel__fact-value">{{ fact_6_value }}</span>
+                </div>
+                <div class="pdp-knowledge-panel__fact-divider"></div>
+              {% endif %}
             </div>
           </div>
         {% endif %}
@@ -460,12 +516,50 @@
   }
 
   .pdp-knowledge-panel__facts-table {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pdp-knowledge-panel__fact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .pdp-knowledge-panel__fact-label {
     font-family: var(--font-body--family);
     font-size: 18px;
     font-weight: 500;
     line-height: 24px;
     letter-spacing: -0.5px;
     color: #767676;
+  }
+
+  .pdp-knowledge-panel__fact-value {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #767676;
+    text-align: end;
+  }
+
+  .pdp-knowledge-panel__fact-divider {
+    height: 1px;
+    background-color: #767676;
+    margin: 8px 0;
+  }
+
+  .pdp-knowledge-panel__fact-subnote {
+    font-family: var(--font-body--family);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #767676;
+    margin: 0;
   }
 
   .pdp-knowledge-panel__how-to-carousel {
@@ -601,9 +695,86 @@
       "default": "Full Ingredients list"
     },
     {
-      "type": "textarea",
-      "id": "supplement_facts_text",
-      "label": "Supplement facts"
+      "type": "header",
+      "content": "Supplement Facts"
+    },
+    {
+      "type": "text",
+      "id": "fact_1_label",
+      "label": "Fact 1 label",
+      "default": "Calories"
+    },
+    {
+      "type": "text",
+      "id": "fact_1_value",
+      "label": "Fact 1 value",
+      "default": "40"
+    },
+    {
+      "type": "text",
+      "id": "fact_2_label",
+      "label": "Fact 2 label",
+      "default": "Total Fat"
+    },
+    {
+      "type": "text",
+      "id": "fact_2_value",
+      "label": "Fact 2 value",
+      "default": ".5 g"
+    },
+    {
+      "type": "text",
+      "id": "fact_3_label",
+      "label": "Fact 3 label",
+      "default": "Total Carbohydrates"
+    },
+    {
+      "type": "text",
+      "id": "fact_3_value",
+      "label": "Fact 3 value",
+      "default": "9 g"
+    },
+    {
+      "type": "text",
+      "id": "fact_4_label",
+      "label": "Fact 4 label",
+      "default": "Sugars"
+    },
+    {
+      "type": "text",
+      "id": "fact_4_value",
+      "label": "Fact 4 value",
+      "default": "4 g"
+    },
+    {
+      "type": "text",
+      "id": "fact_sub_note",
+      "label": "Fact 4 sub-note",
+      "default": "Includes 4g Added Sugars"
+    },
+    {
+      "type": "text",
+      "id": "fact_5_label",
+      "label": "Fact 5 label",
+      "default": "Beet Root Powder"
+    },
+    {
+      "type": "text",
+      "id": "fact_5_value",
+      "label": "Fact 5 value",
+      "default": "9 g"
+    },
+    {
+      "type": "text",
+      "id": "fact_6_label",
+      "label": "Fact 6 label",
+      "default": "Enovita Grape Seed Extract"
+    },
+    {
+      "type": "text",
+      "id": "fact_6_value",
+      "label": "Fact 6 value",
+      "default": "9 g"
     },
     {
       "type": "header",
