@@ -1,0 +1,548 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+{%- liquid
+  capture inline_styles
+    echo '--smm-scroll-height: ' | append: section.settings.scroll_multiplier | append: '00vh;'
+  endcapture
+-%}
+
+<div class="story-miracle-molecule" id="the-molecule" data-anchor="the-molecule" style="{{ inline_styles }}">
+  <div class="story-miracle-molecule__scroll-container">
+    <div class="story-miracle-molecule__stage">
+
+      {%- if section.settings.poster_image != blank -%}
+        <img
+          class="story-miracle-molecule__poster"
+          src="{{ section.settings.poster_image | image_url: width: 1920 }}"
+          alt=""
+          width="1920"
+          height="1080"
+          loading="lazy"
+        >
+      {%- endif -%}
+
+      {%- if section.settings.video_url != blank -%}
+        <video
+          class="story-miracle-molecule__video"
+          autoplay
+          muted
+          loop
+          playsinline
+          src="{{ section.settings.video_url }}"
+          {%- if section.settings.poster_image != blank %}
+            poster="{{ section.settings.poster_image | image_url: width: 1920 }}"
+          {%- endif %}
+        ></video>
+      {%- endif -%}
+
+      <div class="story-miracle-molecule__desat-overlay"></div>
+      <div class="story-miracle-molecule__dark-overlay"></div>
+
+      <div class="story-miracle-molecule__content">
+
+        {%- if section.settings.overlay_image != blank -%}
+          <img
+            class="story-miracle-molecule__overlay-image"
+            src="{{ section.settings.overlay_image | image_url: width: 324 }}"
+            alt=""
+            width="162"
+            height="74"
+            loading="lazy"
+          >
+        {%- endif -%}
+
+        {%- if section.settings.eyebrow_text != blank -%}
+          <span class="story-miracle-molecule__eyebrow">
+            {{- section.settings.eyebrow_text -}}
+          </span>
+        {%- endif -%}
+
+        <h2 class="story-miracle-molecule__intro">
+          {{- section.settings.intro_text -}}
+        </h2>
+
+        <div class="story-miracle-molecule__molecule" aria-hidden="true">
+          <svg class="story-miracle-molecule__molecule-svg" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle class="story-miracle-molecule__ring" cx="250" cy="250" r="157" stroke="#FFFFFF" stroke-width="0.5" fill="none"/>
+            <circle data-particle="0" cx="384" cy="196" r="10" fill="#FFFFFF"/>
+            <circle data-particle="1" cx="340" cy="115" r="10" fill="#FFFFFF"/>
+            <circle data-particle="2" cx="160" cy="130" r="12" fill="#FFFFFF"/>
+            <circle data-particle="3" cx="95" cy="250" r="10" fill="#FFFFFF"/>
+            <circle data-particle="4" cx="170" cy="370" r="10" fill="#FFFFFF"/>
+            <circle data-particle="5" cx="310" cy="390" r="7" fill="#FFFFFF"/>
+            <circle data-particle="6" cx="395" cy="310" r="7" fill="#FFFFFF"/>
+            <circle data-particle="7" cx="130" cy="170" r="7" fill="#FFFFFF"/>
+            <circle data-particle="8" cx="248" cy="95" r="7" fill="#FFFFFF"/>
+            <circle data-particle="9" cx="370" cy="365" r="7" fill="#FFFFFF"/>
+            <circle data-particle="10" cx="140" cy="310" r="7" fill="#FFFFFF"/>
+            <circle data-particle="11" cx="360" cy="148" r="21" fill="#FFFFFF"/>
+            <circle data-particle="12" cx="110" cy="290" r="21" fill="#FFFFFF"/>
+            <circle data-particle="13" cx="300" cy="385" r="21" fill="#FFFFFF"/>
+            <circle data-particle="14" cx="230" cy="100" r="16" fill="#FFFFFF"/>
+            <circle data-particle="15" cx="385" cy="268" r="10" fill="#FFFFFF"/>
+            <circle data-particle="16" cx="178" cy="388" r="10" fill="#FFFFFF"/>
+            <g class="story-miracle-molecule__no-label">
+              <text x="330" y="168" text-anchor="middle" fill="#FFFFFF">N</text>
+              <text x="330" y="192" text-anchor="middle" fill="#FFFFFF">O</text>
+            </g>
+            <g class="story-miracle-molecule__no-label">
+              <text x="170" y="348" text-anchor="middle" fill="#FFFFFF">N</text>
+              <text x="170" y="372" text-anchor="middle" fill="#FFFFFF">O</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="story-miracle-molecule__nobel" aria-label="The Nobel Prize">
+          <img src="{{ 'the.svg' | asset_url }}" alt="" width="85" height="34" style="width:85px;height:34px">
+          <img src="{{ 'nobel.svg' | asset_url }}" alt="" width="154" height="36" style="width:154px;height:36px">
+          <img src="{{ 'prize-2.svg' | asset_url }}" alt="" width="125" height="34" style="width:125px;height:34px">
+        </div>
+
+        {%- for block in section.blocks -%}
+          <div
+            class="story-miracle-molecule__card"
+            data-card-index="{{ forloop.index0 }}"
+            data-show-nobel="{{ block.settings.show_nobel_logo }}"
+            data-show-molecule="{{ block.settings.show_molecule }}"
+            {{ block.shopify_attributes }}
+          >
+            <p class="story-miracle-molecule__card-text">
+              {{- block.settings.heading_text -}}
+            </p>
+          </div>
+        {%- endfor -%}
+
+        <div class="story-miracle-molecule__line"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const [{ createScrollProgress, prefersReducedMotion }, { initMiracleMolecule }] = await Promise.all([
+    import({{ 'story-scroll-utils.js' | asset_url | json }}),
+    import({{ 'story-miracle-molecule.js' | asset_url | json }})
+  ]);
+  const section = document.getElementById('shopify-section-{{ section.id }}');
+  if (section) initMiracleMolecule(section, { createScrollProgress, prefersReducedMotion });
+</script>
+
+{% stylesheet %}
+  /* ===== Root ===== */
+  .story-miracle-molecule {
+    background: #F5F5F5;
+    position: relative;
+  }
+
+  /* ===== Scroll container (tall wrapper for pinning) ===== */
+  .story-miracle-molecule__scroll-container {
+    height: var(--smm-scroll-height, 1000vh);
+  }
+
+  /* ===== Sticky stage (viewport-locked) ===== */
+  .story-miracle-molecule__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ===== Poster image ===== */
+  .story-miracle-molecule__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* ===== Video ===== */
+  .story-miracle-molecule__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  /* ===== Desaturation overlay (mix-blend-mode:color) ===== */
+  .story-miracle-molecule__desat-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+  }
+
+  /* ===== Dark overlay (JS controls bg-color + blur) ===== */
+  .story-miracle-molecule__dark-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    .story-miracle-molecule__dark-overlay {
+      background: rgba(0, 0, 0, 0.85);
+    }
+  }
+
+  /* ===== Content layer ===== */
+  .story-miracle-molecule__content {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding-inline: 20px;
+  }
+
+  /* ===== Overlay image (small decorative element) ===== */
+  .story-miracle-molecule__overlay-image {
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 162px;
+    height: 74px;
+    object-fit: contain;
+    z-index: 5;
+    opacity: 0;
+  }
+
+  /* ===== Eyebrow ===== */
+  .story-miracle-molecule__eyebrow {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-labels--family);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #A0A0A0;
+    white-space: nowrap;
+    opacity: 0;
+  }
+
+  /* ===== Intro heading ===== */
+  .story-miracle-molecule__intro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-heading--family);
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    text-align: center;
+    max-width: 809px;
+    width: calc(100% - 40px);
+    margin: 0;
+    opacity: 0;
+  }
+
+  /* ===== Text cards (stacked, one visible at a time) ===== */
+  .story-miracle-molecule__card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 20px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .story-miracle-molecule__card-text {
+    font-family: var(--font-heading--family);
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    text-align: center;
+    max-width: 537px;
+    margin: 0;
+  }
+
+  /* ===== Molecule SVG container ===== */
+  .story-miracle-molecule__molecule {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 315px;
+    height: 315px;
+    pointer-events: none;
+    opacity: 0;
+    transform-origin: center center;
+  }
+
+  .story-miracle-molecule__molecule-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ===== NO text labels inside molecule SVG ===== */
+  .story-miracle-molecule__no-label text {
+    font-family: var(--font-labels--family), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.75px;
+  }
+
+  /* ===== Nobel Prize logo ===== */
+  .story-miracle-molecule__nobel {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .story-miracle-molecule__nobel img {
+    width: auto;
+    height: auto;
+    display: block;
+  }
+
+  /* ===== Blue decorative line (exit) ===== */
+  .story-miracle-molecule__line {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1.6deg);
+    width: 200px;
+    height: 3px;
+    background: #2983DC;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ===== Reduced motion: static stacked layout ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .story-miracle-molecule__scroll-container {
+      height: auto;
+    }
+
+    .story-miracle-molecule__stage {
+      position: relative;
+      height: auto;
+      background: #000000;
+    }
+
+    .story-miracle-molecule__video {
+      display: none;
+    }
+
+    .story-miracle-molecule__desat-overlay {
+      display: none;
+    }
+
+    .story-miracle-molecule__dark-overlay {
+      position: relative;
+      height: 0;
+      background: none;
+    }
+
+    .story-miracle-molecule__poster {
+      position: relative;
+      inset: auto;
+      height: auto;
+      max-height: 50vh;
+    }
+
+    .story-miracle-molecule__content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      padding: 60px 20px;
+    }
+
+    .story-miracle-molecule__overlay-image {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+      opacity: 1;
+    }
+
+    .story-miracle-molecule__eyebrow {
+      position: relative;
+      bottom: auto;
+      left: auto;
+      transform: none;
+      opacity: 1;
+    }
+
+    .story-miracle-molecule__intro {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+      opacity: 1;
+    }
+
+    .story-miracle-molecule__card {
+      position: relative;
+      inset: auto;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .story-miracle-molecule__molecule {
+      display: none;
+    }
+
+    .story-miracle-molecule__nobel {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+      opacity: 1;
+    }
+
+    .story-miracle-molecule__line {
+      display: none;
+    }
+  }
+
+  /* ===== Mobile overrides ===== */
+  @media screen and (max-width: 749px) {
+    .story-miracle-molecule__intro {
+      font-size: 36px;
+      line-height: 40px;
+      max-width: 100%;
+    }
+
+    .story-miracle-molecule__card-text {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .story-miracle-molecule__content {
+      padding-inline: 16px;
+    }
+
+    .story-miracle-molecule__molecule {
+      width: 220px;
+      height: 220px;
+    }
+
+    .story-miracle-molecule__eyebrow {
+      bottom: 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Miracle Molecule",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "THE MIRACLE MOLECULE"
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Video URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster / fallback image"
+    },
+    {
+      "type": "image_picker",
+      "id": "overlay_image",
+      "label": "Overlay image"
+    },
+    {
+      "type": "header",
+      "content": "Intro text"
+    },
+    {
+      "type": "textarea",
+      "id": "intro_text",
+      "label": "Intro heading",
+      "default": "In 1998, a single molecule changed medicine forever."
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "scroll_multiplier",
+      "label": "Scroll distance multiplier",
+      "min": 6,
+      "max": 15,
+      "step": 1,
+      "default": 10,
+      "unit": "x"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text-card",
+      "name": "Text card",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "heading_text",
+          "label": "Text"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_nobel_logo",
+          "label": "Show Nobel Prize logo",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_molecule",
+          "label": "Show molecule graphic",
+          "default": true
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

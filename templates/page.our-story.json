@@ -85,11 +85,57 @@
         "closing_text": "It all starts with blood flow.",
         "scroll_multiplier": 5
       }
+    },
+    "story_miracle_molecule": {
+      "type": "story-miracle-molecule",
+      "blocks": {
+        "card_1": {
+          "type": "text-card",
+          "settings": {
+            "heading_text": "Dr. Ferid Murad discovered that nitric oxide signals blood vessels to dilate.",
+            "show_nobel_logo": false,
+            "show_molecule": true
+          }
+        },
+        "card_2": {
+          "type": "text-card",
+          "settings": {
+            "heading_text": "He was awarded the Nobel Prize for it.",
+            "show_nobel_logo": true,
+            "show_molecule": false
+          }
+        },
+        "card_3": {
+          "type": "text-card",
+          "settings": {
+            "heading_text": "When Nitric Oxide is present, vessels open. Blood flows.",
+            "show_nobel_logo": false,
+            "show_molecule": true
+          }
+        },
+        "card_4": {
+          "type": "text-card",
+          "settings": {
+            "heading_text": "Everything downstream — energy, focus, pressure, performance — works better.",
+            "show_nobel_logo": false,
+            "show_molecule": true
+          }
+        }
+      },
+      "block_order": ["card_1", "card_2", "card_3", "card_4"],
+      "settings": {
+        "eyebrow_text": "THE MIRACLE MOLECULE",
+        "poster_image": "shopify://shop_images/screenshot-2026-06-27-at-3-03-41-pm-1-page-overview-for-client-section-108343386.png",
+        "overlay_image": "shopify://shop_images/image-1-page-overview-for-client-section-108343860.png",
+        "intro_text": "In 1998, a single molecule changed medicine forever.",
+        "scroll_multiplier": 10
+      }
     }
   },
   "order": [
     "story_sub_nav",
     "story_cinematic_hero",
-    "story_universal_truth"
+    "story_universal_truth",
+    "story_miracle_molecule"
   ]
 }
