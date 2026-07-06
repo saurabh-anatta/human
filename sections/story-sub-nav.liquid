@@ -1,0 +1,120 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    position: sticky;
+    top: var(--header-height, 0px);
+    z-index: calc(var(--layer-sticky, 8) - 1);
+  }
+</style>
+
+{{ 'story-scroll-utils.css' | asset_url | stylesheet_tag }}
+
+<story-sub-nav class="story-sub-nav">
+  <nav aria-label="Story chapters">
+    <ul class="story-sub-nav__list">
+      {%- for block in section.blocks -%}
+        <li>
+          <a
+            href="#{{ block.settings.anchor }}"
+            data-anchor="{{ block.settings.anchor }}"
+            class="story-sub-nav__link{% if forloop.first %} story-sub-nav__link--active{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {{- block.settings.label -}}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+</story-sub-nav>
+
+<script src="{{ 'story-scroll-utils.js' | asset_url }}" type="module"></script>
+<script src="{{ 'story-sub-nav.js' | asset_url }}" type="module"></script>
+
+{% stylesheet %}
+  .story-sub-nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 12px 16px 12px 64px;
+  }
+
+  .story-sub-nav__list {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .story-sub-nav__link {
+    font-family: var(--font-labels--family);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #A0A0A0;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+
+  .story-sub-nav__link:hover {
+    color: #000000;
+  }
+
+  .story-sub-nav__link--active {
+    color: #000000;
+  }
+
+  @media screen and (max-width: 749px) {
+    .story-sub-nav {
+      padding: 8px 16px;
+    }
+
+    .story-sub-nav__list {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 20px;
+    }
+
+    .story-sub-nav__list::-webkit-scrollbar {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Sub Nav",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "blocks": [
+    {
+      "type": "nav-link",
+      "name": "Nav Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Chapter"
+        },
+        {
+          "type": "text",
+          "id": "anchor",
+          "label": "Anchor ID",
+          "info": "Section ID to scroll to (without #)"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

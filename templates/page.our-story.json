@@ -1,0 +1,71 @@
+{
+  "sections": {
+    "story_sub_nav": {
+      "type": "story-sub-nav",
+      "blocks": {
+        "link_1": {
+          "type": "nav-link",
+          "settings": {
+            "label": "THE UNIVERSAL TRUTH",
+            "anchor": "universal-truth"
+          }
+        },
+        "link_2": {
+          "type": "nav-link",
+          "settings": {
+            "label": "THE MOLECULE",
+            "anchor": "the-molecule"
+          }
+        },
+        "link_3": {
+          "type": "nav-link",
+          "settings": {
+            "label": "OUR ORIGIN",
+            "anchor": "our-origin"
+          }
+        },
+        "link_4": {
+          "type": "nav-link",
+          "settings": {
+            "label": "THE PROOF",
+            "anchor": "the-proof"
+          }
+        },
+        "link_5": {
+          "type": "nav-link",
+          "settings": {
+            "label": "THE BOARD",
+            "anchor": "the-board"
+          }
+        },
+        "link_6": {
+          "type": "nav-link",
+          "settings": {
+            "label": "TIMELINE",
+            "anchor": "timeline"
+          }
+        },
+        "link_7": {
+          "type": "nav-link",
+          "settings": {
+            "label": "OUR PRODUCTS",
+            "anchor": "our-products"
+          }
+        }
+      },
+      "block_order": [
+        "link_1",
+        "link_2",
+        "link_3",
+        "link_4",
+        "link_5",
+        "link_6",
+        "link_7"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "story_sub_nav"
+  ]
+}
