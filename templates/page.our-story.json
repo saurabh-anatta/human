@@ -130,12 +130,47 @@
         "intro_text": "In 1998, a single molecule changed medicine forever.",
         "scroll_multiplier": 10
       }
+    },
+    "story_the_problem": {
+      "type": "story-the-problem",
+      "blocks": {
+        "callout_1": {
+          "type": "callout",
+          "settings": {
+            "text": "<p>Production begins declining in your <strong>mid-twenties</strong></p>"
+          }
+        },
+        "callout_2": {
+          "type": "callout",
+          "settings": {
+            "text": "<p>Poor diet &amp; lack of exercise <strong>accelerate the drop</strong></p>"
+          }
+        },
+        "callout_3": {
+          "type": "callout",
+          "settings": {
+            "text": "<p>By age 40, you produce <strong>50% or less</strong> than at 20</p>"
+          }
+        }
+      },
+      "block_order": ["callout_1", "callout_2", "callout_3"],
+      "settings": {
+        "eyebrow_text": "THE PROBLEM",
+        "heading_text": "Nitric Oxide production declines with age, beginning in your 20s.",
+        "bg_image_1": "shopify://shop_images/screenshot-2026-07-02-at-11-57-12-am-1-page-overview-for-client-section-108547769.png",
+        "bg_image_2": "shopify://shop_images/screenshot-2026-07-02-at-11-48-56-am-1-page-overview-for-client-section-108547624.png",
+        "bg_image_3": "shopify://shop_images/screenshot-2026-07-02-at-11-50-05-am-1-page-overview-for-client-section-108547658.png",
+        "stat_number": "50%",
+        "stat_text": "of nitric oxide by the average 40-year-old",
+        "scroll_multiplier": 8
+      }
     }
   },
   "order": [
     "story_sub_nav",
     "story_cinematic_hero",
     "story_universal_truth",
-    "story_miracle_molecule"
+    "story_miracle_molecule",
+    "story_the_problem"
   ]
 }
