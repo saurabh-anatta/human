@@ -173,6 +173,73 @@
         "stat_text": "of nitric oxide by the average 40-year-old",
         "scroll_multiplier": 8
       }
+    },
+    "story_the_proof": {
+      "type": "story-the-proof",
+      "blocks": {
+        "card_1": {
+          "type": "proof-card",
+          "settings": {
+            "stat_value": "#1",
+            "description": "Cardiologist recommended beet brand"
+          }
+        },
+        "card_2": {
+          "type": "proof-card",
+          "settings": {
+            "stat_value": "#1",
+            "description": "Doctor recommended beet brand"
+          }
+        },
+        "card_3": {
+          "type": "proof-card",
+          "settings": {
+            "stat_value": "#1",
+            "description": "Beet brand in America"
+          }
+        },
+        "card_4": {
+          "type": "proof-card",
+          "settings": {
+            "stat_value": "6000+",
+            "description": "Medical Practioners"
+          }
+        },
+        "card_5": {
+          "type": "proof-card",
+          "settings": {
+            "stat_value": "2000+",
+            "description": "Pro & collegiate teams"
+          }
+        },
+        "card_6": {
+          "type": "proof-card",
+          "settings": {
+            "stat_value": "12",
+            "description": "Clinical trials"
+          }
+        },
+        "card_7": {
+          "type": "proof-card",
+          "settings": {
+            "stat_value": "100,000+",
+            "description": "5-Star Ratings & Reviews"
+          }
+        },
+        "card_8": {
+          "type": "proof-card",
+          "settings": {
+            "stat_value": "10+",
+            "description": "Inc. 5000 (Consecutive Years)"
+          }
+        }
+      },
+      "block_order": ["card_1", "card_2", "card_3", "card_4", "card_5", "card_6", "card_7", "card_8"],
+      "settings": {
+        "background_image": "shopify://shop_images/kzgm10012-full-1-page-overview-for-client-section-108344829.jpg",
+        "eyebrow_text": "THE PROOF",
+        "scroll_multiplier": 10
+      }
     }
   },
   "order": [
@@ -180,6 +247,7 @@
     "story_cinematic_hero",
     "story_universal_truth",
     "story_miracle_molecule",
-    "story_the_problem"
+    "story_the_problem",
+    "story_the_proof"
   ]
 }

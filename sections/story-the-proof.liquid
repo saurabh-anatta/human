@@ -1,0 +1,309 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+{%- liquid
+  capture inline_styles
+    echo '--spr-scroll-height: ' | append: section.settings.scroll_multiplier | append: '00vh;'
+  endcapture
+-%}
+
+<div class="story-the-proof" id="the-proof" data-anchor="the-proof" style="{{ inline_styles }}">
+
+  {%- comment -%} === Scroll-pinned area === {%- endcomment -%}
+  <div class="story-the-proof__scroll-container">
+    <div class="story-the-proof__stage">
+
+      {%- comment -%} Media frame — JS controls scale + border-radius {%- endcomment -%}
+      <div class="story-the-proof__media-frame">
+        {%- if section.settings.background_image != blank -%}
+          <img
+            class="story-the-proof__image"
+            src="{{ section.settings.background_image | image_url: width: 1920 }}"
+            alt=""
+            width="1920"
+            height="1080"
+            loading="lazy"
+          >
+        {%- endif -%}
+
+        {%- comment -%} Desaturation overlay {%- endcomment -%}
+        <div class="story-the-proof__desat-overlay"></div>
+      </div>
+
+      {%- comment -%} Eyebrow text {%- endcomment -%}
+      {%- if section.settings.eyebrow_text != blank -%}
+        <span class="story-the-proof__eyebrow">
+          {{- section.settings.eyebrow_text -}}
+        </span>
+      {%- endif -%}
+
+      {%- comment -%} Proof cards {%- endcomment -%}
+      <div class="story-the-proof__cards">
+        {%- for block in section.blocks -%}
+          <div
+            class="story-the-proof__card"
+            data-card-index="{{ forloop.index0 }}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.stat_value != blank -%}
+              <span class="story-the-proof__stat-value">
+                {{- block.settings.stat_value -}}
+              </span>
+            {%- endif -%}
+            {%- if block.settings.description != blank -%}
+              <p class="story-the-proof__card-text">
+                {{- block.settings.description -}}
+              </p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const [{ createScrollProgress, prefersReducedMotion }, { initTheProof }] = await Promise.all([
+    import({{ 'story-scroll-utils.js' | asset_url | json }}),
+    import({{ 'story-the-proof.js' | asset_url | json }})
+  ]);
+  const section = document.getElementById('shopify-section-{{ section.id }}');
+  if (section) initTheProof(section, { createScrollProgress, prefersReducedMotion });
+</script>
+
+{% stylesheet %}
+  /* ===== Root ===== */
+  .story-the-proof {
+    background: #F5F5F5;
+    position: relative;
+  }
+
+  /* ===== Scroll container (tall wrapper for pinning) ===== */
+  .story-the-proof__scroll-container {
+    height: var(--spr-scroll-height, 1000vh);
+  }
+
+  /* ===== Sticky stage (viewport-locked) ===== */
+  .story-the-proof__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ===== Media frame — JS controls transform + borderRadius ===== */
+  .story-the-proof__media-frame {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    transform-origin: center center;
+  }
+
+  /* ===== Background image ===== */
+  .story-the-proof__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  /* ===== Desaturation overlay (mix-blend-mode: color) ===== */
+  .story-the-proof__desat-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+  }
+
+  /* ===== Eyebrow ===== */
+  .story-the-proof__eyebrow {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    font-family: var(--font-labels--family), sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* ===== Cards container ===== */
+  .story-the-proof__cards {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 40px 24px;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    align-content: flex-end;
+  }
+
+  /* ===== Individual card ===== */
+  .story-the-proof__card {
+    width: 282px;
+    border-radius: 16px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+  }
+
+  /* ===== Stat value ===== */
+  .story-the-proof__stat-value {
+    font-family: 'Stabil Grotesk', var(--font-heading--family), sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 52px;
+    text-align: center;
+    color: #FFFFFF;
+  }
+
+  /* ===== Card description ===== */
+  .story-the-proof__card-text {
+    font-family: 'Stabil Grotesk', var(--font-body--family), sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  /* ===== Reduced motion: static layout ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .story-the-proof__scroll-container {
+      height: auto;
+    }
+
+    .story-the-proof__stage {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+    }
+
+    .story-the-proof__media-frame {
+      transform: none !important;
+      border-radius: 0 !important;
+    }
+
+    .story-the-proof__desat-overlay {
+      display: none;
+    }
+
+    .story-the-proof__card {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ===== Mobile overrides ===== */
+  @media screen and (max-width: 749px) {
+    .story-the-proof__eyebrow {
+      top: 24px;
+    }
+
+    .story-the-proof__cards {
+      padding: 24px 16px;
+    }
+
+    .story-the-proof__card {
+      width: calc(50% - 12px);
+      padding: 16px;
+    }
+
+    .story-the-proof__stat-value {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .story-the-proof__card-text {
+      font-size: 14px;
+      line-height: 18px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story The Proof",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "THE PROOF"
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "scroll_multiplier",
+      "label": "Scroll distance multiplier",
+      "min": 6,
+      "max": 15,
+      "step": 1,
+      "default": 10,
+      "unit": "x"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "proof-card",
+      "name": "Proof card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "stat_value",
+          "label": "Stat value",
+          "default": "#1"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
