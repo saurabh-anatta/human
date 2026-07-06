@@ -1,0 +1,300 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+{%- liquid
+  assign overlay_decimal = section.settings.overlay_opacity | times: 1.0 | divided_by: 100.0
+  capture inline_styles
+    echo '--sce-overlay-opacity: ' | append: overlay_decimal | append: ';'
+  endcapture
+-%}
+
+<section class="story-cinematic-hero" style="{{ inline_styles }}">
+  {%- if section.settings.poster_image != blank -%}
+    <img
+      class="story-cinematic-hero__poster"
+      src="{{ section.settings.poster_image | image_url: width: 1920 }}"
+      alt="{{ section.settings.heading_text | escape }}"
+      width="1920"
+      height="1080"
+      loading="eager"
+      fetchpriority="high"
+    >
+  {%- endif -%}
+
+  {%- if section.settings.video_url != blank -%}
+    <video
+      class="story-cinematic-hero__video"
+      autoplay
+      muted
+      loop
+      playsinline
+      src="{{ section.settings.video_url }}"
+      {%- if section.settings.poster_image != blank %}
+        poster="{{ section.settings.poster_image | image_url: width: 1920 }}"
+      {%- endif %}
+    ></video>
+  {%- endif -%}
+
+  <div class="story-cinematic-hero__overlay"></div>
+
+  <div class="story-cinematic-hero__content">
+    <h2 class="story-cinematic-hero__heading">
+      {{- section.settings.heading_text -}}
+    </h2>
+
+    <button class="story-cinematic-hero__discover" type="button" aria-label="{{ section.settings.discover_label }}">
+      <span class="story-cinematic-hero__discover-label">
+        {{- section.settings.discover_label -}}
+      </span>
+      <div class="story-cinematic-hero__chevrons">
+        <span class="story-cinematic-hero__chevron">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 9L12 15L18 9" stroke="#767676" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="story-cinematic-hero__chevron">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 9L12 15L18 9" stroke="#767676" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="story-cinematic-hero__chevron">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 9L12 15L18 9" stroke="#767676" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+    </button>
+  </div>
+</section>
+
+<script>
+  (function() {
+    var sectionEl = document.getElementById('shopify-section-{{ section.id }}');
+    if (!sectionEl) return;
+    var btn = sectionEl.querySelector('.story-cinematic-hero__discover');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      var next = sectionEl.nextElementSibling;
+      if (next) {
+        next.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .story-cinematic-hero {
+    position: relative;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background: #000000;
+  }
+
+  .story-cinematic-hero__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  .story-cinematic-hero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  .story-cinematic-hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: rgba(0, 0, 0, var(--sce-overlay-opacity, 0.4));
+  }
+
+  .story-cinematic-hero__content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .story-cinematic-hero__heading {
+    font-family: var(--font-heading--family);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 52px;
+    letter-spacing: -0.5px;
+    color: #FFFFFF;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0;
+    padding-inline: 20px;
+    opacity: 0;
+    animation: heading-rise 1s ease-out 0.3s forwards;
+  }
+
+  @keyframes heading-rise {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .story-cinematic-hero__discover {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .story-cinematic-hero__discover-label {
+    font-family: var(--font-labels--family);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #767676;
+  }
+
+  .story-cinematic-hero__chevrons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .story-cinematic-hero__chevron {
+    display: block;
+    line-height: 0;
+  }
+
+  .story-cinematic-hero__chevron:nth-child(2),
+  .story-cinematic-hero__chevron:nth-child(3) {
+    margin-top: -18px;
+  }
+
+  .story-cinematic-hero__chevron svg {
+    display: block;
+  }
+
+  .story-cinematic-hero__chevron {
+    animation: chevron-cascade 1.5s ease-in-out infinite;
+  }
+
+  .story-cinematic-hero__chevron:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .story-cinematic-hero__chevron:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .story-cinematic-hero__chevron:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes chevron-cascade {
+    0%, 100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(3px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-cinematic-hero__video {
+      display: none;
+    }
+
+    .story-cinematic-hero__heading {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+
+    .story-cinematic-hero__chevron {
+      opacity: 0.6;
+      animation: none;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .story-cinematic-hero__discover {
+      bottom: 40px;
+    }
+
+    .story-cinematic-hero__heading {
+      padding-inline: 16px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Cinematic Hero",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Video URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster image"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "Cardiovascular health is everything health"
+    },
+    {
+      "type": "text",
+      "id": "discover_label",
+      "label": "Discover label",
+      "default": "Discover"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "%"
+    }
+  ]
+}
+{% endschema %}

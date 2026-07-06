@@ -63,9 +63,19 @@
         "link_7"
       ],
       "settings": {}
+    },
+    "story_cinematic_hero": {
+      "type": "story-cinematic-hero",
+      "settings": {
+        "poster_image": "shopify://shop_images/189681-886028714-1-page-overview-for-client-section-108343017.png",
+        "heading_text": "Cardiovascular health is everything health",
+        "discover_label": "Discover",
+        "overlay_opacity": 40
+      }
     }
   },
   "order": [
-    "story_sub_nav"
+    "story_sub_nav",
+    "story_cinematic_hero"
   ]
 }
