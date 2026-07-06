@@ -1,0 +1,349 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+{%- liquid
+  capture inline_styles
+    echo '--sut-scroll-height: ' | append: section.settings.scroll_multiplier | append: '00vh;'
+  endcapture
+-%}
+
+<div class="story-universal-truth" id="universal-truth" data-anchor="universal-truth" style="{{ inline_styles }}">
+  <div class="story-universal-truth__scroll-container">
+    <div class="story-universal-truth__stage">
+
+      <svg class="story-universal-truth__vessels" viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path class="story-universal-truth__vessel" d="M-20,450 C200,430 400,520 720,500 C1040,480 1200,400 1460,380" stroke="#CACACA" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel" d="M-20,550 C180,570 380,480 700,500 C1020,520 1240,600 1460,620" stroke="#CACACA" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel" d="M200,430 C280,350 420,280 580,300 C740,320 820,260 940,220" stroke="#CACACA" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel" d="M580,300 C620,250 700,200 800,180 C900,160 980,190 1060,150" stroke="#CACACA" stroke-width="1" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel" d="M420,280 C380,220 340,160 380,100 C420,40 520,30 600,60" stroke="#CACACA" stroke-width="1" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel" d="M300,570 C360,640 480,720 640,700 C800,680 880,740 1000,780" stroke="#CACACA" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel" d="M640,700 C680,760 740,820 860,840 C980,860 1060,810 1160,850" stroke="#CACACA" stroke-width="1" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel" d="M480,720 C440,790 420,860 460,920 C500,980 580,960 660,940" stroke="#CACACA" stroke-width="1" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel" d="M720,500 C740,420 780,340 840,300 C900,260 960,290 1020,260" stroke="#CACACA" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel" d="M720,500 C700,580 660,660 600,700 C540,740 480,710 420,740" stroke="#CACACA" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+
+      <div class="story-universal-truth__glass"></div>
+
+      <div class="story-universal-truth__content">
+        {%- if section.settings.eyebrow_text != blank -%}
+          <span class="story-universal-truth__eyebrow">
+            {{- section.settings.eyebrow_text -}}
+          </span>
+        {%- endif -%}
+
+        <h2 class="story-universal-truth__heading">
+          {{- section.settings.heading_text -}}
+        </h2>
+
+        <div class="story-universal-truth__lines">
+          {%- if section.settings.line_1 != blank -%}
+            <p class="story-universal-truth__line" data-line="1">{{ section.settings.line_1 }}</p>
+          {%- endif -%}
+          {%- if section.settings.line_2 != blank -%}
+            <p class="story-universal-truth__line" data-line="2">{{ section.settings.line_2 }}</p>
+          {%- endif -%}
+          {%- if section.settings.line_3 != blank -%}
+            <p class="story-universal-truth__line" data-line="3">{{ section.settings.line_3 }}</p>
+          {%- endif -%}
+          {%- if section.settings.line_4 != blank -%}
+            <p class="story-universal-truth__line" data-line="4">{{ section.settings.line_4 }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.closing_text != blank -%}
+          <p class="story-universal-truth__closing">
+            {{- section.settings.closing_text -}}
+          </p>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const [{ createScrollProgress, prefersReducedMotion }, { initUniversalTruth }] = await Promise.all([
+    import({{ 'story-scroll-utils.js' | asset_url | json }}),
+    import({{ 'story-universal-truth.js' | asset_url | json }})
+  ]);
+  const section = document.getElementById('shopify-section-{{ section.id }}');
+  if (section) initUniversalTruth(section, { createScrollProgress, prefersReducedMotion });
+</script>
+
+{% stylesheet %}
+  /* ===== Root ===== */
+  .story-universal-truth {
+    background: #F5F5F5;
+    position: relative;
+  }
+
+  /* ===== Scroll container (tall wrapper for pinning) ===== */
+  .story-universal-truth__scroll-container {
+    height: var(--sut-scroll-height, 500vh);
+  }
+
+  /* ===== Sticky stage (viewport-locked) ===== */
+  .story-universal-truth__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ===== SVG vessel background ===== */
+  .story-universal-truth__vessels {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .story-universal-truth__vessel {
+    stroke-dasharray: 9999;
+    stroke-dashoffset: 9999;
+  }
+
+  /* ===== Frosted glass overlay ===== */
+  .story-universal-truth__glass {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(31px);
+    -webkit-backdrop-filter: blur(31px);
+    pointer-events: none;
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    .story-universal-truth__glass {
+      background: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  /* ===== Content layer ===== */
+  .story-universal-truth__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    padding-inline: 20px;
+  }
+
+  /* ===== Eyebrow ===== */
+  .story-universal-truth__eyebrow {
+    font-family: var(--font-labels--family);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #000000;
+    margin-block-end: 20px;
+  }
+
+  /* ===== Heading ===== */
+  .story-universal-truth__heading {
+    font-family: var(--font-heading--family);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #767676;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0;
+    transform-origin: center center;
+  }
+
+  /* ===== Lines container ===== */
+  .story-universal-truth__lines {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin-block-start: 8px;
+  }
+
+  /* ===== Individual bold lines ===== */
+  .story-universal-truth__line {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 60px;
+    color: #767676;
+    text-align: center;
+    margin: 0;
+  }
+
+  /* ===== Closing text ===== */
+  .story-universal-truth__closing {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 60px;
+    letter-spacing: -1px;
+    color: #767676;
+    text-align: center;
+    transform-origin: center center;
+    pointer-events: none;
+    padding-inline: 20px;
+  }
+
+  /* ===== Reduced motion: static layout ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .story-universal-truth__scroll-container {
+      height: auto;
+    }
+
+    .story-universal-truth__stage {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+    }
+
+    .story-universal-truth__heading,
+    .story-universal-truth__eyebrow,
+    .story-universal-truth__line {
+      opacity: 1;
+      transform: none;
+    }
+
+    .story-universal-truth__closing {
+      position: relative;
+      inset: auto;
+      display: block;
+      opacity: 1;
+      transform: none;
+      margin-block-start: 24px;
+    }
+
+    .story-universal-truth__vessel {
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+    }
+
+    .story-universal-truth__glass {
+      display: none;
+    }
+  }
+
+  /* ===== Mobile overrides ===== */
+  @media screen and (max-width: 749px) {
+    .story-universal-truth__heading {
+      font-size: 24px;
+      line-height: 36px;
+    }
+
+    .story-universal-truth__line {
+      font-size: 36px;
+      line-height: 40px;
+    }
+
+    .story-universal-truth__closing {
+      font-size: 36px;
+      line-height: 40px;
+    }
+
+    .story-universal-truth__content {
+      padding-inline: 16px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Universal Truth",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "THE UNIVERSAL TRUTH"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "Everything runs on one thing"
+    },
+    {
+      "type": "header",
+      "content": "Bold lines"
+    },
+    {
+      "type": "text",
+      "id": "line_1",
+      "label": "Line 1",
+      "default": "Your Energy."
+    },
+    {
+      "type": "text",
+      "id": "line_2",
+      "label": "Line 2",
+      "default": "Your Focus."
+    },
+    {
+      "type": "text",
+      "id": "line_3",
+      "label": "Line 3",
+      "default": "Your Endurance."
+    },
+    {
+      "type": "text",
+      "id": "line_4",
+      "label": "Line 4",
+      "default": "Your Longevity."
+    },
+    {
+      "type": "header",
+      "content": "Closing"
+    },
+    {
+      "type": "text",
+      "id": "closing_text",
+      "label": "Closing text",
+      "default": "It all starts with blood flow."
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "scroll_multiplier",
+      "label": "Scroll distance multiplier",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "unit": "x"
+    }
+  ]
+}
+{% endschema %}

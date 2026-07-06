@@ -72,10 +72,24 @@
         "discover_label": "Discover",
         "overlay_opacity": 40
       }
+    },
+    "story_universal_truth": {
+      "type": "story-universal-truth",
+      "settings": {
+        "eyebrow_text": "THE UNIVERSAL TRUTH",
+        "heading_text": "Everything runs on one thing",
+        "line_1": "Your Energy.",
+        "line_2": "Your Focus.",
+        "line_3": "Your Endurance.",
+        "line_4": "Your Longevity.",
+        "closing_text": "It all starts with blood flow.",
+        "scroll_multiplier": 5
+      }
     }
   },
   "order": [
     "story_sub_nav",
-    "story_cinematic_hero"
+    "story_cinematic_hero",
+    "story_universal_truth"
   ]
 }
