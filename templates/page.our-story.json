@@ -164,6 +164,20 @@
         "stat_text": "of nitric oxide by the average 40-year-old",
         "scroll_multiplier": 8
       }
+    },
+    "story_origin": {
+      "type": "story-origin",
+      "settings": {
+        "eyebrow_text": "ORIGIN",
+        "intro_1_subtitle": "We asked the question that no one else asked:",
+        "intro_1_heading": "How can we get the body to make more nitric oxide?",
+        "intro_2_heading": "We found the answer and entrusted it to a team who would assume the mantle, and build a business capable of the mission.",
+        "poster_image": "shopify://shop_images/gif-page-overview-for-client-section-108343504.png",
+        "overlay_heading": "Founded in partnership with The University of Texas",
+        "overlay_subtitle": "A program created by a Nobel Laureate + academic researchers.",
+        "watch_label": "WATCH DOCUMENTARY",
+        "scroll_multiplier": 8
+      }
     }
   },
   "order": [
@@ -171,6 +185,7 @@
     "story_cinematic_hero",
     "story_universal_truth",
     "story_miracle_molecule",
-    "story_the_problem"
+    "story_the_problem",
+    "story_origin"
   ]
 }

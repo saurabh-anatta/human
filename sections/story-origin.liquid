@@ -1,0 +1,651 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+{%- liquid
+  capture inline_styles
+    echo '--soo-scroll-height: ' | append: section.settings.scroll_multiplier | append: '00vh;'
+  endcapture
+-%}
+
+<div class="story-origin" id="our-origin" data-anchor="our-origin" style="{{ inline_styles }}">
+
+  {%- comment -%} === Intro block 1 (normal flow) === {%- endcomment -%}
+  <div class="story-origin__intro" data-reveal>
+    {%- if section.settings.eyebrow_text != blank -%}
+      <span class="story-origin__eyebrow">
+        {{- section.settings.eyebrow_text -}}
+      </span>
+    {%- endif -%}
+
+    {%- if section.settings.intro_1_subtitle != blank -%}
+      <p class="story-origin__intro-subtitle">
+        {{- section.settings.intro_1_subtitle -}}
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.intro_1_heading != blank -%}
+      <h2 class="story-origin__intro-heading">
+        {{- section.settings.intro_1_heading -}}
+      </h2>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} === Intro block 2 (normal flow) === {%- endcomment -%}
+  <div class="story-origin__intro story-origin__intro--bold" data-reveal>
+    {%- if section.settings.intro_2_heading != blank -%}
+      <h2 class="story-origin__intro-heading story-origin__intro-heading--bold">
+        {{- section.settings.intro_2_heading -}}
+      </h2>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} === Scroll-pinned video area === {%- endcomment -%}
+  <div class="story-origin__scroll-container">
+    <div class="story-origin__stage">
+
+      {%- comment -%} Poster image (fallback behind video) {%- endcomment -%}
+      {%- if section.settings.poster_image != blank -%}
+        <img
+          class="story-origin__poster"
+          src="{{ section.settings.poster_image | image_url: width: 1920 }}"
+          alt=""
+          width="1920"
+          height="1080"
+          loading="lazy"
+        >
+      {%- endif -%}
+
+      {%- comment -%} Background autoplay video {%- endcomment -%}
+      {%- if section.settings.video_url != blank -%}
+        <video
+          class="story-origin__video"
+          autoplay
+          muted
+          loop
+          playsinline
+          src="{{ section.settings.video_url }}"
+          {%- if section.settings.poster_image != blank %}
+            poster="{{ section.settings.poster_image | image_url: width: 1920 }}"
+          {%- endif %}
+        ></video>
+      {%- endif -%}
+
+      {%- comment -%} Desaturation overlay {%- endcomment -%}
+      <div class="story-origin__desat-overlay"></div>
+
+      {%- comment -%} Dark overlay (JS-controlled) {%- endcomment -%}
+      <div class="story-origin__dark-overlay"></div>
+
+      {%- comment -%} Content layer {%- endcomment -%}
+      <div class="story-origin__content">
+        <img
+          class="story-origin__logo"
+          src="{{ 'humann-ut-logo-white-1.svg' | asset_url }}"
+          alt="HumanN UT logo"
+          width="264"
+          height="47"
+          loading="lazy"
+          style="width:264px;height:47px"
+        >
+
+        {%- if section.settings.overlay_heading != blank -%}
+          <h2 class="story-origin__overlay-heading">
+            {{- section.settings.overlay_heading -}}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.overlay_subtitle != blank -%}
+          <p class="story-origin__overlay-subtitle">
+            {{- section.settings.overlay_subtitle -}}
+          </p>
+        {%- endif -%}
+
+        {%- if section.settings.watch_url != blank -%}
+          <button
+            class="story-origin__watch-btn"
+            type="button"
+            data-watch-btn
+            aria-label="{{ section.settings.watch_label }}"
+          >
+            {{- section.settings.watch_label -}}
+          </button>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Play/pause toggle {%- endcomment -%}
+      {%- if section.settings.video_url != blank -%}
+        <button
+          class="story-origin__toggle"
+          type="button"
+          data-video-toggle
+          aria-label="Pause background video"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect class="story-origin__toggle-pause-bar" x="4" y="3" width="4" height="14" rx="1" fill="#FFFFFF"/>
+            <rect class="story-origin__toggle-pause-bar" x="12" y="3" width="4" height="14" rx="1" fill="#FFFFFF"/>
+            <polygon class="story-origin__toggle-play-icon" points="5,3 17,10 5,17" fill="#FFFFFF"/>
+          </svg>
+        </button>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+  {%- comment -%} === Modal for Watch video === {%- endcomment -%}
+  {%- if section.settings.watch_url != blank -%}
+    <dialog class="story-origin__modal">
+      <div class="story-origin__modal-inner">
+        <button class="story-origin__modal-close" type="button" data-modal-close aria-label="Close video">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <line x1="6" y1="6" x2="18" y2="18" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18" y1="6" x2="6" y2="18" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <video
+          class="story-origin__modal-video"
+          controls
+          playsinline
+          src="{{ section.settings.watch_url }}"
+          {%- if section.settings.poster_image != blank %}
+            poster="{{ section.settings.poster_image | image_url: width: 1920 }}"
+          {%- endif %}
+        ></video>
+      </div>
+    </dialog>
+  {%- endif -%}
+
+</div>
+
+<script type="module">
+  const [{ createScrollProgress, createRevealObserver, prefersReducedMotion }, { initOrigin }] = await Promise.all([
+    import({{ 'story-scroll-utils.js' | asset_url | json }}),
+    import({{ 'story-origin.js' | asset_url | json }})
+  ]);
+  const section = document.getElementById('shopify-section-{{ section.id }}');
+  if (section) initOrigin(section, { createScrollProgress, createRevealObserver, prefersReducedMotion });
+</script>
+
+{% stylesheet %}
+  /* ===== Root ===== */
+  .story-origin {
+    background: #767676;
+    position: relative;
+  }
+
+  /* ===== Intro blocks (normal flow, not pinned) ===== */
+  .story-origin__intro {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 40px 20px;
+    background: #767676;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .story-origin__intro.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .story-origin__intro--bold {
+    transition-delay: 0s;
+  }
+
+  /* ===== Eyebrow ===== */
+  .story-origin__eyebrow {
+    font-family: var(--font-labels--family), sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #F5F5F5;
+    text-align: center;
+  }
+
+  /* ===== Intro subtitle (32px heading) ===== */
+  .story-origin__intro-subtitle {
+    font-family: var(--font-heading--family), sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 40px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    text-align: center;
+    max-width: 926px;
+    margin: 0;
+  }
+
+  /* ===== Intro heading (60px Moderat Serif) ===== */
+  .story-origin__intro-heading {
+    font-family: var(--font-heading--family), sans-serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    text-align: center;
+    max-width: 926px;
+    margin: 0;
+  }
+
+  /* ===== Intro heading bold variant (Stabil Grotesk 700) ===== */
+  .story-origin__intro-heading--bold {
+    font-family: 'Stabil Grotesk', var(--font-heading--family), sans-serif;
+    font-weight: 700;
+  }
+
+  /* ===== Scroll container (tall wrapper for pinning) ===== */
+  .story-origin__scroll-container {
+    height: var(--soo-scroll-height, 800vh);
+  }
+
+  /* ===== Sticky stage (viewport-locked) ===== */
+  .story-origin__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ===== Poster image ===== */
+  .story-origin__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* ===== Background video ===== */
+  .story-origin__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  /* ===== Desaturation overlay (mix-blend-mode:color) ===== */
+  .story-origin__desat-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+  }
+
+  /* ===== Dark overlay (JS controls bg-color) ===== */
+  .story-origin__dark-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* ===== Content layer ===== */
+  .story-origin__content {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 72px;
+    padding-inline: 160px;
+    text-align: center;
+  }
+
+  /* ===== UT Logo ===== */
+  .story-origin__logo {
+    display: block;
+    opacity: 0;
+  }
+
+  /* ===== Overlay heading (48px) ===== */
+  .story-origin__overlay-heading {
+    font-family: var(--font-heading--family), sans-serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    text-align: center;
+    max-width: 1120px;
+    margin: 0;
+    opacity: 0;
+  }
+
+  /* ===== Overlay subtitle (24px) ===== */
+  .story-origin__overlay-subtitle {
+    font-family: var(--font-heading--family), sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    text-align: center;
+    max-width: 1120px;
+    margin: -56px 0 0;
+    opacity: 0;
+  }
+
+  /* ===== Watch button ===== */
+  .story-origin__watch-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #FFFFFF;
+    border-radius: 28px;
+    padding: 12px 20px;
+    background: transparent;
+    color: #FFFFFF;
+    font-family: var(--font-labels--family), sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .story-origin__watch-btn:hover {
+    background: #FFFFFF;
+    color: #000000;
+  }
+
+  /* ===== Play/pause toggle ===== */
+  .story-origin__toggle {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    z-index: 5;
+    width: 32px;
+    height: 32px;
+    border-radius: 28px;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    cursor: pointer;
+  }
+
+  .story-origin__toggle-play-icon {
+    display: none;
+  }
+
+  .story-origin__toggle.is-paused .story-origin__toggle-pause-bar {
+    display: none;
+  }
+
+  .story-origin__toggle.is-paused .story-origin__toggle-play-icon {
+    display: block;
+  }
+
+  /* ===== Modal dialog ===== */
+  .story-origin__modal {
+    border: none;
+    background: transparent;
+    padding: 0;
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 100%;
+  }
+
+  .story-origin__modal[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .story-origin__modal::backdrop {
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  .story-origin__modal-inner {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .story-origin__modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    z-index: 1;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .story-origin__modal-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    max-height: 80vh;
+    background: #000000;
+  }
+
+  /* ===== Reduced motion: static layout ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .story-origin__intro {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .story-origin__scroll-container {
+      height: auto;
+    }
+
+    .story-origin__stage {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+    }
+
+    .story-origin__video {
+      display: none;
+    }
+
+    .story-origin__desat-overlay {
+      display: none;
+    }
+
+    .story-origin__dark-overlay {
+      position: relative;
+      height: 0;
+      background: none;
+    }
+
+    .story-origin__poster {
+      position: relative;
+      inset: auto;
+      height: auto;
+      max-height: 60vh;
+    }
+
+    .story-origin__content {
+      padding: 60px 20px;
+    }
+
+    .story-origin__logo,
+    .story-origin__overlay-heading,
+    .story-origin__overlay-subtitle {
+      opacity: 1;
+    }
+
+    .story-origin__watch-btn {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  /* ===== Mobile overrides ===== */
+  @media screen and (max-width: 749px) {
+    .story-origin__intro {
+      padding-inline: 16px;
+    }
+
+    .story-origin__intro-heading {
+      font-size: 36px;
+      line-height: 40px;
+    }
+
+    .story-origin__intro-subtitle {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    .story-origin__content {
+      padding-inline: 24px;
+      gap: 48px;
+    }
+
+    .story-origin__logo {
+      width: 200px;
+      height: auto;
+    }
+
+    .story-origin__overlay-heading {
+      font-size: 32px;
+      line-height: 38px;
+    }
+
+    .story-origin__overlay-subtitle {
+      font-size: 18px;
+      line-height: 24px;
+      margin-top: -32px;
+    }
+
+    .story-origin__toggle {
+      bottom: 24px;
+      right: 24px;
+    }
+
+    .story-origin__modal {
+      max-width: 95vw;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Origin",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "ORIGIN"
+    },
+    {
+      "type": "header",
+      "content": "Intro block 1"
+    },
+    {
+      "type": "textarea",
+      "id": "intro_1_subtitle",
+      "label": "Intro subtitle",
+      "default": "We asked the question that no one else asked:"
+    },
+    {
+      "type": "textarea",
+      "id": "intro_1_heading",
+      "label": "Intro heading",
+      "default": "How can we get the body to make more nitric oxide?"
+    },
+    {
+      "type": "header",
+      "content": "Intro block 2"
+    },
+    {
+      "type": "textarea",
+      "id": "intro_2_heading",
+      "label": "Bold heading",
+      "default": "We found the answer and entrusted it to a team who would assume the mantle, and build a business capable of the mission."
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Background video URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster / fallback image"
+    },
+    {
+      "type": "header",
+      "content": "Video overlay"
+    },
+    {
+      "type": "textarea",
+      "id": "overlay_heading",
+      "label": "Overlay heading",
+      "default": "Founded in partnership with The University of Texas"
+    },
+    {
+      "type": "textarea",
+      "id": "overlay_subtitle",
+      "label": "Overlay subtitle",
+      "default": "A program created by a Nobel Laureate + academic researchers."
+    },
+    {
+      "type": "text",
+      "id": "watch_label",
+      "label": "Watch button label",
+      "default": "WATCH DOCUMENTARY"
+    },
+    {
+      "type": "url",
+      "id": "watch_url",
+      "label": "Watch video URL"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "scroll_multiplier",
+      "label": "Scroll distance multiplier",
+      "min": 6,
+      "max": 15,
+      "step": 1,
+      "default": 8,
+      "unit": "x"
+    }
+  ]
+}
+{% endschema %}
