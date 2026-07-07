@@ -1,0 +1,316 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+{%- liquid
+  capture inline_styles
+    echo '--smc-scroll-height: ' | append: section.settings.scroll_multiplier | append: '00vh;'
+  endcapture
+-%}
+
+<div class="story-mission-close" id="mission-close" data-anchor="mission-close" style="{{ inline_styles }}">
+
+  {%- comment -%} === Scroll-pinned video area === {%- endcomment -%}
+  <div class="story-mission-close__scroll-container">
+    <div class="story-mission-close__stage">
+
+      {%- comment -%} Poster image (fallback behind video) {%- endcomment -%}
+      {%- if section.settings.poster_image != blank -%}
+        <img
+          class="story-mission-close__poster"
+          src="{{ section.settings.poster_image | image_url: width: 1920 }}"
+          alt=""
+          width="1920"
+          height="1080"
+          loading="lazy"
+        >
+      {%- endif -%}
+
+      {%- comment -%} Background autoplay video {%- endcomment -%}
+      {%- if section.settings.video_url != blank -%}
+        <video
+          class="story-mission-close__video"
+          autoplay
+          muted
+          loop
+          playsinline
+          src="{{ section.settings.video_url }}"
+          {%- if section.settings.poster_image != blank %}
+            poster="{{ section.settings.poster_image | image_url: width: 1920 }}"
+          {%- endif %}
+        ></video>
+      {%- endif -%}
+
+      {%- comment -%} Desaturation overlay {%- endcomment -%}
+      <div class="story-mission-close__desat-overlay"></div>
+
+      {%- comment -%} Text block 1 (JS-controlled opacity) {%- endcomment -%}
+      {%- if section.settings.text_block_1 != blank -%}
+        <div class="story-mission-close__text-block story-mission-close__text-block--1">
+          <p class="story-mission-close__text">{{ section.settings.text_block_1 | newline_to_br }}</p>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Text block 2 (JS-controlled opacity) {%- endcomment -%}
+      {%- if section.settings.text_block_2 != blank -%}
+        <div class="story-mission-close__text-block story-mission-close__text-block--2">
+          <p class="story-mission-close__text">{{ section.settings.text_block_2 | newline_to_br }}</p>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Play/pause toggle {%- endcomment -%}
+      {%- if section.settings.video_url != blank -%}
+        <button
+          class="story-mission-close__toggle"
+          type="button"
+          data-video-toggle
+          aria-label="Pause background video"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect class="story-mission-close__toggle-pause-bar" x="4" y="3" width="4" height="14" rx="1" fill="#FFFFFF"/>
+            <rect class="story-mission-close__toggle-pause-bar" x="12" y="3" width="4" height="14" rx="1" fill="#FFFFFF"/>
+            <polygon class="story-mission-close__toggle-play-icon" points="5,3 17,10 5,17" fill="#FFFFFF"/>
+          </svg>
+        </button>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  const [{ createScrollProgress, prefersReducedMotion }, { initMissionClose }] = await Promise.all([
+    import({{ 'story-scroll-utils.js' | asset_url | json }}),
+    import({{ 'story-mission-close.js' | asset_url | json }})
+  ]);
+  const section = document.getElementById('shopify-section-{{ section.id }}');
+  if (section) initMissionClose(section, { createScrollProgress, prefersReducedMotion });
+</script>
+
+{% stylesheet %}
+  /* ===== Root ===== */
+  .story-mission-close {
+    background: #F5F5F5;
+    position: relative;
+  }
+
+  /* ===== Scroll container (tall wrapper for pinning) ===== */
+  .story-mission-close__scroll-container {
+    height: var(--smc-scroll-height, 1000vh);
+  }
+
+  /* ===== Sticky stage (viewport-locked) ===== */
+  .story-mission-close__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ===== Poster image ===== */
+  .story-mission-close__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* ===== Background video ===== */
+  .story-mission-close__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  /* ===== Desaturation overlay (mix-blend-mode:color) ===== */
+  .story-mission-close__desat-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+  }
+
+  /* ===== Text blocks (JS-controlled opacity) ===== */
+  .story-mission-close__text-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-inline: 120px;
+    box-sizing: border-box;
+  }
+
+  .story-mission-close__text {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 60px;
+    letter-spacing: -1px;
+    color: #A0A0A0;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0;
+  }
+
+  /* ===== Play/pause toggle ===== */
+  .story-mission-close__toggle {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    z-index: 5;
+    width: 32px;
+    height: 32px;
+    border-radius: 28px;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    cursor: pointer;
+  }
+
+  .story-mission-close__toggle-play-icon {
+    display: none;
+  }
+
+  .story-mission-close__toggle.is-paused .story-mission-close__toggle-pause-bar {
+    display: none;
+  }
+
+  .story-mission-close__toggle.is-paused .story-mission-close__toggle-play-icon {
+    display: block;
+  }
+
+  /* ===== Reduced motion: static layout ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .story-mission-close__scroll-container {
+      height: auto;
+    }
+
+    .story-mission-close__stage {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+    }
+
+    .story-mission-close__video {
+      display: none;
+    }
+
+    .story-mission-close__desat-overlay {
+      display: none;
+    }
+
+    .story-mission-close__poster {
+      position: relative;
+      inset: auto;
+      height: auto;
+      max-height: 60vh;
+    }
+
+    .story-mission-close__text-block {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+      opacity: 1 !important;
+      padding: 60px 20px;
+    }
+
+    .story-mission-close__toggle {
+      display: none;
+    }
+  }
+
+  /* ===== Mobile overrides ===== */
+  @media screen and (max-width: 749px) {
+    .story-mission-close__text-block {
+      padding-inline: 16px;
+    }
+
+    .story-mission-close__text {
+      font-size: 36px;
+      line-height: 40px;
+    }
+
+    .story-mission-close__toggle {
+      bottom: 24px;
+      right: 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Mission Close",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "textarea",
+      "id": "text_block_1",
+      "label": "Text block 1",
+      "default": "There isn't a single person on Earth\nwho doesn't benefit\nfrom better blood flow"
+    },
+    {
+      "type": "textarea",
+      "id": "text_block_2",
+      "label": "Text block 2",
+      "default": "We're here to make cardiovascular health central. Not supplemental."
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Background video URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster / fallback image"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "scroll_multiplier",
+      "label": "Scroll distance multiplier",
+      "min": 6,
+      "max": 15,
+      "step": 1,
+      "default": 10,
+      "unit": "x"
+    }
+  ]
+}
+{% endschema %}

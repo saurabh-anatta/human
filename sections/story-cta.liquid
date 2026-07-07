@@ -1,0 +1,295 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+<section class="story-cta">
+
+  {%- comment -%} Background image {%- endcomment -%}
+  {%- if section.settings.background_image != blank -%}
+    <img
+      class="story-cta__bg-image"
+      src="{{ section.settings.background_image | image_url: width: 1920 }}"
+      alt=""
+      width="1920"
+      height="1080"
+      loading="lazy"
+    >
+  {%- endif -%}
+
+  {%- comment -%} Desaturation overlay {%- endcomment -%}
+  <div class="story-cta__desat-overlay"></div>
+
+  {%- comment -%} Content layer {%- endcomment -%}
+  <div class="story-cta__content" data-reveal>
+
+    {%- if section.settings.heading_text != blank -%}
+      <h2 class="story-cta__heading">{{ section.settings.heading_text }}</h2>
+    {%- endif -%}
+
+    <div class="story-cta__buttons">
+      {%- if section.settings.cta_primary_label != blank -%}
+        <a
+          class="story-cta__btn story-cta__btn--primary"
+          {%- if section.settings.cta_primary_url != blank %}
+            href="{{ section.settings.cta_primary_url }}"
+          {%- endif %}
+        >
+          {{- section.settings.cta_primary_label -}}
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.cta_secondary_label != blank -%}
+        <a
+          class="story-cta__btn story-cta__btn--secondary"
+          {%- if section.settings.cta_secondary_url != blank %}
+            href="{{ section.settings.cta_secondary_url }}"
+          {%- endif %}
+        >
+          {{- section.settings.cta_secondary_label -}}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.logo_image != blank -%}
+      <img
+        class="story-cta__logo"
+        src="{{ section.settings.logo_image | image_url: width: 756 }}"
+        alt=""
+        width="378"
+        height="92"
+        loading="lazy"
+      >
+    {%- endif -%}
+
+  </div>
+
+</section>
+
+<script type="module">
+  const [{ createRevealObserver }, { initCta }] = await Promise.all([
+    import({{ 'story-scroll-utils.js' | asset_url | json }}),
+    import({{ 'story-cta.js' | asset_url | json }})
+  ]);
+  const section = document.getElementById('shopify-section-{{ section.id }}');
+  if (section) initCta(section, { createRevealObserver });
+</script>
+
+{% stylesheet %}
+  /* ===== Root ===== */
+  .story-cta {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ===== Background image ===== */
+  .story-cta__bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* ===== Desaturation overlay ===== */
+  .story-cta__desat-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+  }
+
+  /* ===== Content layer ===== */
+  .story-cta__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 60px 40px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .story-cta__content.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ===== Heading ===== */
+  .story-cta__heading {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 60px;
+    letter-spacing: -1px;
+    color: #767676;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0;
+  }
+
+  /* ===== Buttons container ===== */
+  .story-cta__buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ===== Button base ===== */
+  .story-cta__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 28px;
+    padding: 16px 28px;
+    font-family: var(--font-labels--family), sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  /* ===== Primary button ===== */
+  .story-cta__btn--primary {
+    background: #BC0F0F;
+    color: #FFFFFF;
+    border: none;
+  }
+
+  .story-cta__btn--primary:hover {
+    opacity: 0.9;
+  }
+
+  /* ===== Secondary button ===== */
+  .story-cta__btn--secondary {
+    background: transparent;
+    color: #414141;
+    border: 2px solid #A0A0A0;
+  }
+
+  .story-cta__btn--secondary:hover {
+    background: #414141;
+    color: #FFFFFF;
+  }
+
+  /* ===== Logo ===== */
+  .story-cta__logo {
+    display: block;
+    width: 378px;
+    height: auto;
+  }
+
+  /* ===== Reduced motion: static layout ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .story-cta__content {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* ===== Mobile overrides ===== */
+  @media screen and (max-width: 749px) {
+    .story-cta__content {
+      padding: 60px 24px;
+    }
+
+    .story-cta__heading {
+      font-size: 22px;
+      line-height: 32px;
+    }
+
+    .story-cta__buttons {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .story-cta__logo {
+      max-width: 280px;
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story CTA",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "textarea",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "Your cardiovascular routine starts here."
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "cta_primary_label",
+      "label": "Primary button label",
+      "default": "GET STARTED"
+    },
+    {
+      "type": "url",
+      "id": "cta_primary_url",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_label",
+      "label": "Secondary button label",
+      "default": "LEARN MORE"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_url",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image"
+    }
+  ]
+}
+{% endschema %}

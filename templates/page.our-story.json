@@ -361,6 +361,25 @@
         "poster_image": "shopify://shop_images/turmeric-2862-14-1-page-overview-for-client-section-108346096.png",
         "scroll_multiplier": 10
       }
+    },
+    "story_mission_close": {
+      "type": "story-mission-close",
+      "settings": {
+        "poster_image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-27-pm-2-page-overview-for-client-section-108344923.png",
+        "text_block_1": "There isn't a single person on Earth\nwho doesn't benefit\nfrom better blood flow",
+        "text_block_2": "We're here to make cardiovascular health central. Not supplemental.",
+        "scroll_multiplier": 10
+      }
+    },
+    "story_cta": {
+      "type": "story-cta",
+      "settings": {
+        "heading_text": "Your cardiovascular routine starts here.",
+        "cta_primary_label": "GET STARTED",
+        "cta_secondary_label": "LEARN MORE",
+        "background_image": "shopify://shop_images/sbhczs-omi-19-1-page-overview-for-client-section-108344953.png",
+        "logo_image": "shopify://shop_images/screenshot-2026-06-30-at-1-09-31-pm-1-page-overview-for-client-section-108344962.png"
+      }
     }
   },
   "order": [
@@ -372,6 +391,8 @@
     "story_the_proof",
     "story_the_board",
     "story_timeline",
-    "story_product_reveal"
+    "story_product_reveal",
+    "story_mission_close",
+    "story_cta"
   ]
 }
