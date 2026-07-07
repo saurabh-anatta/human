@@ -1,0 +1,392 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+<div class="story-timeline" id="timeline" data-anchor="timeline">
+
+  {%- comment -%} === Heading area === {%- endcomment -%}
+  <div class="story-timeline__heading-area">
+    {%- if section.settings.heading_text != blank -%}
+      <h2 class="story-timeline__heading" data-reveal="heading">
+        {{ section.settings.heading_text | newline_to_br }}
+      </h2>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} === Milestone carousel === {%- endcomment -%}
+  {%- if section.blocks.size > 0 -%}
+    <div class="story-timeline__carousel" data-reveal>
+      <div class="story-timeline__track">
+        {%- for block in section.blocks -%}
+          <div class="story-timeline__card" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <div class="story-timeline__card-img">
+                <img
+                  src="{{ block.settings.image | image_url: width: 700 }}"
+                  alt="{{ block.settings.title | escape }}"
+                  width="306"
+                  height="200"
+                  loading="lazy"
+                >
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.year != blank -%}
+              <span class="story-timeline__card-year">
+                {{- block.settings.year -}}
+              </span>
+            {%- endif -%}
+
+            {%- if block.settings.title != blank -%}
+              <h3 class="story-timeline__card-title">
+                {{- block.settings.title -}}
+              </h3>
+            {%- endif -%}
+
+            {%- if block.settings.description != blank -%}
+              <p class="story-timeline__card-desc">
+                {{- block.settings.description -}}
+              </p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} Carousel navigation arrows {%- endcomment -%}
+      <div class="story-timeline__nav">
+        <button
+          type="button"
+          class="story-timeline__nav-btn story-timeline__nav-btn--prev"
+          aria-label="Previous milestone"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="story-timeline__nav-btn story-timeline__nav-btn--next"
+          aria-label="Next milestone"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  {%- endif -%}
+
+</div>
+
+<script type="module">
+  const [{ createRevealObserver, prefersReducedMotion }, { initTimeline }] = await Promise.all([
+    import({{ 'story-scroll-utils.js' | asset_url | json }}),
+    import({{ 'story-timeline.js' | asset_url | json }})
+  ]);
+  const section = document.getElementById('shopify-section-{{ section.id }}');
+  if (section) initTimeline(section, { createRevealObserver, prefersReducedMotion });
+</script>
+
+{% stylesheet %}
+  /* ===== Root ===== */
+  .story-timeline {
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    padding: 80px 0 100px;
+  }
+
+  /* ===== Heading area ===== */
+  .story-timeline__heading-area {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-block-end: 48px;
+    padding: 0 24px;
+  }
+
+  /* Decorative blue accent line above heading */
+  .story-timeline__heading-area::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1.6deg);
+    width: 80px;
+    border-top: 3px solid #2983DC;
+    pointer-events: none;
+  }
+
+  /* ===== Heading ===== */
+  .story-timeline__heading {
+    font-family: 'Stabil Grotesk', var(--font-heading--family), sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 60px;
+    color: #767676;
+    text-align: center;
+    max-width: 500px;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .story-timeline__heading.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== Carousel container ===== */
+  .story-timeline__carousel {
+    position: relative;
+    overflow: hidden;
+    background: #F5F5F5;
+    padding: 48px 0 60px;
+    transform: translateX(-110%);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .story-timeline__carousel.is-visible {
+    transform: translateX(0);
+  }
+
+  /* ===== Track ===== */
+  .story-timeline__track {
+    display: flex;
+    gap: 24px;
+    padding-inline-start: max(24px, calc((100vw - 1200px) / 2));
+    padding-inline-end: 24px;
+    transition: transform 0.4s ease;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .story-timeline__track:active {
+    cursor: grabbing;
+  }
+
+  /* ===== Card ===== */
+  .story-timeline__card {
+    flex: 0 0 306px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ===== Card image ===== */
+  .story-timeline__card-img {
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 306 / 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .story-timeline__card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ===== Card year ===== */
+  .story-timeline__card-year {
+    font-family: 'Stabil Grotesk', var(--font-heading--family), sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 36px;
+    color: #2983DC;
+  }
+
+  /* ===== Card title ===== */
+  .story-timeline__card-title {
+    font-family: 'Stabil Grotesk', var(--font-heading--family), sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    color: #414141;
+    margin: 0;
+  }
+
+  /* ===== Card description ===== */
+  .story-timeline__card-desc {
+    font-family: var(--font-body--family), sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    color: #767676;
+    margin: 0;
+  }
+
+  /* ===== Carousel navigation ===== */
+  .story-timeline__nav {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-block-start: 32px;
+    padding: 0 24px;
+  }
+
+  .story-timeline__nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #767676;
+    background: transparent;
+    color: #767676;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .story-timeline__nav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .story-timeline__nav-btn:not(:disabled):hover {
+    background: #767676;
+    color: #FFFFFF;
+  }
+
+  .story-timeline__nav-btn svg {
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+  }
+
+  /* ===== Reduced motion ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .story-timeline__heading {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .story-timeline__carousel {
+      transform: translateX(0);
+    }
+
+    .story-timeline__carousel.is-visible {
+      transform: translateX(0);
+    }
+  }
+
+  /* ===== Mobile overrides ===== */
+  @media screen and (max-width: 749px) {
+    .story-timeline {
+      padding: 48px 0 60px;
+    }
+
+    .story-timeline__heading-area {
+      margin-block-end: 32px;
+    }
+
+    .story-timeline__heading-area::before {
+      top: -14px;
+      width: 50px;
+    }
+
+    .story-timeline__heading {
+      font-size: 36px;
+      line-height: 38px;
+      max-width: 300px;
+    }
+
+    .story-timeline__carousel {
+      padding: 32px 0 40px;
+    }
+
+    .story-timeline__card {
+      flex: 0 0 240px;
+      gap: 12px;
+    }
+
+    .story-timeline__card-img {
+      border-radius: 8px;
+    }
+
+    .story-timeline__card-year {
+      font-size: 24px;
+      line-height: 28px;
+    }
+
+    .story-timeline__card-title {
+      font-size: 18px;
+      line-height: 22px;
+    }
+
+    .story-timeline__card-desc {
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .story-timeline__track {
+      padding-inline-start: 20px;
+      padding-inline-end: 20px;
+      gap: 16px;
+    }
+
+    .story-timeline__nav {
+      margin-block-start: 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Timeline",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "15 years.\nOne mission."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "Milestone",
+      "settings": [
+        {
+          "type": "text",
+          "id": "year",
+          "label": "Year / date"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

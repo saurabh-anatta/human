@@ -294,6 +294,65 @@
         "board_heading": "Meet the\nAdvisory Board.",
         "scroll_multiplier": 10
       }
+    },
+    "story_timeline": {
+      "type": "story-timeline",
+      "blocks": {
+        "milestone_1": {
+          "type": "milestone",
+          "settings": {
+            "year": "2009",
+            "title": "Founded",
+            "description": "HumanN is founded with a mission to harness the power of nitric oxide to improve cardiovascular health.",
+            "image": "shopify://shop_images/screenshot-2026-07-01-at-11-10-36-am-1-page-overview-for-client-section-108344921.png"
+          }
+        },
+        "milestone_2": {
+          "type": "milestone",
+          "settings": {
+            "year": "2012",
+            "title": "First Clinical Trial",
+            "description": "Our first clinical study validates the efficacy of concentrated beet root nutrition for nitric oxide support.",
+            "image": "shopify://shop_images/screenshot-2026-06-30-at-1-14-04-pm-1-page-overview-for-client-section-108346093.png"
+          }
+        },
+        "milestone_3": {
+          "type": "milestone",
+          "settings": {
+            "year": "2015",
+            "title": "SuperBeets Launch",
+            "description": "SuperBeets launches and quickly becomes the #1 beet brand in America, bringing nitric oxide nutrition to the mainstream."
+          }
+        },
+        "milestone_4": {
+          "type": "milestone",
+          "settings": {
+            "year": "2018",
+            "title": "Trusted by Professionals",
+            "description": "Over 2,000 professional and collegiate athletic teams integrate our products into their training programs."
+          }
+        },
+        "milestone_5": {
+          "type": "milestone",
+          "settings": {
+            "year": "2021",
+            "title": "100,000+ Reviews",
+            "description": "We surpass 100,000 five-star ratings and reviews, a testament to the difference our products make every day."
+          }
+        },
+        "milestone_6": {
+          "type": "milestone",
+          "settings": {
+            "year": "2024",
+            "title": "15 Years of Impact",
+            "description": "Fifteen years in, HumanN continues to lead the science of nitric oxide with 12 clinical trials and growing."
+          }
+        }
+      },
+      "block_order": ["milestone_1", "milestone_2", "milestone_3", "milestone_4", "milestone_5", "milestone_6"],
+      "settings": {
+        "heading_text": "15 years.\nOne mission."
+      }
     }
   },
   "order": [
@@ -303,6 +362,7 @@
     "story_miracle_molecule",
     "story_the_problem",
     "story_the_proof",
-    "story_the_board"
+    "story_the_board",
+    "story_timeline"
   ]
 }
