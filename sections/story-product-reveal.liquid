@@ -1,0 +1,219 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+{%- liquid
+  capture inline_styles
+    echo '--spr-scroll-height: ' | append: section.settings.scroll_multiplier | append: '00vh;'
+  endcapture
+-%}
+
+<div class="story-product-reveal" id="our-products" data-anchor="our-products" style="{{ inline_styles }}">
+  <div class="story-product-reveal__scroll-container">
+    <div class="story-product-reveal__stage">
+
+      <canvas
+        class="story-product-reveal__canvas"
+        data-frames-base-url="{{ section.settings.frames_base_url }}"
+        data-frame-count="{{ section.settings.frame_count }}"
+        aria-hidden="true"
+      ></canvas>
+
+      {%- if section.settings.poster_image != blank -%}
+        <img
+          class="story-product-reveal__poster"
+          src="{{ section.settings.poster_image | image_url: width: 1920 }}"
+          alt=""
+          width="1920"
+          height="1080"
+          loading="lazy"
+        >
+      {%- endif -%}
+
+      {%- if section.settings.heading_text != blank -%}
+        <h2 class="story-product-reveal__heading">
+          {{ section.settings.heading_text | newline_to_br }}
+        </h2>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const [{ createScrollProgress, createRevealObserver, prefersReducedMotion }, { initProductReveal }] = await Promise.all([
+    import({{ 'story-scroll-utils.js' | asset_url | json }}),
+    import({{ 'story-product-reveal.js' | asset_url | json }})
+  ]);
+  const section = document.getElementById('shopify-section-{{ section.id }}');
+  if (section) initProductReveal(section, { createScrollProgress, createRevealObserver, prefersReducedMotion });
+</script>
+
+{% stylesheet %}
+  /* ===== Root ===== */
+  .story-product-reveal {
+    background: #F5F5F5;
+    position: relative;
+  }
+
+  /* ===== Scroll container (tall wrapper for pinning) ===== */
+  .story-product-reveal__scroll-container {
+    height: var(--spr-scroll-height, 1000vh);
+  }
+
+  /* ===== Sticky stage (viewport-locked) ===== */
+  .story-product-reveal__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background: #F5F5F5;
+  }
+
+  /* ===== Canvas (frame-sequence target) ===== */
+  .story-product-reveal__canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  /* ===== Poster image (initial/fallback) ===== */
+  .story-product-reveal__poster {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+  }
+
+  /* ===== Heading overlay ===== */
+  .story-product-reveal__heading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    font-family: 'Moderat Serif Regular', 'Moderat Serif', serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 60px;
+    letter-spacing: -1px;
+    color: #A0A0A0;
+    text-align: center;
+    max-width: 620px;
+    width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
+    margin: 0;
+    opacity: 0;
+  }
+
+  /* ===== Reduced motion: static layout ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .story-product-reveal__scroll-container {
+      height: auto;
+    }
+
+    .story-product-reveal__stage {
+      position: relative;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    .story-product-reveal__canvas {
+      display: none;
+    }
+
+    .story-product-reveal__poster {
+      opacity: 1 !important;
+    }
+
+    .story-product-reveal__heading {
+      opacity: 1 !important;
+    }
+  }
+
+  /* ===== Mobile overrides ===== */
+  @media screen and (max-width: 749px) {
+    .story-product-reveal__heading {
+      font-size: 36px;
+      line-height: 38px;
+      letter-spacing: -0.5px;
+      max-width: 340px;
+      padding: 0 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Product Reveal",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "textarea",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "Not just science-backed.\nScience-born."
+    },
+    {
+      "type": "header",
+      "content": "Frame sequence"
+    },
+    {
+      "type": "text",
+      "id": "frames_base_url",
+      "label": "Frames base URL",
+      "info": "Base URL for frame images. Frames use zero-padded 3-digit numbering (001.jpg, 002.jpg, etc.)."
+    },
+    {
+      "type": "range",
+      "id": "frame_count",
+      "label": "Frame count",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster image"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "scroll_multiplier",
+      "label": "Scroll distance multiplier",
+      "min": 6,
+      "max": 15,
+      "step": 1,
+      "default": 10,
+      "unit": "x"
+    }
+  ]
+}
+{% endschema %}

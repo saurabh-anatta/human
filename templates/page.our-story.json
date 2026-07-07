@@ -353,6 +353,14 @@
       "settings": {
         "heading_text": "15 years.\nOne mission."
       }
+    },
+    "story_product_reveal": {
+      "type": "story-product-reveal",
+      "settings": {
+        "heading_text": "Not just science-backed.\nScience-born.",
+        "poster_image": "shopify://shop_images/turmeric-2862-14-1-page-overview-for-client-section-108346096.png",
+        "scroll_multiplier": 10
+      }
     }
   },
   "order": [
@@ -363,6 +371,7 @@
     "story_the_problem",
     "story_the_proof",
     "story_the_board",
-    "story_timeline"
+    "story_timeline",
+    "story_product_reveal"
   ]
 }
