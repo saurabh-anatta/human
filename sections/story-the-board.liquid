@@ -1,0 +1,658 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    z-index: 1;
+  }
+</style>
+
+{%- liquid
+  capture inline_styles
+    echo '--stb-scroll-height: ' | append: section.settings.scroll_multiplier | append: '00vh;'
+  endcapture
+-%}
+
+<div class="story-the-board" id="the-board" data-anchor="the-board" style="{{ inline_styles }}">
+
+  {%- comment -%} === Part 1: Scroll-pinned memoriam area === {%- endcomment -%}
+  <div class="story-the-board__scroll-container">
+    <div class="story-the-board__stage">
+
+      {%- comment -%} Media wrapper — JS controls dimensions/position/radius {%- endcomment -%}
+      <div class="story-the-board__media-wrapper">
+        <div class="story-the-board__media-frame">
+          {%- if section.settings.memoriam_image != blank -%}
+            <img
+              class="story-the-board__image"
+              src="{{ section.settings.memoriam_image | image_url: width: 1920 }}"
+              alt=""
+              width="1920"
+              height="1080"
+              loading="lazy"
+            >
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Desaturation overlay {%- endcomment -%}
+        <div class="story-the-board__desat-overlay"></div>
+      </div>
+
+      {%- comment -%} Memoriam text content {%- endcomment -%}
+      <div class="story-the-board__memoriam">
+        {%- if section.settings.eyebrow_text != blank -%}
+          <span class="story-the-board__eyebrow">
+            {{- section.settings.eyebrow_text -}}
+          </span>
+        {%- endif -%}
+
+        {%- if section.settings.quote_text != blank -%}
+          <blockquote class="story-the-board__quote">
+            {{- section.settings.quote_text -}}
+          </blockquote>
+        {%- endif -%}
+
+        {%- if section.settings.attribution_text != blank -%}
+          <span class="story-the-board__attribution">
+            {{- section.settings.attribution_text -}}
+          </span>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+
+  {%- comment -%} === Part 2: Board section (normal flow) === {%- endcomment -%}
+  <div class="story-the-board__board-section">
+
+    {%- if section.settings.board_heading != blank -%}
+      <h2 class="story-the-board__board-heading">
+        {{ section.settings.board_heading | newline_to_br }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="story-the-board__carousel" data-reveal>
+        <div class="story-the-board__carousel-track">
+          {%- for block in section.blocks -%}
+            <div class="story-the-board__card" {{ block.shopify_attributes }}>
+              {%- if block.settings.image != blank -%}
+                <div class="story-the-board__card-img">
+                  <img
+                    src="{{ block.settings.image | image_url: width: 700 }}"
+                    alt="{{ block.settings.name | escape }}"
+                    width="306"
+                    height="347"
+                    loading="lazy"
+                  >
+                </div>
+              {%- endif -%}
+
+              <div class="story-the-board__card-info">
+                {%- if block.settings.name != blank -%}
+                  <h3 class="story-the-board__card-name">
+                    {{- block.settings.name -}}
+                  </h3>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <p class="story-the-board__card-title">
+                    {{- block.settings.title -}}
+                  </p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- comment -%} Carousel navigation arrows {%- endcomment -%}
+        <div class="story-the-board__carousel-nav">
+          <button
+            type="button"
+            class="story-the-board__carousel-btn story-the-board__carousel-btn--prev"
+            aria-label="Previous board member"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="story-the-board__carousel-btn story-the-board__carousel-btn--next"
+            aria-label="Next board member"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+
+</div>
+
+<script type="module">
+  const [{ createScrollProgress, createRevealObserver, prefersReducedMotion }, { initTheBoard }] = await Promise.all([
+    import({{ 'story-scroll-utils.js' | asset_url | json }}),
+    import({{ 'story-the-board.js' | asset_url | json }})
+  ]);
+  const section = document.getElementById('shopify-section-{{ section.id }}');
+  if (section) initTheBoard(section, { createScrollProgress, createRevealObserver, prefersReducedMotion });
+</script>
+
+{% stylesheet %}
+  /* ===== Root ===== */
+  .story-the-board {
+    background: #F5F5F5;
+    position: relative;
+  }
+
+  /* ===== Scroll container (tall wrapper for pinning) ===== */
+  .story-the-board__scroll-container {
+    height: var(--stb-scroll-height, 1000vh);
+  }
+
+  /* ===== Sticky stage (viewport-locked) ===== */
+  .story-the-board__stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background: #F5F5F5;
+  }
+
+  /* ===== Media wrapper — JS controls width/height/top/left/borderRadius ===== */
+  .story-the-board__media-wrapper {
+    position: absolute;
+    overflow: hidden;
+  }
+
+  /* ===== Media frame (fills wrapper) ===== */
+  .story-the-board__media-frame {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ===== Background image ===== */
+  .story-the-board__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ===== Desaturation overlay (mix-blend-mode: color) ===== */
+  .story-the-board__desat-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+  }
+
+  /* ===== Memoriam text block ===== */
+  .story-the-board__memoriam {
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 1100px;
+    padding: 0 40px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  /* Decorative blue accent lines */
+  .story-the-board__memoriam::before,
+  .story-the-board__memoriam::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    border-top: 1px solid #2983DC;
+    pointer-events: none;
+  }
+
+  .story-the-board__memoriam::before {
+    top: -30px;
+    left: calc(50% - 160px);
+    transform: rotate(-0.8deg);
+  }
+
+  .story-the-board__memoriam::after {
+    top: -20px;
+    right: calc(50% - 160px);
+    transform: rotate(-2.4deg);
+  }
+
+  /* ===== Eyebrow ===== */
+  .story-the-board__eyebrow {
+    font-family: var(--font-labels--family), sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 20px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #767676;
+    opacity: 0;
+  }
+
+  /* ===== Quote ===== */
+  .story-the-board__quote {
+    font-family: 'Moderat Serif Regular', 'Moderat Serif', serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #767676;
+    margin: 0;
+    padding: 0;
+    max-width: 1065px;
+    text-align: center;
+    opacity: 0;
+  }
+
+  /* ===== Attribution ===== */
+  .story-the-board__attribution {
+    font-family: var(--font-labels--family), sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 20px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #767676;
+    opacity: 0;
+  }
+
+  /* =====================================================================
+   *  Part 2 — Board section (normal flow)
+   * ===================================================================== */
+
+  .story-the-board__board-section {
+    background: #F5F5F5;
+    padding: 80px 0 100px;
+    position: relative;
+  }
+
+  /* Decorative blue accent line near heading */
+  .story-the-board__board-section::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1.6deg);
+    width: 80px;
+    border-top: 3px solid #2983DC;
+    pointer-events: none;
+  }
+
+  /* ===== Board heading ===== */
+  .story-the-board__board-heading {
+    font-family: 'Stabil Grotesk', var(--font-heading--family), sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 60px;
+    color: #767676;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto 48px;
+    padding: 0 24px;
+  }
+
+  /* ===== Carousel container ===== */
+  .story-the-board__carousel {
+    position: relative;
+    overflow: hidden;
+    padding: 0 0 60px;
+    transform: translateX(-110%);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .story-the-board__carousel.is-visible {
+    transform: translateX(0);
+  }
+
+  /* ===== Carousel track ===== */
+  .story-the-board__carousel-track {
+    display: flex;
+    gap: 24px;
+    padding-inline-start: max(24px, calc((100vw - 1200px) / 2));
+    padding-inline-end: 24px;
+    transition: transform 0.4s ease;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .story-the-board__carousel-track:active {
+    cursor: grabbing;
+  }
+
+  /* ===== Card ===== */
+  .story-the-board__card {
+    flex: 0 0 306px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ===== Card image ===== */
+  .story-the-board__card-img {
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 306 / 347;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .story-the-board__card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ===== Card info ===== */
+  .story-the-board__card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-inline-end: 8px;
+  }
+
+  /* ===== Card name ===== */
+  .story-the-board__card-name {
+    font-family: 'Stabil Grotesk', var(--font-heading--family), sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    color: #414141;
+    margin: 0;
+  }
+
+  /* ===== Card title ===== */
+  .story-the-board__card-title {
+    font-family: 'Stabil Grotesk', var(--font-body--family), sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #767676;
+    margin: 0;
+  }
+
+  /* ===== Carousel navigation ===== */
+  .story-the-board__carousel-nav {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-block-start: 32px;
+    padding: 0 24px;
+  }
+
+  .story-the-board__carousel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #767676;
+    background: transparent;
+    color: #767676;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .story-the-board__carousel-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .story-the-board__carousel-btn:not(:disabled):hover {
+    background: #767676;
+    color: #FFFFFF;
+  }
+
+  .story-the-board__carousel-btn svg {
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+  }
+
+  /* ===== Reduced motion: static layout ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .story-the-board__scroll-container {
+      height: auto;
+    }
+
+    .story-the-board__stage {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+    }
+
+    .story-the-board__media-wrapper {
+      position: relative;
+      width: 476px !important;
+      height: 430px !important;
+      top: auto !important;
+      left: auto !important;
+      border-radius: 32px !important;
+    }
+
+    .story-the-board__desat-overlay {
+      display: none;
+    }
+
+    .story-the-board__memoriam {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+      margin-block-start: 40px;
+    }
+
+    .story-the-board__eyebrow,
+    .story-the-board__quote,
+    .story-the-board__attribution {
+      opacity: 1 !important;
+    }
+
+    .story-the-board__carousel {
+      transform: translateX(0);
+    }
+
+    .story-the-board__carousel.is-visible {
+      transform: translateX(0);
+    }
+  }
+
+  /* ===== Mobile overrides ===== */
+  @media screen and (max-width: 749px) {
+    .story-the-board__memoriam {
+      top: 55%;
+      padding: 0 20px;
+      gap: 12px;
+    }
+
+    .story-the-board__memoriam::before,
+    .story-the-board__memoriam::after {
+      width: 30px;
+    }
+
+    .story-the-board__memoriam::before {
+      left: calc(50% - 80px);
+    }
+
+    .story-the-board__memoriam::after {
+      right: calc(50% - 80px);
+    }
+
+    .story-the-board__eyebrow {
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    .story-the-board__quote {
+      font-size: 28px;
+      line-height: 34px;
+      letter-spacing: -0.5px;
+    }
+
+    .story-the-board__attribution {
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    .story-the-board__board-section {
+      padding: 48px 0 60px;
+    }
+
+    .story-the-board__board-section::before {
+      top: 16px;
+      width: 50px;
+    }
+
+    .story-the-board__board-heading {
+      font-size: 36px;
+      line-height: 38px;
+      max-width: 300px;
+      margin-block-end: 32px;
+    }
+
+    .story-the-board__card {
+      flex: 0 0 240px;
+      gap: 16px;
+    }
+
+    .story-the-board__card-img {
+      border-radius: 12px;
+    }
+
+    .story-the-board__card-name {
+      font-size: 18px;
+      line-height: 22px;
+    }
+
+    .story-the-board__card-title {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .story-the-board__carousel-track {
+      padding-inline-start: 20px;
+      padding-inline-end: 20px;
+      gap: 16px;
+    }
+
+    .story-the-board__carousel-nav {
+      margin-block-start: 24px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .story-the-board__media-wrapper {
+        width: 280px !important;
+        height: 253px !important;
+        border-radius: 24px !important;
+      }
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story The Board",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "In Memoriam"
+    },
+    {
+      "type": "image_picker",
+      "id": "memoriam_image",
+      "label": "Memoriam image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "In Memoriam"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_text",
+      "label": "Quote text"
+    },
+    {
+      "type": "text",
+      "id": "attribution_text",
+      "label": "Attribution"
+    },
+    {
+      "type": "header",
+      "content": "Advisory Board"
+    },
+    {
+      "type": "textarea",
+      "id": "board_heading",
+      "label": "Board heading",
+      "default": "Meet the\nAdvisory Board."
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "scroll_multiplier",
+      "label": "Scroll distance multiplier",
+      "min": 6,
+      "max": 15,
+      "step": 1,
+      "default": 10,
+      "unit": "x"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "board-member",
+      "name": "Board member",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Photo"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name"
+        },
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "Title / credentials"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
