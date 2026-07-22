@@ -38,7 +38,12 @@ function phaseProgress(value, start, end) {
  */
 export function init(sectionEl, utils) {
   const contentEl = sectionEl.querySelector('.story-cinematic-entry__content');
+  const topEl = sectionEl.querySelector('.story-cinematic-entry__top');
+  const bottomEl = sectionEl.querySelector('.story-cinematic-entry__bottom');
   const videoEl = sectionEl.querySelector('.story-cinematic-entry__video');
+
+  /* Collect all elements that should fade out on scroll */
+  const fadeEls = [contentEl, topEl, bottomEl].filter(Boolean);
 
   /* Reduced motion: pause video, skip scroll animation */
   if (utils.prefersReducedMotion()) {
@@ -51,7 +56,7 @@ export function init(sectionEl, utils) {
   /* Parallax fade-out: opacity 1 -> 0, translateY 0 -> -30px over first half of scroll */
   let cleanupScroll = function () {};
 
-  if (contentEl) {
+  if (fadeEls.length > 0) {
     cleanupScroll = utils.createScrollProgress(sectionEl, {
       onProgress: function (progress) {
         const phase = phaseProgress(progress, 0, 0.5);
@@ -59,8 +64,15 @@ export function init(sectionEl, utils) {
         const translateY = lerp(0, -30, phase);
 
         requestAnimationFrame(function () {
-          contentEl.style.opacity = opacity;
-          contentEl.style.transform = 'translateY(' + translateY + 'px)';
+          for (const el of fadeEls) {
+            el.style.opacity = opacity;
+            if (el === contentEl) {
+              el.style.transform = 'translateY(' + translateY + 'px)';
+            } else {
+              /* Preserve translateX(-50%) centering on absolutely-positioned elements */
+              el.style.transform = 'translateX(-50%) translateY(' + translateY + 'px)';
+            }
+          }
         });
       }
     });

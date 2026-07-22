@@ -8,6 +8,10 @@
   assign show_ama = section.settings.show_ama
   assign ama_text = section.settings.ama_text
   assign ama_url = section.settings.ama_url
+  assign ai_search_label = section.settings.ai_search_label
+  assign ai_search_url = section.settings.ai_search_url
+  assign show_lockup = section.settings.show_lockup
+  assign lockup_image = section.settings.lockup_image
 
   if wordmark_image != blank
     assign logo_src = wordmark_image
@@ -57,6 +61,29 @@
     >
   {%- endif -%}
 
+  {%- comment -%} Top bar: AMA search + AI search link {%- endcomment -%}
+  {%- if show_ama -%}
+    <div class="story-cinematic-entry__top">
+      {%- if ama_text != blank -%}
+        <a
+          class="story-cinematic-entry__ama-bar"
+          href="{{ ama_url | default: '#' }}"
+        >
+          {{ 'icon-book-open.svg' | inline_asset_content }}
+          <span>{{ ama_text }}</span>
+        </a>
+      {%- endif -%}
+      {%- if ai_search_label != blank -%}
+        <a
+          class="story-cinematic-entry__ai-search-link"
+          href="{{ ai_search_url | default: '#' }}"
+        >
+          {{ ai_search_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
   {%- comment -%} Centered content layer {%- endcomment -%}
   <div class="story-cinematic-entry__content">
     {%- if logo_src != blank -%}
@@ -68,6 +95,16 @@
           height="75"
           loading="eager"
           fetchpriority="high"
+        >
+      </div>
+    {%- endif -%}
+
+    {%- if show_lockup and lockup_image != blank -%}
+      <div class="story-cinematic-entry__lockup">
+        <img
+          src="{{ lockup_image | image_url: width: 400 }}"
+          alt="{{ shop.name }} lockup"
+          loading="eager"
         >
       </div>
     {%- endif -%}
@@ -84,7 +121,7 @@
     {%- endif -%}
   </div>
 
-  {%- comment -%} Bottom bar: discover indicator + AMA {%- endcomment -%}
+  {%- comment -%} Bottom bar: discover indicator {%- endcomment -%}
   <div class="story-cinematic-entry__bottom">
     {%- if discover_label != blank -%}
       <div class="story-cinematic-entry__discover">
@@ -96,16 +133,10 @@
         </div>
       </div>
     {%- endif -%}
-
-    {%- if show_ama and ama_text != blank -%}
-      <a
-        class="story-cinematic-entry__ama"
-        href="{{ ama_url | default: '#' }}"
-      >
-        {{ ama_text }}
-      </a>
-    {%- endif -%}
   </div>
+
+  {%- comment -%} Red story-line segment — connects into subnav below {%- endcomment -%}
+  <div class="story-cinematic-entry__story-line" aria-hidden="true"></div>
 </div>
 
 <script type="module">
@@ -127,9 +158,9 @@
      Prefix: --scn-
   \* ------------------------------------------------------------------ */
 
-  /* Dark background on the .shopify-section wrapper (avoids base.css .section trap) */
+  /* Light background on the .shopify-section wrapper (avoids base.css .section trap) */
   .story-cinematic-entry-section {
-    background-color: #000000;
+    background-color: #FFFFFF;
   }
 
   .story-cinematic-entry {
@@ -153,7 +184,74 @@
     z-index: 0;
   }
 
-  /* Centered content layer */
+  /* ---- Top bar: AMA search + AI search link ---- */
+
+  .story-cinematic-entry__top {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: calc(100% - 88px);
+    max-width: 1352px;
+    will-change: opacity, transform;
+  }
+
+  .story-cinematic-entry__ama-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    height: 44px;
+    border-radius: 24px;
+    border: 1px solid #D9D9DB;
+    padding: 12px;
+    background: #FFFFFF;
+    text-decoration: none;
+    transition: border-color 0.25s ease;
+  }
+
+  .story-cinematic-entry__ama-bar:hover {
+    border-color: #BFBFBF;
+  }
+
+  .story-cinematic-entry__ama-bar svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: #767676;
+    transform: rotate(3.1deg);
+  }
+
+  .story-cinematic-entry__ama-bar span {
+    font-family: var(--font-body--family), sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #414141;
+  }
+
+  .story-cinematic-entry__ai-search-link {
+    font-family: var(--font-body--family), sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: #767676;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .story-cinematic-entry__ai-search-link:hover {
+    color: #414141;
+  }
+
+  /* ---- Centered content layer ---- */
+
   .story-cinematic-entry__content {
     position: relative;
     z-index: 1;
@@ -180,6 +278,18 @@
     height: auto;
   }
 
+  /* Lockup */
+  .story-cinematic-entry__lockup {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .story-cinematic-entry__lockup img {
+    max-width: 200px;
+    height: auto;
+  }
+
   /* Tagline */
   .story-cinematic-entry__tagline {
     font-family: var(--font-heading--family), serif;
@@ -188,7 +298,7 @@
     line-height: 52px;
     letter-spacing: -0.5px;
     text-align: center;
-    color: #FFFFFF;
+    color: #767676;
     margin: 0;
   }
 
@@ -196,7 +306,8 @@
     font-style: italic;
   }
 
-  /* Bottom bar */
+  /* ---- Bottom bar ---- */
+
   .story-cinematic-entry__bottom {
     position: absolute;
     bottom: 40px;
@@ -207,6 +318,7 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    will-change: opacity, transform;
   }
 
   /* Discover indicator */
@@ -272,37 +384,58 @@
     }
   }
 
-  /* Ask me anything pill */
-  .story-cinematic-entry__ama {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 24px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    font-family: var(--font-labels--family), sans-serif;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 16px;
-    letter-spacing: 0.5px;
-    color: #FFFFFF;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: background-color 0.25s ease, border-color 0.25s ease;
-    white-space: nowrap;
+  /* ---- Red story-line segment ---- */
+
+  .story-cinematic-entry__story-line {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: var(--story-line-stroke-width, 2px);
+    height: 40px;
+    background-color: var(--story-line-color, #BC0F0F);
+    transform: translateX(-50%) scaleY(0);
+    transform-origin: top;
+    animation: scn-line-draw 1.2s ease-out 0.5s both, scn-line-pulse 3s ease-in-out 1.7s infinite;
+    z-index: 2;
   }
 
-  .story-cinematic-entry__ama:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.35);
+  @keyframes scn-line-draw {
+    from {
+      transform: translateX(-50%) scaleY(0);
+    }
+    to {
+      transform: translateX(-50%) scaleY(1);
+    }
+  }
+
+  @keyframes scn-line-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
   }
 
   /* ------ Mobile ------ */
 
   @media screen and (max-width: 749px) {
+    .story-cinematic-entry__top {
+      top: 24px;
+      width: calc(100% - 48px);
+    }
+
+    .story-cinematic-entry__ama-bar {
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      padding: 10px 16px;
+    }
+
+    .story-cinematic-entry__ama-bar span {
+      font-size: 16px;
+    }
+
     .story-cinematic-entry__wordmark img {
       width: 280px;
     }
@@ -316,9 +449,8 @@
       bottom: 32px;
     }
 
-    .story-cinematic-entry__ama {
-      font-size: 12px;
-      padding: 8px 20px;
+    .story-cinematic-entry__story-line {
+      height: 32px;
     }
   }
 
@@ -330,12 +462,35 @@
       opacity: 1;
     }
 
+    .story-cinematic-entry__story-line {
+      animation: none;
+      transform: translateX(-50%) scaleY(1);
+      opacity: 1;
+    }
+
     .story-cinematic-entry__content {
       opacity: 1 !important;
       transform: none !important;
+      will-change: auto;
     }
 
-    .story-cinematic-entry__ama {
+    .story-cinematic-entry__top {
+      opacity: 1 !important;
+      transform: translateX(-50%) !important;
+      will-change: auto;
+    }
+
+    .story-cinematic-entry__bottom {
+      opacity: 1 !important;
+      transform: translateX(-50%) !important;
+      will-change: auto;
+    }
+
+    .story-cinematic-entry__ama-bar {
+      transition: none;
+    }
+
+    .story-cinematic-entry__ai-search-link {
       transition: none;
     }
   }
@@ -416,14 +571,70 @@
     {
       "type": "text",
       "id": "ama_text",
-      "label": "Button text",
+      "label": "Bar text",
       "default": "Ask me anything",
       "info": "Visible when the bar is enabled."
     },
     {
       "type": "url",
       "id": "ama_url",
-      "label": "Button link"
+      "label": "Bar link"
+    },
+    {
+      "type": "header",
+      "content": "AI Search"
+    },
+    {
+      "type": "text",
+      "id": "ai_search_label",
+      "label": "Link text",
+      "default": "Try AI Search \u2192",
+      "info": "Shown below the search bar."
+    },
+    {
+      "type": "url",
+      "id": "ai_search_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Logo lockup"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_lockup",
+      "label": "Show logo lockup",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "lockup_image",
+      "label": "Lockup image",
+      "info": "Small secondary logo. Hidden by default."
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
     }
   ]
 }
