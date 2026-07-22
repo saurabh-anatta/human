@@ -8293,7 +8293,6 @@
                             "thumbnail_type": "none",
                             "thumbnail_image_sizes_mobile": "100vw",
                             "thumbnail_image_sizes_desktop": "(min-width: 750px) 33vw, 100vw",
-                            "thumbnail_video": "shopify://files/videos/tile-2-doctor_8e97e7af-aa9f-4cb2-b3ae-e6a9549d05b5.mp4",
                             "thumbnail_video_autoplay": false,
                             "show_play_icon": true,
                             "aria_label": "Play video"
@@ -8651,7 +8650,6 @@
                             "thumbnail_type": "none",
                             "thumbnail_image_sizes_mobile": "100vw",
                             "thumbnail_image_sizes_desktop": "(min-width: 750px) 33vw, 100vw",
-                            "thumbnail_video": "shopify://files/videos/tile-2-doctor_8e97e7af-aa9f-4cb2-b3ae-e6a9549d05b5.mp4",
                             "thumbnail_video_autoplay": false,
                             "show_play_icon": true,
                             "aria_label": "Play video"
@@ -9009,7 +9007,6 @@
                             "thumbnail_type": "none",
                             "thumbnail_image_sizes_mobile": "100vw",
                             "thumbnail_image_sizes_desktop": "(min-width: 750px) 33vw, 100vw",
-                            "thumbnail_video": "shopify://files/videos/tile-2-doctor_8e97e7af-aa9f-4cb2-b3ae-e6a9549d05b5.mp4",
                             "thumbnail_video_autoplay": false,
                             "show_play_icon": true,
                             "aria_label": "Play video"
@@ -14899,7 +14896,6 @@
                 "thumbnail_type": "video",
                 "thumbnail_image_sizes_mobile": "100vw",
                 "thumbnail_image_sizes_desktop": "(min-width: 750px) 33vw, 100vw",
-                "thumbnail_video": "shopify://files/videos/HP_header_PSB_v02_01.mp4",
                 "thumbnail_video_autoplay": true,
                 "show_play_icon": false,
                 "aria_label": "Play video"
