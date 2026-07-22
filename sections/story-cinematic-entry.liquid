@@ -1,0 +1,430 @@
+{%- liquid
+  assign video = section.settings.video
+  assign poster_image = section.settings.poster_image
+  assign wordmark_image = section.settings.wordmark_image
+  assign tagline_prefix = section.settings.tagline_prefix
+  assign tagline_emphasis = section.settings.tagline_emphasis
+  assign discover_label = section.settings.discover_label
+  assign show_ama = section.settings.show_ama
+  assign ama_text = section.settings.ama_text
+  assign ama_url = section.settings.ama_url
+
+  if wordmark_image != blank
+    assign logo_src = wordmark_image
+  elsif settings.logo_inverse != blank
+    assign logo_src = settings.logo_inverse
+  else
+    assign logo_src = settings.logo
+  endif
+-%}
+
+{%- capture inline_styles -%}
+{%- endcapture -%}
+
+<div
+  class="story-cinematic-entry"
+  data-section-id="{{ section.id }}"
+  data-anchor="cinematic-entry"
+  style="{{ inline_styles }}"
+>
+  {%- comment -%} Background video / poster image {%- endcomment -%}
+  {%- if video != blank -%}
+    {%- if poster_image != blank -%}
+      {%- assign poster_url = poster_image | image_url: width: 1920 -%}
+    {%- endif -%}
+    <video
+      class="story-cinematic-entry__video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      {%- if poster_url %} poster="{{ poster_url }}"{% endif %}
+    >
+      {%- for source in video.sources -%}
+        <source src="{{ source.url }}" type="{{ source.mime_type }}">
+      {%- endfor -%}
+    </video>
+  {%- elsif poster_image != blank -%}
+    <img
+      class="story-cinematic-entry__video"
+      src="{{ poster_image | image_url: width: 1920 }}"
+      alt="{{ tagline_prefix }} {{ tagline_emphasis }}"
+      width="{{ poster_image.width }}"
+      height="{{ poster_image.height }}"
+      loading="eager"
+      fetchpriority="high"
+    >
+  {%- endif -%}
+
+  {%- comment -%} Centered content layer {%- endcomment -%}
+  <div class="story-cinematic-entry__content">
+    {%- if logo_src != blank -%}
+      <div class="story-cinematic-entry__wordmark">
+        <img
+          src="{{ logo_src | image_url: width: 870 }}"
+          alt="{{ shop.name }}"
+          width="435"
+          height="75"
+          loading="eager"
+          fetchpriority="high"
+        >
+      </div>
+    {%- endif -%}
+
+    {%- if tagline_prefix != blank or tagline_emphasis != blank -%}
+      <p class="story-cinematic-entry__tagline">
+        {%- if tagline_prefix != blank -%}
+          {{ tagline_prefix }}
+        {%- endif -%}
+        {%- if tagline_emphasis != blank -%}
+          <em>{{ tagline_emphasis }}</em>
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Bottom bar: discover indicator + AMA {%- endcomment -%}
+  <div class="story-cinematic-entry__bottom">
+    {%- if discover_label != blank -%}
+      <div class="story-cinematic-entry__discover">
+        <span class="story-cinematic-entry__discover-label">{{ discover_label }}</span>
+        <div class="story-cinematic-entry__chevrons" aria-hidden="true">
+          {{ 'chevron-down-3.svg' | inline_asset_content }}
+          {{ 'chevron-down-3.svg' | inline_asset_content }}
+          {{ 'chevron-down-3.svg' | inline_asset_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if show_ama and ama_text != blank -%}
+      <a
+        class="story-cinematic-entry__ama"
+        href="{{ ama_url | default: '#' }}"
+      >
+        {{ ama_text }}
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-cinematic-entry.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     Cinematic Entry — .story-cinematic-entry
+     Prefix: --scn-
+  \* ------------------------------------------------------------------ */
+
+  /* Dark background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-cinematic-entry-section {
+    background-color: #000000;
+  }
+
+  .story-cinematic-entry {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Background video / poster image */
+  .story-cinematic-entry__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* Centered content layer */
+  .story-cinematic-entry__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    padding-inline: 24px;
+    will-change: opacity, transform;
+  }
+
+  /* Wordmark */
+  .story-cinematic-entry__wordmark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .story-cinematic-entry__wordmark img {
+    width: 435px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Tagline */
+  .story-cinematic-entry__tagline {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 52px;
+    letter-spacing: -0.5px;
+    text-align: center;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  .story-cinematic-entry__tagline em {
+    font-style: italic;
+  }
+
+  /* Bottom bar */
+  .story-cinematic-entry__bottom {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* Discover indicator */
+  .story-cinematic-entry__discover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .story-cinematic-entry__discover-label {
+    font-family: var(--font-labels--family), sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #767676;
+  }
+
+  .story-cinematic-entry__chevrons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .story-cinematic-entry__chevrons svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+    margin-top: -12px;
+  }
+
+  .story-cinematic-entry__chevrons svg:first-child {
+    margin-top: 0;
+  }
+
+  /* Staggered chevron pulse animation */
+  .story-cinematic-entry__chevrons svg:nth-child(1) {
+    animation: scn-chevron-pulse 2s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .story-cinematic-entry__chevrons svg:nth-child(2) {
+    animation: scn-chevron-pulse 2s ease-in-out infinite;
+    animation-delay: 0.15s;
+  }
+
+  .story-cinematic-entry__chevrons svg:nth-child(3) {
+    animation: scn-chevron-pulse 2s ease-in-out infinite;
+    animation-delay: 0.3s;
+  }
+
+  @keyframes scn-chevron-pulse {
+    0%, 100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(3px);
+    }
+  }
+
+  /* Ask me anything pill */
+  .story-cinematic-entry__ama {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    font-family: var(--font-labels--family), sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.5px;
+    color: #FFFFFF;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .story-cinematic-entry__ama:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-cinematic-entry__wordmark img {
+      width: 280px;
+    }
+
+    .story-cinematic-entry__tagline {
+      font-size: 16px;
+      line-height: 32px;
+    }
+
+    .story-cinematic-entry__bottom {
+      bottom: 32px;
+    }
+
+    .story-cinematic-entry__ama {
+      font-size: 12px;
+      padding: 8px 20px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-cinematic-entry__chevrons svg {
+      animation: none;
+      opacity: 1;
+    }
+
+    .story-cinematic-entry__content {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .story-cinematic-entry__ama {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cinematic entry",
+  "class": "story-cinematic-entry-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background video",
+      "info": "Upload via Settings > Files. Auto-plays muted in a loop."
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster image",
+      "info": "Shown while the video loads, or as the fallback when no video is set."
+    },
+    {
+      "type": "header",
+      "content": "Wordmark"
+    },
+    {
+      "type": "image_picker",
+      "id": "wordmark_image",
+      "label": "Wordmark image",
+      "info": "Leave blank to use the global inverse logo."
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "tagline_prefix",
+      "label": "Tagline",
+      "default": "Cardiovascular health is"
+    },
+    {
+      "type": "text",
+      "id": "tagline_emphasis",
+      "label": "Tagline emphasis",
+      "default": "everything health",
+      "info": "Rendered in italic for emphasis."
+    },
+    {
+      "type": "header",
+      "content": "Discover bar"
+    },
+    {
+      "type": "text",
+      "id": "discover_label",
+      "label": "Discover label",
+      "default": "Discover"
+    },
+    {
+      "type": "header",
+      "content": "Ask me anything"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ama",
+      "label": "Show ask-me-anything bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "ama_text",
+      "label": "Button text",
+      "default": "Ask me anything",
+      "info": "Visible when the bar is enabled."
+    },
+    {
+      "type": "url",
+      "id": "ama_url",
+      "label": "Button link"
+    }
+  ]
+}
+{% endschema %}
