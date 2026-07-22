@@ -19,6 +19,13 @@
             "anchor_id": "universal-truth"
           }
         },
+        "nav_the_problem": {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE PROBLEM",
+            "anchor_id": "problem"
+          }
+        },
         "nav_the_science": {
           "type": "nav_item",
           "settings": {
@@ -57,6 +64,7 @@
       },
       "block_order": [
         "nav_how_it_started",
+        "nav_the_problem",
         "nav_the_science",
         "nav_why_we_made_it",
         "nav_the_proof",
@@ -76,10 +84,42 @@
         "vessel_color": "#BC0F0F",
         "scroll_distance": 5
       }
+    },
+    "story_the_problem": {
+      "type": "story-the-problem",
+      "blocks": {
+        "slide_1": {
+          "type": "media_slide",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-30-at-9-00-13-am-1-page-overview-for-client-section-108343563.png",
+            "caption": "You can't out-diet it."
+          }
+        },
+        "slide_2": {
+          "type": "media_slide",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-30-at-9-01-02-am-1-page-overview-for-client-section-108343690.png",
+            "caption": "You can't out-train it."
+          }
+        }
+      },
+      "block_order": ["slide_1", "slide_2"],
+      "settings": {
+        "question_heading": "So why do we keep getting this wrong?",
+        "question_body": "Because it's the biggest blind spot in human health. It's not something that happens to other people. It's something already happening to you \u2014 whether you're paying attention or not.",
+        "eyebrow_text": "THE PROBLEM",
+        "chart_heading": "Nitric Oxide production declines with age, beginning in your 20s.",
+        "annotation_1": "Production begins declining in your mid-twenties",
+        "annotation_2": "Poor diet and lack of exercise accelerate the drop",
+        "annotation_3": "By age 40, you produce 50% or less of what you did at 20",
+        "stat_value": "50%",
+        "stat_label": "of nitric oxide by the average 40-year-old"
+      }
     }
   },
   "order": [
     "story_subnav",
-    "story_universal_truth"
+    "story_universal_truth",
+    "story_the_problem"
   ]
 }

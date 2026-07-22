@@ -1,0 +1,675 @@
+{%- liquid
+  assign eyebrow_text = section.settings.eyebrow_text
+  assign chart_heading = section.settings.chart_heading
+  assign question_heading = section.settings.question_heading
+  assign question_body = section.settings.question_body
+  assign annotation_1 = section.settings.annotation_1
+  assign annotation_2 = section.settings.annotation_2
+  assign annotation_3 = section.settings.annotation_3
+  assign stat_value = section.settings.stat_value
+  assign stat_label = section.settings.stat_label
+  assign scroll_distance = section.settings.scroll_distance
+-%}
+
+{%- capture inline_styles -%}
+  --spm-scroll-distance: {{ scroll_distance }};
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-the-problem"
+  data-section-id="{{ section.id }}"
+  data-anchor="problem"
+  style="{{ inline_styles }}"
+>
+  {%- comment -%} Movement 1 — Question (normal document flow) {%- endcomment -%}
+  <div class="story-the-problem__question">
+    {%- if question_heading != blank -%}
+      <h2 class="story-the-problem__question-heading">{{ question_heading }}</h2>
+    {%- endif -%}
+    {%- if question_body != blank -%}
+      <p class="story-the-problem__question-body">{{ question_body }}</p>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Movements 2+3 — Pinned scroll sequence {%- endcomment -%}
+  <div class="story-the-problem__scroll-track">
+    <div class="story-the-problem__sticky">
+
+      {%- comment -%} Media slide layers {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'media_slide' -%}
+          <div class="story-the-problem__slide" {{ block.shopify_attributes }}>
+            {%- if block.settings.video_url != blank -%}
+              {%- if block.settings.video_url.type == 'youtube' -%}
+                {%- capture video_embed_url -%}https://www.youtube.com/embed/{{ block.settings.video_url.id }}?autoplay=1&muted=1&loop=1&playlist={{ block.settings.video_url.id }}&controls=0{%- endcapture -%}
+              {%- elsif block.settings.video_url.type == 'vimeo' -%}
+                {%- capture video_embed_url -%}https://player.vimeo.com/video/{{ block.settings.video_url.id }}?autoplay=1&muted=1&loop=1&background=1{%- endcapture -%}
+              {%- endif -%}
+              <iframe
+                src="{{ video_embed_url }}"
+                class="story-the-problem__slide-media"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                loading="lazy"
+                title="{{ block.settings.caption | default: 'Video' }}"
+              ></iframe>
+            {%- elsif block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 1920 }}"
+                alt="{{ block.settings.caption | default: '' }}"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="lazy"
+                class="story-the-problem__slide-media"
+              >
+            {%- endif -%}
+            <div class="story-the-problem__slide-desat" aria-hidden="true"></div>
+            {%- if block.settings.caption != blank -%}
+              <div class="story-the-problem__slide-caption">
+                {{ block.settings.caption }}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- comment -%} Chart intro layer (eyebrow + heading) {%- endcomment -%}
+      <div class="story-the-problem__chart-intro">
+        {%- if eyebrow_text != blank -%}
+          <span class="story-the-problem__eyebrow">{{ eyebrow_text }}</span>
+        {%- endif -%}
+        {%- if chart_heading != blank -%}
+          <h3 class="story-the-problem__chart-heading">{{ chart_heading }}</h3>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} SVG graph — inline for JS getTotalLength() access {%- endcomment -%}
+      <div class="story-the-problem__graph-container">
+        <svg
+          class="story-the-problem__graph"
+          viewBox="0 0 800 330"
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden="true"
+        >
+          {%- comment -%} Axis lines {%- endcomment -%}
+          <line x1="80" y1="20" x2="80" y2="280" stroke="rgba(245,245,245,0.15)" stroke-width="1" />
+          <line x1="80" y1="280" x2="720" y2="280" stroke="rgba(245,245,245,0.15)" stroke-width="1" />
+
+          {%- comment -%} Horizontal grid lines {%- endcomment -%}
+          <line x1="80" y1="85" x2="720" y2="85" stroke="rgba(245,245,245,0.06)" stroke-width="1" stroke-dasharray="4 4" />
+          <line x1="80" y1="150" x2="720" y2="150" stroke="rgba(245,245,245,0.06)" stroke-width="1" stroke-dasharray="4 4" />
+          <line x1="80" y1="215" x2="720" y2="215" stroke="rgba(245,245,245,0.06)" stroke-width="1" stroke-dasharray="4 4" />
+
+          {%- comment -%} Vertical tick marks {%- endcomment -%}
+          <line x1="80" y1="276" x2="80" y2="284" stroke="rgba(245,245,245,0.2)" stroke-width="1" />
+          <line x1="240" y1="276" x2="240" y2="284" stroke="rgba(245,245,245,0.2)" stroke-width="1" />
+          <line x1="400" y1="276" x2="400" y2="284" stroke="rgba(245,245,245,0.2)" stroke-width="1" />
+          <line x1="560" y1="276" x2="560" y2="284" stroke="rgba(245,245,245,0.2)" stroke-width="1" />
+          <line x1="720" y1="276" x2="720" y2="284" stroke="rgba(245,245,245,0.2)" stroke-width="1" />
+
+          {%- comment -%} X-axis age labels {%- endcomment -%}
+          <text x="80" y="305" fill="rgba(245,245,245,0.5)" font-family="'Uniforma Semibold', sans-serif" font-size="12" text-anchor="middle">20</text>
+          <text x="240" y="305" fill="rgba(245,245,245,0.5)" font-family="'Uniforma Semibold', sans-serif" font-size="12" text-anchor="middle">30</text>
+          <text x="400" y="305" fill="rgba(245,245,245,0.5)" font-family="'Uniforma Semibold', sans-serif" font-size="12" text-anchor="middle">40</text>
+          <text x="560" y="305" fill="rgba(245,245,245,0.5)" font-family="'Uniforma Semibold', sans-serif" font-size="12" text-anchor="middle">50</text>
+          <text x="720" y="305" fill="rgba(245,245,245,0.5)" font-family="'Uniforma Semibold', sans-serif" font-size="12" text-anchor="middle">60</text>
+
+          {%- comment -%} Y-axis label {%- endcomment -%}
+          <text x="40" y="150" fill="rgba(245,245,245,0.35)" font-family="'Uniforma Semibold', sans-serif" font-size="11" text-anchor="middle" transform="rotate(-90 40 150)">NO Production</text>
+
+          {%- comment -%} Declining curve — smooth Bezier from age 20 (high) to 60 (low) {%- endcomment -%}
+          <path
+            class="story-the-problem__graph-line"
+            d="M 80 38 C 130 40 180 58 240 105 C 300 152 350 178 400 198 C 450 218 510 242 560 256 C 610 266 665 272 720 275"
+            fill="none"
+            stroke="#F5F5F5"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          {%- comment -%} Data point dots (fade in with annotations) {%- endcomment -%}
+          <circle class="story-the-problem__graph-dot" cx="160" cy="68" r="4" fill="#F5F5F5" opacity="0" />
+          <circle class="story-the-problem__graph-dot" cx="320" cy="165" r="4" fill="#F5F5F5" opacity="0" />
+          <circle class="story-the-problem__graph-dot" cx="400" cy="198" r="4" fill="#F5F5F5" opacity="0" />
+        </svg>
+
+        {%- comment -%} Annotation labels near curve data points {%- endcomment -%}
+        {%- if annotation_1 != blank -%}
+          <div class="story-the-problem__annotation story-the-problem__annotation--1">
+            {{ annotation_1 }}
+          </div>
+        {%- endif -%}
+        {%- if annotation_2 != blank -%}
+          <div class="story-the-problem__annotation story-the-problem__annotation--2">
+            {{ annotation_2 }}
+          </div>
+        {%- endif -%}
+        {%- if annotation_3 != blank -%}
+          <div class="story-the-problem__annotation story-the-problem__annotation--3">
+            {{ annotation_3 }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Bottom gradient overlay {%- endcomment -%}
+      <div class="story-the-problem__gradient" aria-hidden="true"></div>
+
+      {%- comment -%} Stat callout {%- endcomment -%}
+      <div class="story-the-problem__stat">
+        {%- if stat_value != blank -%}
+          <span class="story-the-problem__stat-value">{{ stat_value }}</span>
+        {%- endif -%}
+        {%- if stat_label != blank -%}
+          <span class="story-the-problem__stat-label">{{ stat_label }}</span>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-the-problem.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     The Problem — .story-the-problem
+     Prefix: --spm-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-the-problem-section {
+    background-color: #000000;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-the-problem {
+    position: relative;
+  }
+
+  /* Movement 1: Question block (normal document flow) */
+  .story-the-problem__question {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-inline: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+    gap: 24px;
+  }
+
+  .story-the-problem__question-heading {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #F5F5F5;
+    margin: 0;
+  }
+
+  .story-the-problem__question-body {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 36px;
+    letter-spacing: -0.5px;
+    color: #A0A0A0;
+    margin: 0;
+    max-width: 640px;
+  }
+
+  /* Scroll track: tall container that drives sticky pinning */
+  .story-the-problem__scroll-track {
+    height: calc(var(--spm-scroll-distance, 6) * 100vh);
+  }
+
+  /* Sticky viewport */
+  .story-the-problem__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  /* Media slide layers */
+  .story-the-problem__slide {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-the-problem__slide-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+  }
+
+  .story-the-problem__slide-desat {
+    position: absolute;
+    inset: 0;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+  }
+
+  .story-the-problem__slide-caption {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #F5F5F5;
+    z-index: 2;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+  }
+
+  /* Chart intro layer */
+  .story-the-problem__chart-intro {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .story-the-problem__eyebrow {
+    font-family: "Uniforma Semibold", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #A0A0A0;
+    margin-block-end: 24px;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-the-problem__chart-heading {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #F5F5F5;
+    margin: 0;
+    max-width: 1085px;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  /* Graph container */
+  .story-the-problem__graph-container {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 12%;
+    bottom: 28%;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .story-the-problem__graph {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  /* Annotations */
+  .story-the-problem__annotation {
+    position: absolute;
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(245, 245, 245, 0.7);
+    max-width: 200px;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-the-problem__annotation--1 {
+    left: 22%;
+    top: 8%;
+  }
+
+  .story-the-problem__annotation--2 {
+    left: 42%;
+    top: 44%;
+  }
+
+  .story-the-problem__annotation--3 {
+    left: 52%;
+    top: 56%;
+  }
+
+  /* Bottom gradient overlay */
+  .story-the-problem__gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+    z-index: 4;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+  }
+
+  /* Stat callout */
+  .story-the-problem__stat {
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    z-index: 5;
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: opacity, transform;
+    pointer-events: none;
+  }
+
+  .story-the-problem__stat-value {
+    font-family: var(--font-heading--family), sans-serif;
+    font-weight: 700;
+    font-size: 96px;
+    line-height: 60px;
+    color: #FFFFFF;
+  }
+
+  .story-the-problem__stat-label {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 40px;
+    letter-spacing: -1px;
+    color: #F5F5F5;
+    max-width: 984px;
+    margin-block-start: 12px;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-the-problem__scroll-track {
+      height: calc(var(--spm-scroll-distance, 6) * 60vh);
+    }
+
+    .story-the-problem__question {
+      padding-inline: 16px;
+      max-width: 100%;
+    }
+
+    .story-the-problem__question-heading {
+      font-size: 36px;
+      line-height: 44px;
+    }
+
+    .story-the-problem__question-body {
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    .story-the-problem__chart-heading {
+      font-size: 32px;
+      line-height: 40px;
+    }
+
+    .story-the-problem__slide-caption {
+      font-size: 32px;
+      line-height: 40px;
+      padding: 16px;
+    }
+
+    .story-the-problem__graph-container {
+      left: 4%;
+      right: 4%;
+      top: 8%;
+      bottom: 25%;
+    }
+
+    .story-the-problem__annotation {
+      font-size: 12px;
+      line-height: 16px;
+      max-width: 140px;
+    }
+
+    .story-the-problem__stat-value {
+      font-size: 64px;
+      line-height: 48px;
+    }
+
+    .story-the-problem__stat-label {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-the-problem__scroll-track {
+      height: auto;
+    }
+
+    .story-the-problem__sticky {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+
+    .story-the-problem__eyebrow,
+    .story-the-problem__chart-heading,
+    .story-the-problem__slide,
+    .story-the-problem__slide-caption,
+    .story-the-problem__graph,
+    .story-the-problem__annotation,
+    .story-the-problem__gradient,
+    .story-the-problem__stat {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-the-problem__graph-line {
+      stroke-dashoffset: 0 !important;
+    }
+
+    .story-the-problem__graph-dot {
+      opacity: 1 !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "The problem",
+  "class": "story-the-problem-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Question"
+    },
+    {
+      "type": "textarea",
+      "id": "question_heading",
+      "label": "Heading",
+      "default": "So why do we keep getting this wrong?"
+    },
+    {
+      "type": "textarea",
+      "id": "question_body",
+      "label": "Body",
+      "default": "Because it's the biggest blind spot in human health. It's not something that happens to other people. It's something already happening to you \u2014 whether you're paying attention or not."
+    },
+    {
+      "type": "header",
+      "content": "Chart"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "THE PROBLEM"
+    },
+    {
+      "type": "textarea",
+      "id": "chart_heading",
+      "label": "Heading",
+      "default": "Nitric Oxide production declines with age, beginning in your 20s."
+    },
+    {
+      "type": "header",
+      "content": "Annotations"
+    },
+    {
+      "type": "text",
+      "id": "annotation_1",
+      "label": "Annotation 1",
+      "default": "Production begins declining in your mid-twenties"
+    },
+    {
+      "type": "text",
+      "id": "annotation_2",
+      "label": "Annotation 2",
+      "default": "Poor diet and lack of exercise accelerate the drop"
+    },
+    {
+      "type": "text",
+      "id": "annotation_3",
+      "label": "Annotation 3",
+      "default": "By age 40, you produce 50% or less of what you did at 20"
+    },
+    {
+      "type": "header",
+      "content": "Stat"
+    },
+    {
+      "type": "text",
+      "id": "stat_value",
+      "label": "Value",
+      "default": "50%"
+    },
+    {
+      "type": "text",
+      "id": "stat_label",
+      "label": "Label",
+      "default": "of nitric oxide by the average 40-year-old"
+    },
+    {
+      "type": "header",
+      "content": "Scroll distance"
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "label": "Scroll distance",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 6,
+      "unit": "\u00d7vh"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "media_slide",
+      "name": "Media slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "video_url",
+          "id": "video_url",
+          "label": "Video URL",
+          "accept": ["youtube", "vimeo"],
+          "info": "If provided, video plays instead of the image"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "default": "You can't out-run it."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
