@@ -1,0 +1,649 @@
+{%- liquid
+  assign lead_in_text_1 = section.settings.lead_in_text_1
+  assign lead_in_text_2 = section.settings.lead_in_text_2
+  assign heading_text = section.settings.heading_text
+  assign cta_text = section.settings.cta_text
+  assign cta_url = section.settings.cta_url
+  assign scroll_distance = section.settings.scroll_distance
+-%}
+
+{%- capture inline_styles -%}
+  --sab-scroll-distance: {{ scroll_distance }};
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-advisory-board"
+  data-section-id="{{ section.id }}"
+  data-anchor="advisory-board"
+  style="{{ inline_styles }}"
+>
+
+  {%- comment -%} Lead-in copy — normal flow above scroll-track {%- endcomment -%}
+  {%- if lead_in_text_1 != blank or lead_in_text_2 != blank -%}
+    <div class="story-advisory-board__lead-in">
+      {%- if lead_in_text_1 != blank -%}
+        <p class="story-advisory-board__lead-in-text">{{ lead_in_text_1 }}</p>
+      {%- endif -%}
+      {%- if lead_in_text_2 != blank -%}
+        <p class="story-advisory-board__lead-in-text">{{ lead_in_text_2 }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Scroll-track — drives sticky pinning for entrance animation {%- endcomment -%}
+  <div class="story-advisory-board__scroll-track">
+    <div class="story-advisory-board__sticky">
+
+      {%- comment -%} Heading area — animated by JS {%- endcomment -%}
+      <div class="story-advisory-board__heading-area">
+        {%- if heading_text != blank -%}
+          <h2 class="story-advisory-board__heading">{{ heading_text }}</h2>
+        {%- endif -%}
+        <div class="story-advisory-board__decorative-line" aria-hidden="true"></div>
+      </div>
+
+      {%- comment -%} Carousel — interactive after entrance settles {%- endcomment -%}
+      <div class="story-advisory-board__carousel" tabindex="0" role="region" aria-label="Advisory board members">
+        <div class="story-advisory-board__carousel-track">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'member_card' -%}
+              <div class="story-advisory-board__card" {{ block.shopify_attributes }}>
+                <div class="story-advisory-board__card-img">
+                  {%- if block.settings.photo != blank -%}
+                    <img
+                      src="{{ block.settings.photo | image_url: width: 640 }}"
+                      alt="{{ block.settings.name | escape }}"
+                      width="306"
+                      height="347"
+                      loading="lazy"
+                    >
+                  {%- endif -%}
+                </div>
+                <div class="story-advisory-board__card-name">
+                  {%- if block.settings.name != blank -%}
+                    <span class="story-advisory-board__card-name-text">{{ block.settings.name }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.bio != blank -%}
+                    <span class="story-advisory-board__card-bio-text">{{ block.settings.bio }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+
+        <button type="button" class="story-advisory-board__arrow story-advisory-board__arrow--prev" aria-label="Previous members">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <button type="button" class="story-advisory-board__arrow story-advisory-board__arrow--next" aria-label="Next members">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 6 15 12 9 18"></polyline>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  {%- comment -%} Credentials area — normal flow below scroll-track {%- endcomment -%}
+  <div class="story-advisory-board__credentials-area">
+    <div class="story-advisory-board__credentials-row">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'credential_tile' -%}
+          <div class="story-advisory-board__cred-tile" {{ block.shopify_attributes }}>
+            {%- if block.settings.value != blank -%}
+              <span class="story-advisory-board__cred-number">{{ block.settings.value }}</span>
+            {%- endif -%}
+            {%- if block.settings.label != blank -%}
+              <span class="story-advisory-board__cred-label">{{ block.settings.label }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if cta_text != blank -%}
+      <a href="{{ cta_url }}" class="story-advisory-board__cta">{{ cta_text }}</a>
+    {%- endif -%}
+  </div>
+
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-advisory-board.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     Advisory board — .story-advisory-board
+     Prefix: --sab-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-advisory-board-section {
+    background-color: #F5F5F5;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-advisory-board {
+    position: relative;
+  }
+
+  /* ---- Lead-in copy ---- */
+
+  .story-advisory-board__lead-in {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 24px 60px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .story-advisory-board__lead-in-text {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 28px;
+    color: #767676;
+    margin: 0;
+  }
+
+  /* ---- Scroll architecture ---- */
+
+  .story-advisory-board__scroll-track {
+    height: calc(var(--sab-scroll-distance, 4) * 100vh);
+  }
+
+  .story-advisory-board__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---- Heading area ---- */
+
+  .story-advisory-board__heading-area {
+    position: absolute;
+    z-index: 2;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  .story-advisory-board__heading {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 60px;
+    color: #767676;
+    text-align: center;
+    margin: 0;
+    white-space: pre-line;
+  }
+
+  .story-advisory-board__decorative-line {
+    width: 120px;
+    height: 3px;
+    background: #2983DC;
+    margin: 16px auto 0;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  /* ---- Carousel ---- */
+
+  .story-advisory-board__carousel {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    padding: 0 40px;
+    outline: none;
+  }
+
+  .story-advisory-board__carousel-track {
+    display: flex;
+    gap: 24px;
+    will-change: transform;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .story-advisory-board__carousel-track.is-dragging {
+    cursor: grabbing;
+  }
+
+  /* ---- Cards ---- */
+
+  .story-advisory-board__card {
+    flex-shrink: 0;
+    width: 306px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .story-advisory-board__card-img {
+    border-radius: 16px;
+    overflow: hidden;
+    height: 347px;
+  }
+
+  .story-advisory-board__card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .story-advisory-board__card-name {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 8px;
+  }
+
+  .story-advisory-board__card-name-text {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    color: #414141;
+  }
+
+  .story-advisory-board__card-bio-text {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #767676;
+  }
+
+  /* ---- Arrow buttons ---- */
+
+  .story-advisory-board__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #414141;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.2s;
+  }
+
+  .story-advisory-board__arrow--prev {
+    left: 8px;
+  }
+
+  .story-advisory-board__arrow--next {
+    right: 8px;
+  }
+
+  .story-advisory-board__arrow:hover {
+    background: #ffffff;
+  }
+
+  .story-advisory-board__arrow[aria-disabled='true'] {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* ---- Credentials area ---- */
+
+  .story-advisory-board__credentials-area {
+    padding: 60px 24px 80px;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .story-advisory-board__credentials-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .story-advisory-board__cred-tile {
+    flex: 0 0 auto;
+    width: 281px;
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    background: rgba(65, 65, 65, 0.85);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .story-advisory-board__cred-number {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 60px;
+    color: #FFFFFF;
+    text-align: center;
+  }
+
+  .story-advisory-board__cred-label {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 28px;
+    color: #FFFFFF;
+    text-align: center;
+  }
+
+  /* ---- CTA ---- */
+
+  .story-advisory-board__cta {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #414141;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-advisory-board__scroll-track {
+      height: calc(var(--sab-scroll-distance, 4) * 60vh);
+    }
+
+    .story-advisory-board__lead-in {
+      padding: 48px 16px 32px;
+    }
+
+    .story-advisory-board__lead-in-text {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .story-advisory-board__heading {
+      font-size: 36px;
+      line-height: 40px;
+    }
+
+    .story-advisory-board__carousel {
+      padding: 0 16px;
+    }
+
+    .story-advisory-board__card {
+      width: calc(100vw - 64px);
+    }
+
+    .story-advisory-board__card-img {
+      height: 280px;
+    }
+
+    .story-advisory-board__card-name-text {
+      font-size: 18px;
+      line-height: 22px;
+    }
+
+    .story-advisory-board__card-bio-text {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .story-advisory-board__credentials-area {
+      padding: 40px 16px 60px;
+    }
+
+    .story-advisory-board__credentials-row {
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .story-advisory-board__cred-tile {
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .story-advisory-board__cred-number {
+      font-size: 40px;
+      line-height: 40px;
+    }
+
+    .story-advisory-board__cred-label {
+      font-size: 18px;
+      line-height: 22px;
+    }
+
+    .story-advisory-board__arrow {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-advisory-board__scroll-track {
+      height: auto;
+    }
+
+    .story-advisory-board__sticky {
+      position: relative;
+      height: auto;
+      min-height: auto;
+      padding: 60px 0;
+      overflow: visible;
+    }
+
+    .story-advisory-board__heading-area {
+      position: relative;
+      bottom: auto;
+      left: auto;
+      transform: none;
+      opacity: 1 !important;
+      will-change: auto;
+      margin-bottom: 40px;
+    }
+
+    .story-advisory-board__decorative-line {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-advisory-board__carousel {
+      position: relative;
+      top: auto;
+      transform: none;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .story-advisory-board__carousel-track {
+      will-change: auto;
+    }
+
+    .story-advisory-board__card,
+    .story-advisory-board__card-img,
+    .story-advisory-board__card-name {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Advisory board",
+  "class": "story-advisory-board-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Lead-in copy"
+    },
+    {
+      "type": "textarea",
+      "id": "lead_in_text_1",
+      "label": "Lead-in paragraph 1",
+      "default": "We are the most cardiologist-, pharmacist-, and doctor-recommended beet brand for heart health support in America."
+    },
+    {
+      "type": "textarea",
+      "id": "lead_in_text_2",
+      "label": "Lead-in paragraph 2",
+      "default": "When you do things right from the start, you get noticed. First, from doctors. They recommended us thirteen years before we ever sat on a retail shelf. We\u2019ve been built by the best since before day one."
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "Meet the Advisory Board."
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Scroll distance"
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "label": "Scroll distance",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "\u00d7vh"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "member_card",
+      "name": "Board member",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "photo",
+          "label": "Photo"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Name"
+        },
+        {
+          "type": "textarea",
+          "id": "bio",
+          "label": "Credentials / bio"
+        }
+      ]
+    },
+    {
+      "type": "credential_tile",
+      "name": "Credential",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "#1"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Recommended"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

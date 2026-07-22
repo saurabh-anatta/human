@@ -256,6 +256,93 @@
         "quote_text": "\u201cFor someone with my father\u2019s scientific background, collaborating with a supplement company was unusual. Humann\u2019s evidence-based approach aligned with his values.\u201d",
         "scroll_distance": 5
       }
+    },
+    "story_advisory_board": {
+      "type": "story-advisory-board",
+      "blocks": {
+        "member_1": {
+          "type": "member_card",
+          "settings": {
+            "photo": "shopify://shop_images/screenshot-2026-06-24-at-12-22-15-pm-1-page-overview-for-client-section-108344868.png",
+            "name": "Yousef Elyaman, MD",
+            "bio": "Medical Director at Humann, Board Certified in Internal Medicine and Integrative Medicine from the American Board of Physician Specialties"
+          }
+        },
+        "member_2": {
+          "type": "member_card",
+          "settings": {
+            "photo": "shopify://shop_images/screenshot-2026-06-24-at-12-22-40-pm-1-page-overview-for-client-section-108344877.png",
+            "name": "Penny Kris-Etherton, PhD",
+            "bio": "Science Advisory Board Member at Humann, past chair of the American Heart Association Council on Lifestyle and Cardiometabolic"
+          }
+        },
+        "member_3": {
+          "type": "member_card",
+          "settings": {
+            "photo": "shopify://shop_images/screenshot-2026-06-24-at-12-21-44-pm-1-page-overview-for-client-section-108344888.png",
+            "name": "Dr. John Ivy",
+            "bio": "President of Humann's Science Advisory Board, University of Texas Professor Emeritus, Department of Kinesiology and Health Education"
+          }
+        },
+        "member_4": {
+          "type": "member_card",
+          "settings": {
+            "photo": "shopify://shop_images/screenshot-2026-06-24-at-12-22-56-pm-1-page-overview-for-client-section-108344902.png",
+            "name": "Dr. Christopher Davis, MD",
+            "bio": "Chief Cardiologist at Humann, Triple Board-Certified Interventional Cardiologist, Fellow of the American College of Cardiology"
+          }
+        },
+        "member_5": {
+          "type": "member_card",
+          "settings": {
+            "photo": "shopify://shop_images/screenshot-2026-06-30-at-11-57-31-am-1-page-overview-for-client-section-108344913.png",
+            "name": "Dr. John P. Cooke, MD, PhD",
+            "bio": "Science Advisory Board Member at Humann, Chair of the Department of Cardiovascular Sciences at the Houston Methodist Research Institute"
+          }
+        },
+        "cred_1": {
+          "type": "credential_tile",
+          "settings": {
+            "value": "#1",
+            "label": "Cardiologist recommended"
+          }
+        },
+        "cred_2": {
+          "type": "credential_tile",
+          "settings": {
+            "value": "#1",
+            "label": "Doctor recommended"
+          }
+        },
+        "cred_3": {
+          "type": "credential_tile",
+          "settings": {
+            "value": "#1",
+            "label": "Pharmacist recommended"
+          }
+        },
+        "cred_4": {
+          "type": "credential_tile",
+          "settings": {
+            "value": "6000+",
+            "label": "Medical practitioners recommended"
+          }
+        }
+      },
+      "block_order": [
+        "member_1",
+        "member_2",
+        "member_3",
+        "member_4",
+        "member_5",
+        "cred_1",
+        "cred_2",
+        "cred_3",
+        "cred_4"
+      ],
+      "settings": {
+        "scroll_distance": 4
+      }
     }
   },
   "order": [
@@ -265,6 +352,7 @@
     "story_miracle_molecule",
     "story_origin",
     "story_proof",
-    "story_in_memoriam"
+    "story_in_memoriam",
+    "story_advisory_board"
   ]
 }
