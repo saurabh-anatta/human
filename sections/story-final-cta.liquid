@@ -1,0 +1,391 @@
+{%- liquid
+  assign wordmark_image = section.settings.wordmark_image
+  assign vessel_line_image = section.settings.vessel_line_image
+  assign tagline = section.settings.tagline
+  assign tagline_emphasis = section.settings.tagline_emphasis
+  assign primary_button_label = section.settings.primary_button_label
+  assign primary_button_url = section.settings.primary_button_url
+  assign secondary_button_label = section.settings.secondary_button_label
+  assign secondary_button_url = section.settings.secondary_button_url
+-%}
+
+{%- capture inline_styles -%}
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-final-cta"
+  id="ctas"
+  data-anchor="ctas"
+  data-section-id="{{ section.id }}"
+  style="{{ inline_styles }}"
+>
+
+  {%- comment -%} Vessel-line background image {%- endcomment -%}
+  {%- if vessel_line_image != blank -%}
+    <img
+      src="{{ vessel_line_image | image_url: width: 1920 }}"
+      alt=""
+      width="{{ vessel_line_image.width }}"
+      height="{{ vessel_line_image.height }}"
+      loading="lazy"
+      class="story-final-cta__vessel-line"
+    >
+  {%- endif -%}
+
+  {%- comment -%} Content layer — wordmark, tagline, buttons {%- endcomment -%}
+  <div class="story-final-cta__content">
+
+    {%- comment -%} Wordmark {%- endcomment -%}
+    {%- if wordmark_image != blank -%}
+      <img
+        src="{{ wordmark_image | image_url: width: 756 }}"
+        alt="{{ tagline | default: 'humann' }}"
+        width="{{ wordmark_image.width }}"
+        height="{{ wordmark_image.height }}"
+        loading="lazy"
+        class="story-final-cta__wordmark"
+        data-reveal
+      >
+    {%- endif -%}
+
+    {%- comment -%} Tagline {%- endcomment -%}
+    {%- if tagline != blank or tagline_emphasis != blank -%}
+      <p class="story-final-cta__tagline" data-reveal>
+        {%- if tagline != blank -%}{{ tagline }}{%- endif -%}
+        {%- if tagline_emphasis != blank %} <em class="story-final-cta__tagline-em">{{ tagline_emphasis }}</em>{%- endif -%}
+      </p>
+    {%- endif -%}
+
+    {%- comment -%} Buttons {%- endcomment -%}
+    {%- if primary_button_label != blank or secondary_button_label != blank -%}
+      <div class="story-final-cta__buttons" data-reveal>
+        {%- if primary_button_label != blank -%}
+          <a
+            href="{{ primary_button_url | default: '#' }}"
+            class="story-final-cta__btn story-final-cta__btn--primary"
+          >
+            {{- primary_button_label -}}
+          </a>
+        {%- endif -%}
+        {%- if secondary_button_label != blank -%}
+          <a
+            href="{{ secondary_button_url | default: '#' }}"
+            class="story-final-cta__btn story-final-cta__btn--secondary"
+          >
+            {{- secondary_button_label -}}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+
+  {%- comment -%} Desaturation overlay (Rectangle 6 pattern — above content) {%- endcomment -%}
+  <div class="story-final-cta__desat" aria-hidden="true"></div>
+
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-final-cta.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     Final CTA — .story-final-cta
+     Prefix: --sfc-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-final-cta-section {
+    background-color: #FFFFFF;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Section root */
+  .story-final-cta {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Vessel-line background image */
+  .story-final-cta__vessel-line {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.6;
+    transition: opacity 1.5s ease;
+  }
+
+  .story-final-cta__vessel-line.is-settled {
+    opacity: 0.12;
+  }
+
+  /* Content wrapper — centered column */
+  .story-final-cta__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 60px 24px;
+  }
+
+  /* Wordmark image */
+  .story-final-cta__wordmark {
+    display: block;
+    max-width: 378px;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Tagline */
+  .story-final-cta__tagline {
+    font-family: 'Moderat Serif', serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 60px;
+    letter-spacing: -1px;
+    text-align: center;
+    color: #767676;
+    margin: 0;
+  }
+
+  /* Bold emphasis within tagline */
+  .story-final-cta__tagline-em {
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  /* Buttons container */
+  .story-final-cta__buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Shared button styles */
+  .story-final-cta__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Uniforma', var(--font-body--family), sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 28px;
+    padding: 16px 28px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .story-final-cta__btn:hover {
+    opacity: 0.85;
+  }
+
+  /* Primary button — solid fill */
+  .story-final-cta__btn--primary {
+    background-color: #BC0F0F;
+    color: #FFFFFF;
+    border: none;
+  }
+
+  /* Secondary button — outline */
+  .story-final-cta__btn--secondary {
+    background-color: transparent;
+    color: #414141;
+    border: 2px solid #A0A0A0;
+  }
+
+  /* Desaturation overlay */
+  .story-final-cta__desat {
+    position: absolute;
+    inset: 0;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ------ Reveal animation ------ */
+
+  .story-final-cta [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .story-final-cta [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-final-cta__wordmark {
+      max-width: 240px;
+    }
+
+    .story-final-cta__tagline {
+      font-size: 22px;
+      line-height: 32px;
+    }
+
+    .story-final-cta__content {
+      gap: 32px;
+      padding: 40px 16px;
+    }
+
+    .story-final-cta__buttons {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .story-final-cta__btn {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-final-cta [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .story-final-cta__vessel-line {
+      opacity: 0.12 !important;
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Final CTA",
+  "class": "story-final-cta-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Wordmark"
+    },
+    {
+      "type": "image_picker",
+      "id": "wordmark_image",
+      "label": "Wordmark image"
+    },
+    {
+      "type": "header",
+      "content": "Vessel line"
+    },
+    {
+      "type": "image_picker",
+      "id": "vessel_line_image",
+      "label": "Vessel line image"
+    },
+    {
+      "type": "header",
+      "content": "Tagline"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Your cardiovascular routine"
+    },
+    {
+      "type": "text",
+      "id": "tagline_emphasis",
+      "label": "Emphasis text",
+      "default": "starts here."
+    },
+    {
+      "type": "header",
+      "content": "Primary button"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_label",
+      "label": "Label",
+      "default": "GET STARTED"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_url",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_label",
+      "label": "Label",
+      "default": "LEARN MORE"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_url",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}
