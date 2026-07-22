@@ -83,7 +83,7 @@
         "eyebrow_text": "THE UNIVERSAL TRUTH",
         "text_block_1": "America has been looking at cardiovascular health <em>all wrong.</em>",
         "supporting_line_1": "Some say it's about your heart problems. Or something you deal with in old age.",
-        "text_block_2_eyebrow": "BUT THE REAL STORY ISN'T ABOUT THE HEART \u2014",
+        "text_block_2_eyebrow": "BUT THE REAL STORY ISN'T ABOUT THE HEART —",
         "text_block_2": "<p>It's about the <strong>60,000 miles of blood vessels</strong> doing the heavy lifting behind it. every second, <strong>for every one of us.</strong></p>",
         "vessel_color": "#BC0F0F",
         "scroll_distance": 5
@@ -107,7 +107,10 @@
           }
         }
       },
-      "block_order": ["slide_1", "slide_2"],
+      "block_order": [
+        "slide_1",
+        "slide_2"
+      ],
       "settings": {
         "question_heading": "So why do we keep getting this <em>wrong?</em>",
         "question_body": "Because it's the biggest blind spot in human health. It's not something that happens to other people.",
@@ -145,7 +148,11 @@
           }
         }
       },
-      "block_order": ["pair_1", "pair_2", "pair_3"],
+      "block_order": [
+        "pair_1",
+        "pair_2",
+        "pair_3"
+      ],
       "settings": {
         "eyebrow_text": "THE MIRACLE MOLECULE",
         "video_poster": "shopify://shop_images/screenshot-2026-07-15-at-2-45-00-pm-1-concept-14-red-particle-molecule-visual-1-final-art-direction-12601662.png",
@@ -153,8 +160,7 @@
         "stage1_text_2": "They call it the miracle molecule. But scientists don't call it that lightly.",
         "stage2_no_headline": "NO",
         "stage2_subheadline": "the most important molecule in your cardiovascular system",
-        "closing_text": "\u2013 keeping those <strong>60,000 miles</strong> open, flowing\u2026 and <strong>alive.</strong>",
-        "closing_image": "shopify://shop_images/screenshot-2026-07-15-at-3-00-21-pm-1-concept-14-red-particle-molecule-visual-2-closing-beat-12601661.png",
+        "closing_text": "– keeping those <strong>60,000 miles</strong> open, flowing… and <strong>alive.</strong>",
         "scroll_distance": 10
       }
     },
@@ -163,9 +169,9 @@
       "settings": {
         "eyebrow_text": "ORIGIN",
         "founding_heading_1": "In 1998, the discovery of what nitric oxide does for the human body won the Nobel Prize in Medicine.",
-        "founding_body_1": "We didn\u2019t discover it. But we did have the nerve to take the Nobel-winning science out of the lab \u2014 and bring it to the people who needed it. That\u2019s where the revolution started.",
-        "founding_heading_2": "In 2009, that same discovery led to a nitric oxide research program at the University of Texas. And that\u2019s where Humann came to life.",
-        "founding_body_2": "Fifteen years later, the science hasn\u2019t changed. Our commitment to it hasn\u2019t either.",
+        "founding_body_1": "We didn’t discover it. But we did have the nerve to take the Nobel-winning science out of the lab — and bring it to the people who needed it. That’s where the revolution started.",
+        "founding_heading_2": "In 2009, that same discovery led to a nitric oxide research program at the University of Texas. And that’s where Humann came to life.",
+        "founding_body_2": "Fifteen years later, the science hasn’t changed. Our commitment to it hasn’t either.",
         "archival_image_1": "shopify://shop_images/screenshot-2026-06-30-at-9-47-10-am-1-page-overview-for-client-section-108343522.png",
         "archival_image_2": "shopify://shop_images/screenshot-2026-07-01-at-7-47-34-am-1-page-overview-for-client-section-108343527.png",
         "video_poster": "shopify://shop_images/gif-page-overview-for-client-section-108343504.png",
@@ -235,7 +241,16 @@
           }
         }
       },
-      "block_order": ["stat_1", "stat_2", "stat_3", "stat_4", "stat_5", "stat_6", "stat_7", "stat_8"],
+      "block_order": [
+        "stat_1",
+        "stat_2",
+        "stat_3",
+        "stat_4",
+        "stat_5",
+        "stat_6",
+        "stat_7",
+        "stat_8"
+      ],
       "settings": {
         "bg_image": "shopify://shop_images/kzgm10012-full-1-page-overview-for-client-section-108344829.jpg",
         "eyebrow_text": "THE PROOF",
@@ -248,9 +263,9 @@
       "type": "story-in-memoriam",
       "settings": {
         "bg_image": "shopify://shop_images/screenshot-2026-06-29-at-12-34-43-pm-1-page-overview-for-client-section-108345013.png",
-        "caption_text": "Dr. Ferid Murad, Nobel Laureate 1936 \u2013 2023",
+        "caption_text": "Dr. Ferid Murad, Nobel Laureate 1936 – 2023",
         "eyebrow_text": "IN MEMORIAM",
-        "quote_text": "\u201cFor someone with my father\u2019s scientific background, collaborating with a supplement company was unusual. Humann\u2019s evidence-based approach aligned with his values.\u201d",
+        "quote_text": "“For someone with my father’s scientific background, collaborating with a supplement company was unusual. Humann’s evidence-based approach aligned with his values.”",
         "scroll_distance": 5
       }
     },
