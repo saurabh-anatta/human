@@ -14881,7 +14881,6 @@
               "name": "Video Modal",
               "settings": {
                 "video_desktop": "shopify://files/videos/FromLabToLegacy_16x9_F_Web 1.mp4",
-                "video_mobile": "shopify://files/videos/FromLabToLegacy_16x9_F_Web 1.mp4",
                 "autoplay_on_open": true,
                 "start_unmuted": true,
                 "loop": false,
