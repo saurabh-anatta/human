@@ -1,0 +1,633 @@
+{%- liquid
+  assign eyebrow_text = section.settings.eyebrow_text
+  assign stage1_text_1 = section.settings.stage1_text_1
+  assign stage1_text_2 = section.settings.stage1_text_2
+  assign stage2_no_headline = section.settings.stage2_no_headline
+  assign stage2_subheadline = section.settings.stage2_subheadline
+  assign stage1_video = section.settings.stage1_video
+  assign video_poster = section.settings.video_poster
+  assign closing_text = section.settings.closing_text
+  assign scroll_distance = section.settings.scroll_distance
+  assign poster_url = ''
+  if video_poster != blank
+    assign poster_url = video_poster | image_url: width: 1920
+  endif
+-%}
+
+{%- capture inline_styles -%}
+  --smm-scroll-distance: {{ scroll_distance }};
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-miracle-molecule"
+  data-section-id="{{ section.id }}"
+  data-anchor="miracle-molecule"
+  style="{{ inline_styles }}"
+>
+  <div class="story-miracle-molecule__scroll-track">
+    <div class="story-miracle-molecule__sticky">
+
+      {%- comment -%} Media layer — video or poster image {%- endcomment -%}
+      <div class="story-miracle-molecule__media-layer">
+        {%- if stage1_video != blank -%}
+          <video
+            class="story-miracle-molecule__video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            {% if poster_url != '' %}poster="{{ poster_url }}"{% endif %}
+          >
+            {%- for source in stage1_video.sources -%}
+              <source src="{{ source.url }}" type="{{ source.mime_type }}">
+            {%- endfor -%}
+          </video>
+        {%- elsif video_poster != blank -%}
+          <img
+            src="{{ poster_url }}"
+            alt=""
+            width="{{ video_poster.width }}"
+            height="{{ video_poster.height }}"
+            loading="eager"
+            class="story-miracle-molecule__poster"
+          >
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Desaturation overlay {%- endcomment -%}
+      <div class="story-miracle-molecule__desat-layer" aria-hidden="true"></div>
+
+      {%- comment -%} Blur/dark overlay {%- endcomment -%}
+      <div class="story-miracle-molecule__blur-layer" aria-hidden="true"></div>
+
+      {%- comment -%} Eyebrow label {%- endcomment -%}
+      {%- if eyebrow_text != blank -%}
+        <span class="story-miracle-molecule__eyebrow">{{ eyebrow_text }}</span>
+      {%- endif -%}
+
+      {%- comment -%} Stage 1 text blocks {%- endcomment -%}
+      {%- if stage1_text_1 != blank -%}
+        <div class="story-miracle-molecule__stage1-text story-miracle-molecule__stage1-text--1">
+          {{ stage1_text_1 }}
+        </div>
+      {%- endif -%}
+      {%- if stage1_text_2 != blank -%}
+        <div class="story-miracle-molecule__stage1-text story-miracle-molecule__stage1-text--2">
+          {{ stage1_text_2 }}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} NO headline + subheadline {%- endcomment -%}
+      <div class="story-miracle-molecule__no-headline">
+        {%- if stage2_no_headline != blank -%}
+          <span class="story-miracle-molecule__no-text">{{ stage2_no_headline }}</span>
+        {%- endif -%}
+        {%- if stage2_subheadline != blank -%}
+          <span class="story-miracle-molecule__no-sub">{{ stage2_subheadline }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Molecule SVG — inline for JS transform animation {%- endcomment -%}
+      <svg class="story-miracle-molecule__molecule" viewBox="0 0 400 400" aria-hidden="true">
+        <g class="story-miracle-molecule__molecule-group">
+          {%- comment -%} Orbital ring {%- endcomment -%}
+          <circle cx="200" cy="200" r="160" fill="none" stroke="#FFFFFF" stroke-width="0.5" />
+          {%- comment -%} Particles {%- endcomment -%}
+          <circle cx="338" cy="120" r="10" fill="#FFFFFF" />
+          <circle cx="75" cy="260" r="10" fill="#FFFFFF" />
+          <circle cx="280" cy="345" r="17.5" fill="#FFFFFF" />
+          <circle cx="105" cy="90" r="9" fill="#FFFFFF" />
+          <circle cx="350" cy="270" r="12.5" fill="#FFFFFF" />
+          {%- comment -%} N/O labels (initially hidden, JS-driven opacity) {%- endcomment -%}
+          <text class="story-miracle-molecule__molecule-label" x="155" y="155" fill="#FFFFFF" font-family="'Uniforma Semibold', sans-serif" font-size="14" letter-spacing="0.75" text-anchor="middle">N</text>
+          <text class="story-miracle-molecule__molecule-label" x="155" y="185" fill="#FFFFFF" font-family="'Uniforma Semibold', sans-serif" font-size="14" letter-spacing="0.75" text-anchor="middle">O</text>
+          <text class="story-miracle-molecule__molecule-label" x="260" y="250" fill="#FFFFFF" font-family="'Uniforma Semibold', sans-serif" font-size="14" letter-spacing="0.75" text-anchor="middle">N</text>
+          <text class="story-miracle-molecule__molecule-label" x="260" y="280" fill="#FFFFFF" font-family="'Uniforma Semibold', sans-serif" font-size="14" letter-spacing="0.75" text-anchor="middle">O</text>
+        </g>
+      </svg>
+
+      {%- comment -%} Stage 3 — split image/text pairs {%- endcomment -%}
+      <div class="story-miracle-molecule__stage3">
+        <div class="story-miracle-molecule__stage3-media">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 1920 }}"
+                alt=""
+                loading="lazy"
+                class="story-miracle-molecule__pair-image"
+                data-pair-index="{{ forloop.index0 }}"
+              >
+            {%- else -%}
+              <div
+                class="story-miracle-molecule__pair-image"
+                data-pair-index="{{ forloop.index0 }}"
+                aria-hidden="true"
+              ></div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <div class="story-miracle-molecule__stage3-content">
+          {%- for block in section.blocks -%}
+            <div
+              class="story-miracle-molecule__pair-text"
+              data-pair-index="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.text != blank -%}
+                {{ block.settings.text }}
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+          {%- if closing_text != blank -%}
+            <div class="story-miracle-molecule__closing">
+              {{ closing_text }}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-miracle-molecule.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     The Miracle Molecule — .story-miracle-molecule
+     Prefix: --smm-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-miracle-molecule-section {
+    background-color: #000000;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-miracle-molecule {
+    position: relative;
+  }
+
+  /* Scroll track: tall container that drives sticky pinning */
+  .story-miracle-molecule__scroll-track {
+    height: calc(var(--smm-scroll-distance, 10) * 100vh);
+  }
+
+  /* Sticky viewport */
+  .story-miracle-molecule__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  /* Media layer — video or poster fills viewport */
+  .story-miracle-molecule__media-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    will-change: filter;
+  }
+
+  .story-miracle-molecule__video,
+  .story-miracle-molecule__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Desaturation overlay */
+  .story-miracle-molecule__desat-layer {
+    position: absolute;
+    inset: 0;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Blur/dark overlay */
+  .story-miracle-molecule__blur-layer {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(47px);
+    -webkit-backdrop-filter: blur(47px);
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Eyebrow */
+  .story-miracle-molecule__eyebrow {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    font-family: "Uniforma Semibold", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    text-align: center;
+    color: #A0A0A0;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* Stage 1 text blocks */
+  .story-miracle-molecule__stage1-text {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 809px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* NO headline container */
+  .story-miracle-molecule__no-headline {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    pointer-events: none;
+  }
+
+  .story-miracle-molecule__no-text {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 96px;
+    line-height: 1;
+    letter-spacing: -2px;
+    color: #FFFFFF;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-miracle-molecule__no-sub {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.5px;
+    color: #A0A0A0;
+    opacity: 0;
+    will-change: opacity;
+    max-width: 400px;
+  }
+
+  /* Molecule SVG */
+  .story-miracle-molecule__molecule {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    z-index: 2;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+  }
+
+  .story-miracle-molecule__molecule-label {
+    opacity: 0;
+    will-change: opacity;
+    text-transform: uppercase;
+  }
+
+  /* Stage 3 — split layout */
+  .story-miracle-molecule__stage3 {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    opacity: 0;
+    will-change: opacity;
+    z-index: 4;
+  }
+
+  .story-miracle-molecule__stage3-media {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .story-miracle-molecule__pair-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-miracle-molecule__stage3-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px;
+  }
+
+  .story-miracle-molecule__pair-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding: 48px;
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+  }
+
+  .story-miracle-molecule__closing {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding: 48px;
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-miracle-molecule__scroll-track {
+      height: calc(var(--smm-scroll-distance, 10) * 60vh);
+    }
+
+    .story-miracle-molecule__stage1-text {
+      font-size: 36px;
+      line-height: 44px;
+      padding: 16px;
+      max-width: 100%;
+    }
+
+    .story-miracle-molecule__no-text {
+      font-size: 64px;
+    }
+
+    .story-miracle-molecule__no-sub {
+      font-size: 18px;
+      line-height: 26px;
+      max-width: 280px;
+    }
+
+    .story-miracle-molecule__molecule {
+      width: 280px;
+      height: 280px;
+    }
+
+    .story-miracle-molecule__stage3 {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .story-miracle-molecule__pair-text,
+    .story-miracle-molecule__closing {
+      font-size: 32px;
+      line-height: 40px;
+      padding: 24px;
+    }
+
+    .story-miracle-molecule__eyebrow {
+      bottom: 24px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-miracle-molecule__scroll-track {
+      height: auto;
+    }
+
+    .story-miracle-molecule__sticky {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+
+    .story-miracle-molecule__eyebrow,
+    .story-miracle-molecule__stage1-text,
+    .story-miracle-molecule__no-text,
+    .story-miracle-molecule__no-sub,
+    .story-miracle-molecule__molecule,
+    .story-miracle-molecule__stage3,
+    .story-miracle-molecule__pair-image,
+    .story-miracle-molecule__pair-text,
+    .story-miracle-molecule__closing {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-miracle-molecule__molecule-label {
+      opacity: 1 !important;
+    }
+
+    .story-miracle-molecule__molecule-group {
+      transform: none !important;
+    }
+
+    .story-miracle-molecule__desat-layer,
+    .story-miracle-molecule__blur-layer {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "The miracle molecule",
+  "class": "story-miracle-molecule-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "THE MIRACLE MOLECULE"
+    },
+    {
+      "type": "header",
+      "content": "Stage 1"
+    },
+    {
+      "type": "video",
+      "id": "stage1_video",
+      "label": "Video"
+    },
+    {
+      "type": "image_picker",
+      "id": "video_poster",
+      "label": "Poster image"
+    },
+    {
+      "type": "textarea",
+      "id": "stage1_text_1",
+      "label": "Text block 1",
+      "default": "And at the center of it all is one thing you were never taught to think about: Nitric oxide."
+    },
+    {
+      "type": "textarea",
+      "id": "stage1_text_2",
+      "label": "Text block 2",
+      "default": "They call it the miracle molecule. But scientists don't call it that lightly."
+    },
+    {
+      "type": "header",
+      "content": "Stage 2"
+    },
+    {
+      "type": "text",
+      "id": "stage2_no_headline",
+      "label": "Headline",
+      "default": "NO"
+    },
+    {
+      "type": "textarea",
+      "id": "stage2_subheadline",
+      "label": "Subheadline",
+      "default": "the most important molecule in your cardiovascular system"
+    },
+    {
+      "type": "header",
+      "content": "Stage 3"
+    },
+    {
+      "type": "textarea",
+      "id": "closing_text",
+      "label": "Closing text",
+      "default": "– keeping those 60,000 miles open, flowing… and alive."
+    },
+    {
+      "type": "header",
+      "content": "Scroll distance"
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "label": "Scroll distance",
+      "min": 4,
+      "max": 14,
+      "step": 1,
+      "default": 10,
+      "unit": "×vh"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stage3_pair",
+      "name": "Image + text pair",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

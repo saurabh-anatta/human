@@ -115,11 +115,49 @@
         "stat_value": "50%",
         "stat_label": "of nitric oxide by the average 40-year-old"
       }
+    },
+    "story_miracle_molecule": {
+      "type": "story-miracle-molecule",
+      "blocks": {
+        "pair_1": {
+          "type": "stage3_pair",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-30-at-7-26-06-am-1-page-overview-for-client-section-108343967.png",
+            "text": "Dr. Ferid Murad discovered that nitric oxide signals blood vessels to dilate."
+          }
+        },
+        "pair_2": {
+          "type": "stage3_pair",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-30-at-7-27-08-am-1-page-overview-for-client-section-108344005.png",
+            "text": "When Nitric Oxide is present, vessels open. Blood flows."
+          }
+        },
+        "pair_3": {
+          "type": "stage3_pair",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-30-at-7-33-26-am-1-page-overview-for-client-section-108344006.png",
+            "text": "When it's missing, they constrict. Pressure rises. Damage follows."
+          }
+        }
+      },
+      "block_order": ["pair_1", "pair_2", "pair_3"],
+      "settings": {
+        "eyebrow_text": "THE MIRACLE MOLECULE",
+        "video_poster": "shopify://shop_images/screenshot-2026-06-27-at-3-03-41-pm-1-page-overview-for-client-section-108343386.png",
+        "stage1_text_1": "And at the center of it all is one thing you were never taught to think about: Nitric oxide.",
+        "stage1_text_2": "They call it the miracle molecule. But scientists don't call it that lightly.",
+        "stage2_no_headline": "NO",
+        "stage2_subheadline": "the most important molecule in your cardiovascular system",
+        "closing_text": "\u2013 keeping those 60,000 miles open, flowing\u2026 and alive.",
+        "scroll_distance": 10
+      }
     }
   },
   "order": [
     "story_subnav",
     "story_universal_truth",
-    "story_the_problem"
+    "story_the_problem",
+    "story_miracle_molecule"
   ]
 }
