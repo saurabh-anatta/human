@@ -95,22 +95,22 @@
         "slide_1": {
           "type": "media_slide",
           "settings": {
-            "image": "shopify://shop_images/screenshot-2026-06-30-at-9-00-13-am-1-page-overview-for-client-section-108343563.png",
+            "image": "shopify://shop_images/kambria-trout-rdm2emlablm-unsplash-1-concept-14-out-diet-full-bleed-slide-final-design-125732198.jpg",
             "caption": "You can't out-diet it."
           }
         },
         "slide_2": {
           "type": "media_slide",
           "settings": {
-            "image": "shopify://shop_images/screenshot-2026-06-30-at-9-01-02-am-1-page-overview-for-client-section-108343690.png",
+            "image": "shopify://shop_images/screenshot-2026-07-16-at-10-53-24-am-2-concept-14-out-train-full-bleed-slide-final-design-125732196.png",
             "caption": "You can't out-train it."
           }
         }
       },
       "block_order": ["slide_1", "slide_2"],
       "settings": {
-        "question_heading": "So why do we keep getting this wrong?",
-        "question_body": "Because it's the biggest blind spot in human health. It's not something that happens to other people. It's something already happening to you \u2014 whether you're paying attention or not.",
+        "question_heading": "So why do we keep getting this <em>wrong?</em>",
+        "question_body": "Because it's the biggest blind spot in human health. It's not something that happens to other people.",
         "eyebrow_text": "THE PROBLEM",
         "chart_heading": "Nitric Oxide production declines with age, beginning in your 20s.",
         "annotation_1": "Production begins declining in your mid-twenties",

@@ -64,6 +64,7 @@ export function init(sectionEl, utils) {
     if (chartHeading) chartHeading.style.opacity = '1';
     for (var ri = 0; ri < slides.length; ri++) {
       slides[ri].style.opacity = '1';
+      slides[ri].style.transform = 'none';
       var rCaption = slides[ri].querySelector('.story-the-problem__slide-caption');
       if (rCaption) rCaption.style.opacity = '1';
     }
@@ -114,7 +115,7 @@ export function init(sectionEl, utils) {
           }
         }
 
-        /* ---- Slides (0.12–0.55): cross-fade sequentially ---- */
+        /* ---- Slides (0.12–0.55): slide-up sequentially ---- */
         if (slideCount > 0) {
           var sPhaseStart = 0.12;
           var sPhaseEnd = 0.55;
@@ -124,17 +125,11 @@ export function init(sectionEl, utils) {
             var sStart = sPhaseStart + si * perSlide;
             var sEnd = sStart + perSlide;
 
-            /* Fade in: first 30% of slide range */
-            var fadeInP = phaseProgress(p, sStart, sStart + perSlide * 0.3);
-
-            /* Fade out: last 30% of slide range (skip for last slide) */
-            var fadeOutP = 0;
-            if (si < slideCount - 1) {
-              fadeOutP = phaseProgress(p, sEnd - perSlide * 0.3, sEnd);
-            }
-
-            var sOpacity = fadeInP * (1 - fadeOutP);
-            slides[si].style.opacity = Math.min(Math.max(sOpacity, 0), 1);
+            /* Slide up: first 40% of slide range */
+            var slideUpP = phaseProgress(p, sStart, sStart + perSlide * 0.4);
+            var yOffset = lerp(100, 0, slideUpP);
+            slides[si].style.transform = 'translateY(' + yOffset + '%)';
+            slides[si].style.opacity = slideUpP > 0 ? 1 : 0;
 
             /* Caption within slide */
             var captionEl = slides[si].querySelector('.story-the-problem__slide-caption');
@@ -142,11 +137,18 @@ export function init(sectionEl, utils) {
               var cFadeIn = phaseProgress(p, sStart + perSlide * 0.15, sStart + perSlide * 0.45);
               var cFadeOut = 0;
               if (si < slideCount - 1) {
-                cFadeOut = phaseProgress(p, sEnd - perSlide * 0.4, sEnd - perSlide * 0.1);
+                cFadeOut = phaseProgress(p, sEnd - perSlide * 0.25, sEnd);
               }
               var cOpacity = cFadeIn * (1 - cFadeOut);
               captionEl.style.opacity = Math.min(Math.max(cOpacity, 0), 1);
             }
+          }
+
+          /* Desat overlay on last slide: fade in during graph entry */
+          var lastSlideDesat = slides[slideCount - 1].querySelector('.story-the-problem__slide-desat');
+          if (lastSlideDesat) {
+            var desatP = phaseProgress(p, 0.55, 0.65);
+            lastSlideDesat.style.opacity = lerp(0, 1, desatP);
           }
         }
 

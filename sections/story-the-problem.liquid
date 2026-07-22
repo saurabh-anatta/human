@@ -237,6 +237,12 @@
     max-width: 640px;
   }
 
+  .story-the-problem__question-heading em {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-style: normal;
+  }
+
   /* Scroll track: tall container that drives sticky pinning */
   .story-the-problem__scroll-track {
     height: calc(var(--spm-scroll-distance, 6) * 100vh);
@@ -257,7 +263,10 @@
     inset: 0;
     z-index: 1;
     opacity: 0;
-    will-change: opacity;
+    transform: translateY(100%);
+    border-radius: 64px 64px 0 0;
+    overflow: hidden;
+    will-change: opacity, transform;
   }
 
   .story-the-problem__slide-media {
@@ -274,6 +283,7 @@
     inset: 0;
     background: #D9D9D9;
     mix-blend-mode: color;
+    opacity: 0;
     pointer-events: none;
   }
 
@@ -285,11 +295,11 @@
     justify-content: center;
     text-align: center;
     padding: 24px;
-    font-family: var(--font-heading--family), serif;
-    font-weight: 400;
+    font-family: var(--font-heading--family), sans-serif;
+    font-weight: 700;
     font-size: 60px;
-    line-height: 52px;
-    letter-spacing: -1px;
+    line-height: 60px;
+    letter-spacing: 0;
     color: #F5F5F5;
     z-index: 2;
     opacity: 0;
@@ -460,6 +470,10 @@
       line-height: 40px;
     }
 
+    .story-the-problem__slide {
+      border-radius: 32px 32px 0 0;
+    }
+
     .story-the-problem__slide-caption {
       font-size: 32px;
       line-height: 40px;
@@ -517,6 +531,10 @@
       will-change: auto;
     }
 
+    .story-the-problem__slide-desat {
+      opacity: 0 !important;
+    }
+
     .story-the-problem__graph-line {
       stroke-dashoffset: 0 !important;
     }
@@ -541,16 +559,16 @@
       "content": "Question"
     },
     {
-      "type": "textarea",
+      "type": "inline_richtext",
       "id": "question_heading",
       "label": "Heading",
-      "default": "So why do we keep getting this wrong?"
+      "default": "So why do we keep getting this <em>wrong?</em>"
     },
     {
       "type": "textarea",
       "id": "question_body",
       "label": "Body",
-      "default": "Because it's the biggest blind spot in human health. It's not something that happens to other people. It's something already happening to you \u2014 whether you're paying attention or not."
+      "default": "Because it's the biggest blind spot in human health. It's not something that happens to other people."
     },
     {
       "type": "header",
