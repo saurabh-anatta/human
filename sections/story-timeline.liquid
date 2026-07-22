@@ -1,0 +1,791 @@
+{%- liquid
+  assign section_title = section.settings.section_title
+  assign athletes_heading = section.settings.athletes_heading
+  assign athletes_body = section.settings.athletes_body
+  assign athletes_image = section.settings.athletes_image
+  assign everyone_heading = section.settings.everyone_heading
+  assign everyone_body = section.settings.everyone_body
+  assign everyone_image = section.settings.everyone_image
+  assign vessel_color = section.settings.vessel_color
+  assign scroll_distance = section.settings.scroll_distance
+-%}
+
+{%- capture inline_styles -%}
+  --stl-scroll-distance: {{ scroll_distance }};
+  --stl-vessel-color: {{ vessel_color }};
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-timeline"
+  data-section-id="{{ section.id }}"
+  data-anchor="timeline"
+  style="{{ inline_styles }}"
+>
+
+  {%- comment -%} Scroll-track — drives sticky pinning for entrance animation {%- endcomment -%}
+  <div class="story-timeline__scroll-track">
+    <div class="story-timeline__sticky">
+
+      {%- comment -%} Background gray band (top ~35% of viewport) {%- endcomment -%}
+      <div class="story-timeline__bg-gray" aria-hidden="true"></div>
+
+      {%- comment -%} Athletes media layer — full-bleed image with desaturation overlay {%- endcomment -%}
+      <div class="story-timeline__athletes-media">
+        {%- if athletes_image != blank -%}
+          <img
+            src="{{ athletes_image | image_url: width: 2048 }}"
+            alt=""
+            width="{{ athletes_image.width }}"
+            height="{{ athletes_image.height }}"
+            loading="lazy"
+            class="story-timeline__athletes-img"
+          >
+        {%- endif -%}
+        <div class="story-timeline__desat-overlay" aria-hidden="true"></div>
+      </div>
+
+      {%- comment -%} Section title — animated by JS {%- endcomment -%}
+      <h2 class="story-timeline__section-title">{{ section_title }}</h2>
+
+      {%- comment -%} Decorative line — SVG arrow, animated by JS {%- endcomment -%}
+      <svg class="story-timeline__decorative-line" aria-hidden="true" width="120" height="24" viewBox="0 0 120 24" fill="none">
+        <line x1="120" y1="12" x2="8" y2="12" stroke="#2983DC" stroke-width="3" stroke-linecap="round"></line>
+        <polyline points="16,4 4,12 16,20" stroke="#2983DC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"></polyline>
+      </svg>
+
+      {%- comment -%} Athletes copy — overlay text that appears during athletes beat {%- endcomment -%}
+      <div class="story-timeline__athletes-copy">
+        {%- if athletes_heading != blank -%}
+          <h3 class="story-timeline__athletes-heading">{{ athletes_heading }}</h3>
+        {%- endif -%}
+        {%- if athletes_body != blank -%}
+          <p class="story-timeline__athletes-body">{{ athletes_body }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Everyone-else copy — appears after athletes beat fades {%- endcomment -%}
+      <div class="story-timeline__everyone-copy">
+        {%- if everyone_heading != blank -%}
+          <h3 class="story-timeline__everyone-heading">{{ everyone_heading }}</h3>
+        {%- endif -%}
+        {%- if everyone_body != blank -%}
+          <p class="story-timeline__everyone-body">{{ everyone_body }}</p>
+        {%- endif -%}
+        {%- if everyone_image != blank -%}
+          <div class="story-timeline__everyone-img-wrap">
+            <img
+              src="{{ everyone_image | image_url: width: 1440 }}"
+              alt=""
+              width="{{ everyone_image.width }}"
+              height="{{ everyone_image.height }}"
+              loading="lazy"
+              class="story-timeline__everyone-img"
+            >
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Vessel SVG — branching decorative paths, stroke-drawn on scroll {%- endcomment -%}
+      <svg
+        class="story-timeline__vessel-svg"
+        viewBox="0 0 1440 1000"
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+      >
+        {%- comment -%} Main stem — central vertical line {%- endcomment -%}
+        <path
+          class="story-timeline__vessel-path"
+          d="M 720 200 C 720 300 718 400 720 500 C 722 600 720 650 720 700"
+          fill="none" stroke="var(--stl-vessel-color)" stroke-width="2" stroke-linecap="round"
+        />
+
+        {%- comment -%} Branch left — curves toward the left side {%- endcomment -%}
+        <path
+          class="story-timeline__vessel-path"
+          d="M 720 500 C 680 540 600 560 500 580 C 400 600 320 610 240 620"
+          fill="none" stroke="var(--stl-vessel-color)" stroke-width="2" stroke-linecap="round"
+        />
+
+        {%- comment -%} Branch right — curves toward the right side {%- endcomment -%}
+        <path
+          class="story-timeline__vessel-path"
+          d="M 720 500 C 760 540 840 560 940 580 C 1040 600 1120 610 1200 620"
+          fill="none" stroke="var(--stl-vessel-color)" stroke-width="2" stroke-linecap="round"
+        />
+
+        {%- comment -%} Sub-branch left — finer detail {%- endcomment -%}
+        <path
+          class="story-timeline__vessel-path"
+          d="M 500 580 C 470 610 420 650 360 680 C 300 710 250 720 200 730"
+          fill="none" stroke="var(--stl-vessel-color)" stroke-width="1.5" stroke-linecap="round"
+        />
+
+        {%- comment -%} Sub-branch right — finer detail {%- endcomment -%}
+        <path
+          class="story-timeline__vessel-path"
+          d="M 940 580 C 970 610 1020 650 1080 680 C 1140 710 1190 720 1240 730"
+          fill="none" stroke="var(--stl-vessel-color)" stroke-width="1.5" stroke-linecap="round"
+        />
+      </svg>
+
+      {%- comment -%} Carousel — interactive after entrance settles {%- endcomment -%}
+      <div class="story-timeline__carousel" tabindex="0" role="region" aria-label="Brand timeline milestones">
+        <div class="story-timeline__carousel-track">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'milestone_card' -%}
+              <div class="story-timeline__milestone" {{ block.shopify_attributes }}>
+                {%- if block.settings.year != blank -%}
+                  <span class="story-timeline__milestone-year">{{ block.settings.year }}</span>
+                {%- endif -%}
+                <div class="story-timeline__milestone-card">
+                  {%- if block.settings.image != blank -%}
+                    <div class="story-timeline__milestone-img">
+                      <img
+                        src="{{ block.settings.image | image_url: width: 640 }}"
+                        alt="{{ block.settings.year | escape }}"
+                        width="300"
+                        height="180"
+                        loading="lazy"
+                      >
+                    </div>
+                  {%- endif -%}
+                  {%- if block.settings.description != blank -%}
+                    <div class="story-timeline__milestone-text">
+                      {{ block.settings.description }}
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+
+        <button type="button" class="story-timeline__arrow story-timeline__arrow--prev" aria-label="Previous milestones">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <button type="button" class="story-timeline__arrow story-timeline__arrow--next" aria-label="Next milestones">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 6 15 12 9 18"></polyline>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-timeline.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     Timeline — .story-timeline
+     Prefix: --stl-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-timeline-section {
+    background-color: #FFFFFF;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-timeline {
+    position: relative;
+  }
+
+  /* ---- Scroll architecture ---- */
+
+  .story-timeline__scroll-track {
+    height: calc(var(--stl-scroll-distance, 6) * 100vh);
+  }
+
+  .story-timeline__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---- Background gray band ---- */
+
+  .story-timeline__bg-gray {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 35%;
+    background-color: #F5F5F5;
+    z-index: 0;
+  }
+
+  /* ---- Athletes media layer ---- */
+
+  .story-timeline__athletes-media {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-timeline__athletes-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .story-timeline__desat-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: #D9D9D9;
+    mix-blend-mode: color;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  /* ---- Section title ---- */
+
+  .story-timeline__section-title {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 60px;
+    color: #767676;
+    text-align: center;
+    margin: 0;
+    white-space: normal;
+    max-width: 467px;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  .story-timeline__section-title b,
+  .story-timeline__section-title strong {
+    font-weight: 700;
+  }
+
+  /* ---- Decorative line ---- */
+
+  .story-timeline__decorative-line {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center;
+    z-index: 3;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  /* ---- Athletes copy ---- */
+
+  .story-timeline__athletes-copy {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    max-width: 600px;
+    padding-inline: 24px;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-timeline__athletes-heading {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 40px;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  .story-timeline__athletes-body {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 28px;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+  }
+
+  /* ---- Everyone-else copy ---- */
+
+  .story-timeline__everyone-copy {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    max-width: 600px;
+    padding-inline: 24px;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-timeline__everyone-heading {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 40px;
+    color: #414141;
+    margin: 0;
+  }
+
+  .story-timeline__everyone-body {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 28px;
+    color: #767676;
+    margin: 0;
+  }
+
+  .story-timeline__everyone-img-wrap {
+    margin-block-start: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 480px;
+  }
+
+  .story-timeline__everyone-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* ---- Vessel SVG ---- */
+
+  .story-timeline__vessel-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ---- Carousel ---- */
+
+  .story-timeline__carousel {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    padding: 0 40px;
+    outline: none;
+  }
+
+  .story-timeline__carousel-track {
+    display: flex;
+    gap: 24px;
+    will-change: transform;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .story-timeline__carousel-track.is-dragging {
+    cursor: grabbing;
+  }
+
+  /* ---- Milestone cards ---- */
+
+  .story-timeline__milestone {
+    flex-shrink: 0;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .story-timeline__milestone-year {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 18px;
+    color: #767676;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .story-timeline__milestone-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .story-timeline__milestone-img {
+    height: 180px;
+    overflow: hidden;
+  }
+
+  .story-timeline__milestone-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .story-timeline__milestone-text {
+    padding: 16px;
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: #414141;
+  }
+
+  /* ---- Arrow buttons ---- */
+
+  .story-timeline__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #414141;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.2s;
+  }
+
+  .story-timeline__arrow--prev {
+    left: 8px;
+  }
+
+  .story-timeline__arrow--next {
+    right: 8px;
+  }
+
+  .story-timeline__arrow:hover {
+    background: #ffffff;
+  }
+
+  .story-timeline__arrow[aria-disabled='true'] {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-timeline__scroll-track {
+      height: calc(var(--stl-scroll-distance, 6) * 60vh);
+    }
+
+    .story-timeline__section-title {
+      font-size: 36px;
+      line-height: 40px;
+      max-width: 300px;
+    }
+
+    .story-timeline__athletes-heading {
+      font-size: 28px;
+      line-height: 32px;
+    }
+
+    .story-timeline__athletes-body {
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .story-timeline__everyone-heading {
+      font-size: 28px;
+      line-height: 32px;
+    }
+
+    .story-timeline__everyone-body {
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .story-timeline__carousel {
+      padding: 0 16px;
+    }
+
+    .story-timeline__milestone {
+      width: calc(100vw - 64px);
+    }
+
+    .story-timeline__milestone-img {
+      height: 200px;
+    }
+
+    .story-timeline__arrow {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-timeline__scroll-track {
+      height: auto;
+    }
+
+    .story-timeline__sticky {
+      position: relative;
+      height: auto;
+      min-height: auto;
+      padding: 60px 0;
+      overflow: visible;
+    }
+
+    .story-timeline__bg-gray {
+      display: none;
+    }
+
+    .story-timeline__section-title {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none !important;
+      opacity: 1 !important;
+      will-change: auto;
+      margin-bottom: 40px;
+    }
+
+    .story-timeline__decorative-line {
+      opacity: 0 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-timeline__athletes-media {
+      display: none;
+    }
+
+    .story-timeline__athletes-copy {
+      display: none;
+    }
+
+    .story-timeline__everyone-copy {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none !important;
+      opacity: 1 !important;
+      will-change: auto;
+      margin-bottom: 40px;
+    }
+
+    .story-timeline__vessel-svg {
+      display: none;
+    }
+
+    .story-timeline__vessel-path {
+      stroke-dashoffset: 0 !important;
+    }
+
+    .story-timeline__carousel {
+      position: relative;
+      top: auto;
+      transform: none;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .story-timeline__carousel-track {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-timeline__milestone,
+    .story-timeline__milestone-card,
+    .story-timeline__milestone-img,
+    .story-timeline__milestone-text {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Timeline",
+  "class": "story-timeline-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section title"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Title",
+      "default": "15 years.<br>One <b>mission.</b>"
+    },
+    {
+      "type": "header",
+      "content": "Athletes"
+    },
+    {
+      "type": "text",
+      "id": "athletes_heading",
+      "label": "Heading",
+      "default": "Then the athletes showed up."
+    },
+    {
+      "type": "textarea",
+      "id": "athletes_body",
+      "label": "Body",
+      "default": "Championships won. Records broken. All fueled by the same nitric oxide science we pioneered from day one."
+    },
+    {
+      "type": "image_picker",
+      "id": "athletes_image",
+      "label": "Background image"
+    },
+    {
+      "type": "header",
+      "content": "Everyone else"
+    },
+    {
+      "type": "text",
+      "id": "everyone_heading",
+      "label": "Heading",
+      "default": "And then, everyone else."
+    },
+    {
+      "type": "textarea",
+      "id": "everyone_body",
+      "label": "Body",
+      "default": "Millions of customers. Hundreds of millions of doses. One mission: to support cardiovascular health for everyone."
+    },
+    {
+      "type": "image_picker",
+      "id": "everyone_image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Vessel"
+    },
+    {
+      "type": "color",
+      "id": "vessel_color",
+      "label": "Vessel color",
+      "default": "#BC0F0F"
+    },
+    {
+      "type": "header",
+      "content": "Scroll distance"
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "label": "Scroll distance",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 6,
+      "unit": "\u00d7vh"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "milestone_card",
+      "name": "Milestone",
+      "settings": [
+        {
+          "type": "text",
+          "id": "year",
+          "label": "Year / label",
+          "default": "2016"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

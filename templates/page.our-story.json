@@ -355,6 +355,64 @@
       "settings": {
         "scroll_distance": 4
       }
+    },
+    "story_timeline": {
+      "type": "story-timeline",
+      "blocks": {
+        "milestone_1": {
+          "type": "milestone_card",
+          "settings": {
+            "year": "NBJ Award",
+            "description": "Humann named the NBJ Award winner for Science and Innovation in the nutrition industry."
+          }
+        },
+        "milestone_2": {
+          "type": "milestone_card",
+          "settings": {
+            "year": "Heart Chews",
+            "description": "SuperBeets Heart Chews launched, bringing nitric oxide support into a convenient, great-tasting chew format."
+          }
+        },
+        "milestone_3": {
+          "type": "milestone_card",
+          "settings": {
+            "year": "Nobel Laureate",
+            "description": "Dr. Ferid Murad, Nobel Prize-winning pharmacologist, joined the Humann Science Advisory Board."
+          }
+        },
+        "milestone_4": {
+          "type": "milestone_card",
+          "settings": {
+            "year": "UT Partnership",
+            "description": "Humann formalized its research partnership with the University of Texas Health Science Center."
+          }
+        },
+        "milestone_5": {
+          "type": "milestone_card",
+          "settings": {
+            "year": "New Packaging",
+            "description": "Updated packaging across the entire product line, reflecting the brand's evolution and commitment to quality."
+          }
+        }
+      },
+      "block_order": [
+        "milestone_1",
+        "milestone_2",
+        "milestone_3",
+        "milestone_4",
+        "milestone_5"
+      ],
+      "settings": {
+        "section_title": "15 years.<br>One <b>mission.</b>",
+        "athletes_heading": "Then the athletes showed up.",
+        "athletes_body": "Championships won. Records broken. All fueled by the same nitric oxide science we pioneered from day one.",
+        "athletes_image": "shopify://shop_images/screenshot-2026-07-01-at-11-10-36-am-1-page-overview-for-client-section-108344921.png",
+        "everyone_heading": "And then, everyone else.",
+        "everyone_body": "Millions of customers. Hundreds of millions of doses. One mission: to support cardiovascular health for everyone.",
+        "everyone_image": "shopify://shop_images/screenshot-2026-06-30-at-1-14-04-pm-1-page-overview-for-client-section-108346093.png",
+        "vessel_color": "#BC0F0F",
+        "scroll_distance": 6
+      }
     }
   },
   "order": [
@@ -366,6 +424,7 @@
     "story_origin",
     "story_proof",
     "story_in_memoriam",
-    "story_advisory_board"
+    "story_advisory_board",
+    "story_timeline"
   ]
 }
