@@ -169,6 +169,75 @@
         "button_text": "WATCH DOCUMENTARY",
         "scroll_distance": 5
       }
+    },
+    "story_proof": {
+      "type": "story-proof",
+      "blocks": {
+        "stat_1": {
+          "type": "stat_card",
+          "settings": {
+            "value": "#1",
+            "label": "Cardiologist recommended beet brand"
+          }
+        },
+        "stat_2": {
+          "type": "stat_card",
+          "settings": {
+            "value": "#1",
+            "label": "Doctor recommended beet brand"
+          }
+        },
+        "stat_3": {
+          "type": "stat_card",
+          "settings": {
+            "value": "#1",
+            "label": "Beet brand in America"
+          }
+        },
+        "stat_4": {
+          "type": "stat_card",
+          "settings": {
+            "value": "6000+",
+            "label": "Medical Practitioners"
+          }
+        },
+        "stat_5": {
+          "type": "stat_card",
+          "settings": {
+            "value": "2000+",
+            "label": "Pro & collegiate teams"
+          }
+        },
+        "stat_6": {
+          "type": "stat_card",
+          "settings": {
+            "value": "12",
+            "label": "Clinical trials"
+          }
+        },
+        "stat_7": {
+          "type": "stat_card",
+          "settings": {
+            "value": "100,000+",
+            "label": "5-Star Ratings & Reviews"
+          }
+        },
+        "stat_8": {
+          "type": "stat_card",
+          "settings": {
+            "value": "10+",
+            "label": "Inc. 5000 (Consecutive Years)"
+          }
+        }
+      },
+      "block_order": ["stat_1", "stat_2", "stat_3", "stat_4", "stat_5", "stat_6", "stat_7", "stat_8"],
+      "settings": {
+        "bg_image": "shopify://shop_images/kzgm10012-full-1-page-overview-for-client-section-108344829.jpg",
+        "eyebrow_text": "THE PROOF",
+        "intro_heading": "Today, more than 6,000 medical practitioners trust us.",
+        "intro_body": "The most cardiologist-, pharmacist-, and doctor-recommended beet brand for heart health support in America.",
+        "scroll_distance": 5
+      }
     }
   },
   "order": [
@@ -176,6 +245,7 @@
     "story_universal_truth",
     "story_the_problem",
     "story_miracle_molecule",
-    "story_origin"
+    "story_origin",
+    "story_proof"
   ]
 }

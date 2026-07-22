@@ -1,0 +1,419 @@
+{%- liquid
+  assign bg_image = section.settings.bg_image
+  assign eyebrow_text = section.settings.eyebrow_text
+  assign intro_heading = section.settings.intro_heading
+  assign intro_body = section.settings.intro_body
+  assign scroll_distance = section.settings.scroll_distance
+-%}
+
+{%- capture inline_styles -%}
+  --spr-scroll-distance: {{ scroll_distance }};
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-proof"
+  data-section-id="{{ section.id }}"
+  data-anchor="proof"
+  style="{{ inline_styles }}"
+>
+  <div class="story-proof__scroll-track">
+    <div class="story-proof__sticky">
+
+      {%- comment -%} Media layer — full-bleed background image {%- endcomment -%}
+      <div class="story-proof__media-layer">
+        {%- if bg_image != blank -%}
+          <img
+            src="{{ bg_image | image_url: width: 1920 }}"
+            alt=""
+            width="{{ bg_image.width }}"
+            height="{{ bg_image.height }}"
+            loading="eager"
+            class="story-proof__bg-image"
+          >
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Desaturation overlay {%- endcomment -%}
+      <div class="story-proof__desat" aria-hidden="true"></div>
+
+      {%- comment -%} Intro copy overlay — fades in then out before cards {%- endcomment -%}
+      <div class="story-proof__intro">
+        {%- if intro_heading != blank -%}
+          <h2 class="story-proof__intro-heading">{{ intro_heading }}</h2>
+        {%- endif -%}
+        {%- if intro_body != blank -%}
+          <p class="story-proof__intro-body">{{ intro_body }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Content overlay — eyebrow + stat cards {%- endcomment -%}
+      <div class="story-proof__content">
+        {%- if eyebrow_text != blank -%}
+          <span class="story-proof__eyebrow">{{ eyebrow_text }}</span>
+        {%- endif -%}
+
+        <div class="story-proof__cards-grid">
+          {%- for block in section.blocks -%}
+            <div class="story-proof__stat-card" {{ block.shopify_attributes }}>
+              <span class="story-proof__stat-value">{{ block.settings.value }}</span>
+              <span class="story-proof__stat-label">{{ block.settings.label }}</span>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-proof.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     The proof — .story-proof
+     Prefix: --spr-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-proof-section {
+    background-color: #000000;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-proof {
+    position: relative;
+  }
+
+  /* Scroll track: tall container that drives sticky pinning */
+  .story-proof__scroll-track {
+    height: calc(var(--spr-scroll-distance, 5) * 100vh);
+  }
+
+  /* Sticky viewport */
+  .story-proof__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  /* Media layer — image fills viewport */
+  .story-proof__media-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .story-proof__bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(0.7);
+    will-change: transform;
+  }
+
+  /* Desaturation overlay */
+  .story-proof__desat {
+    position: absolute;
+    inset: 0;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Intro copy overlay */
+  .story-proof__intro {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 0 24px;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+  }
+
+  .story-proof__intro-heading {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    text-align: center;
+    max-width: 800px;
+    margin: 0;
+  }
+
+  .story-proof__intro-body {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    max-width: 700px;
+    margin: 0;
+  }
+
+  /* Content overlay — eyebrow + cards grid */
+  .story-proof__content {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .story-proof__eyebrow {
+    font-family: "Uniforma Semibold", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  /* Cards grid */
+  .story-proof__cards-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    max-width: 1200px;
+    padding-top: 40px;
+    justify-content: center;
+  }
+
+  /* Glassmorphism stat card */
+  .story-proof__stat-card {
+    width: 282px;
+    min-height: 148px;
+    border-radius: 16px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: opacity, transform;
+  }
+
+  .story-proof__stat-value {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 52px;
+    text-align: center;
+    color: #FFFFFF;
+  }
+
+  .story-proof__stat-label {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #FFFFFF;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-proof__scroll-track {
+      height: calc(var(--spr-scroll-distance, 5) * 60vh);
+    }
+
+    .story-proof__cards-grid {
+      max-width: 100%;
+      padding: 40px 16px 0;
+    }
+
+    .story-proof__stat-card {
+      width: calc(50% - 12px);
+      min-height: auto;
+    }
+
+    .story-proof__stat-value {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .story-proof__stat-label {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .story-proof__intro-heading {
+      font-size: 32px;
+      line-height: 40px;
+    }
+
+    .story-proof__intro-body {
+      font-size: 18px;
+      line-height: 26px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-proof__scroll-track {
+      height: auto;
+    }
+
+    .story-proof__sticky {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+
+    .story-proof__bg-image {
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-proof__eyebrow,
+    .story-proof__stat-card {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-proof__intro {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "The proof",
+  "class": "story-proof-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "header",
+      "content": "Intro copy"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "THE PROOF"
+    },
+    {
+      "type": "textarea",
+      "id": "intro_heading",
+      "label": "Intro heading",
+      "default": "Today, more than 6,000 medical practitioners trust us."
+    },
+    {
+      "type": "textarea",
+      "id": "intro_body",
+      "label": "Intro body",
+      "default": "The most cardiologist-, pharmacist-, and doctor-recommended beet brand for heart health support in America."
+    },
+    {
+      "type": "header",
+      "content": "Scroll distance"
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "label": "Scroll distance",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "unit": "\u00d7vh"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat_card",
+      "name": "Stat card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "#1"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Stat label"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
