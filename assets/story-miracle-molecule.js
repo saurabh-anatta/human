@@ -51,9 +51,13 @@ export function init(sectionEl, utils) {
   var moleculeGroup = sectionEl.querySelector('.story-miracle-molecule__molecule-group');
   var moleculeLabels = sectionEl.querySelectorAll('.story-miracle-molecule__molecule-label');
   var stage3 = sectionEl.querySelector('.story-miracle-molecule__stage3');
-  var stage3Images = sectionEl.querySelectorAll('.story-miracle-molecule__pair-image');
+  var stage3Images = sectionEl.querySelectorAll('.story-miracle-molecule__pair-image:not(.story-miracle-molecule__closing-image)');
   var stage3Texts = sectionEl.querySelectorAll('.story-miracle-molecule__pair-text');
   var closingText = sectionEl.querySelector('.story-miracle-molecule__closing');
+  var gradientTop = sectionEl.querySelector('.story-miracle-molecule__gradient-top');
+  var redLine = sectionEl.querySelector('.story-miracle-molecule__red-line');
+  var redLineStroke = sectionEl.querySelector('.story-miracle-molecule__red-line-stroke');
+  var closingImage = sectionEl.querySelector('.story-miracle-molecule__closing-image');
 
   /* Reduced motion: show everything immediately, skip scroll animation */
   if (utils.prefersReducedMotion()) {
@@ -76,6 +80,9 @@ export function init(sectionEl, utils) {
       stage3Texts[ti].style.opacity = '1';
     }
     if (closingText) closingText.style.opacity = '1';
+    if (gradientTop) gradientTop.style.display = 'none';
+    if (redLineStroke) redLineStroke.setAttribute('stroke-dasharray', '8 8');
+    if (closingImage) closingImage.style.opacity = '1';
     return function cleanup() {};
   }
 
@@ -84,6 +91,36 @@ export function init(sectionEl, utils) {
   var cleanupScroll = utils.createScrollProgress(scrollTrack, {
     onProgress: function (p) {
       requestAnimationFrame(function () {
+
+        /* ---- Gradient top (0.00–0.15): grey→black handoff ---- */
+
+        if (gradientTop) {
+          if (p <= 0.02) {
+            gradientTop.style.opacity = lerp(0, 1, phaseProgress(p, 0.00, 0.02));
+          } else if (p <= 0.08) {
+            gradientTop.style.opacity = '1';
+          } else {
+            gradientTop.style.opacity = lerp(1, 0, phaseProgress(p, 0.08, 0.15));
+          }
+        }
+
+        /* ---- Red line solid→dashed (0.00–0.10), opacity (0.00–0.18) ---- */
+
+        if (redLineStroke) {
+          var dash = lerp(300, 8, phaseProgress(p, 0.0, 0.10));
+          var gap = lerp(0, 8, phaseProgress(p, 0.0, 0.10));
+          redLineStroke.setAttribute('stroke-dasharray', dash + ' ' + gap);
+        }
+
+        if (redLine) {
+          if (p <= 0.03) {
+            redLine.style.opacity = lerp(0, 1, phaseProgress(p, 0.00, 0.03));
+          } else if (p <= 0.12) {
+            redLine.style.opacity = '1';
+          } else {
+            redLine.style.opacity = lerp(1, 0, phaseProgress(p, 0.12, 0.18));
+          }
+        }
 
         /* ---- Stage 1 (0.00–0.25): eyebrow + two text blocks ---- */
 
@@ -199,10 +236,10 @@ export function init(sectionEl, utils) {
             var pStart = s3Start + pi * perPair;
             var pEnd = pStart + perPair;
 
-            /* Image: fade in first 30%, fade out last 30% (last stays) */
+            /* Image: fade in first 30%, fade out last 30% (last fades out when closing image exists) */
             var imgIn = phaseProgress(p, pStart, pStart + perPair * 0.3);
             var imgOut = 0;
-            if (pi < pairCount - 1) {
+            if (pi < pairCount - 1 || closingImage) {
               imgOut = phaseProgress(p, pEnd - perPair * 0.3, pEnd);
             }
             var imgOp = imgIn * (1 - imgOut);
@@ -221,6 +258,11 @@ export function init(sectionEl, utils) {
               stage3Texts[pi].style.opacity = Math.min(Math.max(txtOp, 0), 1);
             }
           }
+        }
+
+        /* Closing image: in 0.90-0.92 */
+        if (closingImage) {
+          closingImage.style.opacity = lerp(0, 1, phaseProgress(p, 0.90, 0.92));
         }
 
         /* Closing text: in 0.92-1.00 */

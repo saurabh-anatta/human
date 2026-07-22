@@ -148,12 +148,13 @@
       "block_order": ["pair_1", "pair_2", "pair_3"],
       "settings": {
         "eyebrow_text": "THE MIRACLE MOLECULE",
-        "video_poster": "shopify://shop_images/screenshot-2026-06-27-at-3-03-41-pm-1-page-overview-for-client-section-108343386.png",
-        "stage1_text_1": "And at the center of it all is one thing you were never taught to think about: Nitric oxide.",
+        "video_poster": "shopify://shop_images/screenshot-2026-07-15-at-2-45-00-pm-1-concept-14-red-particle-molecule-visual-1-final-art-direction-12601662.png",
+        "stage1_text_1": "And at the center of it all is one thing you were never taught to think about: <strong>Nitric oxide.</strong>",
         "stage1_text_2": "They call it the miracle molecule. But scientists don't call it that lightly.",
         "stage2_no_headline": "NO",
         "stage2_subheadline": "the most important molecule in your cardiovascular system",
-        "closing_text": "\u2013 keeping those 60,000 miles open, flowing\u2026 and alive.",
+        "closing_text": "\u2013 keeping those <strong>60,000 miles</strong> open, flowing\u2026 and <strong>alive.</strong>",
+        "closing_image": "shopify://shop_images/screenshot-2026-07-15-at-3-00-21-pm-1-concept-14-red-particle-molecule-visual-2-closing-beat-12601661.png",
         "scroll_distance": 10
       }
     },

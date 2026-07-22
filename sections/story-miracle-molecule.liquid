@@ -7,6 +7,7 @@
   assign stage1_video = section.settings.stage1_video
   assign video_poster = section.settings.video_poster
   assign closing_text = section.settings.closing_text
+  assign closing_image = section.settings.closing_image
   assign scroll_distance = section.settings.scroll_distance
   assign poster_url = ''
   if video_poster != blank
@@ -63,6 +64,14 @@
       {%- comment -%} Blur/dark overlay {%- endcomment -%}
       <div class="story-miracle-molecule__blur-layer" aria-hidden="true"></div>
 
+      {%- comment -%} Gradient top — grey→black handoff at section top edge {%- endcomment -%}
+      <div class="story-miracle-molecule__gradient-top" aria-hidden="true"></div>
+
+      {%- comment -%} Red line — solid→dashed scroll transition {%- endcomment -%}
+      <svg class="story-miracle-molecule__red-line" viewBox="0 0 2 300" aria-hidden="true">
+        <line class="story-miracle-molecule__red-line-stroke" x1="1" y1="0" x2="1" y2="300" stroke="#BC0F0F" stroke-width="2" stroke-dasharray="300 0" />
+      </svg>
+
       {%- comment -%} Eyebrow label {%- endcomment -%}
       {%- if eyebrow_text != blank -%}
         <span class="story-miracle-molecule__eyebrow">{{ eyebrow_text }}</span>
@@ -94,13 +103,13 @@
       <svg class="story-miracle-molecule__molecule" viewBox="0 0 400 400" aria-hidden="true">
         <g class="story-miracle-molecule__molecule-group">
           {%- comment -%} Orbital ring {%- endcomment -%}
-          <circle cx="200" cy="200" r="160" fill="none" stroke="#FFFFFF" stroke-width="0.5" />
+          <circle cx="200" cy="200" r="160" fill="none" stroke="rgba(188,15,15,0.4)" stroke-width="0.5" />
           {%- comment -%} Particles — sizes match Figma 14–42px diameters {%- endcomment -%}
-          <circle cx="338" cy="120" r="10" fill="#FFFFFF" />
-          <circle cx="75" cy="260" r="10" fill="#FFFFFF" />
-          <circle cx="280" cy="345" r="17.5" fill="#FFFFFF" />
-          <circle cx="105" cy="90" r="9" fill="#FFFFFF" />
-          <circle cx="350" cy="270" r="12.5" fill="#FFFFFF" />
+          <circle cx="338" cy="120" r="10" fill="#BC0F0F" />
+          <circle cx="75" cy="260" r="10" fill="#BC0F0F" />
+          <circle cx="280" cy="345" r="17.5" fill="#BC0F0F" />
+          <circle cx="105" cy="90" r="9" fill="#BC0F0F" />
+          <circle cx="350" cy="270" r="12.5" fill="#BC0F0F" />
           {%- comment -%} N/O labels (initially hidden, JS-driven opacity) {%- endcomment -%}
           <text class="story-miracle-molecule__molecule-label" x="155" y="155" fill="#FFFFFF" font-family="'Uniforma Semibold', sans-serif" font-size="14" letter-spacing="0.75" text-anchor="middle">N</text>
           <text class="story-miracle-molecule__molecule-label" x="155" y="185" fill="#FFFFFF" font-family="'Uniforma Semibold', sans-serif" font-size="14" letter-spacing="0.75" text-anchor="middle">O</text>
@@ -129,6 +138,15 @@
               ></div>
             {%- endif -%}
           {%- endfor -%}
+          {%- if closing_image != blank -%}
+            <img
+              src="{{ closing_image | image_url: width: 1920 }}"
+              alt=""
+              loading="lazy"
+              class="story-miracle-molecule__pair-image story-miracle-molecule__closing-image"
+              data-pair-index="closing"
+            >
+          {%- endif -%}
         </div>
         <div class="story-miracle-molecule__stage3-content">
           {%- for block in section.blocks -%}
@@ -238,6 +256,34 @@
     z-index: 2;
   }
 
+  /* Gradient top — grey→black handoff at section top */
+  .story-miracle-molecule__gradient-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50vh;
+    background: linear-gradient(to bottom, #F5F5F5 0%, rgba(0, 0, 0, 0) 100%);
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  /* Red line — solid→dashed scroll transition */
+  .story-miracle-molecule__red-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 300px;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0;
+    will-change: opacity;
+  }
+
   /* Eyebrow */
   .story-miracle-molecule__eyebrow {
     position: absolute;
@@ -283,6 +329,15 @@
     will-change: opacity;
     pointer-events: none;
     z-index: 3;
+  }
+
+  /* Stage 1 text block 1 — <strong> emphasis for 'Nitric oxide.' */
+  .story-miracle-molecule__stage1-text--1 strong {
+    display: block;
+    font-weight: 700;
+    font-size: 72px;
+    line-height: 72px;
+    margin-top: 24px;
   }
 
   /* NO headline container */
@@ -412,6 +467,11 @@
     pointer-events: none;
   }
 
+  /* Closing text — <strong> emphasis for '60,000 miles' and 'alive.' */
+  .story-miracle-molecule__closing strong {
+    font-weight: 700;
+  }
+
   /* ------ Mobile ------ */
 
   @media screen and (max-width: 749px) {
@@ -424,6 +484,12 @@
       line-height: 44px;
       padding: 16px;
       max-width: 100%;
+    }
+
+    .story-miracle-molecule__stage1-text--1 strong {
+      font-size: 48px;
+      line-height: 48px;
+      margin-top: 16px;
     }
 
     .story-miracle-molecule__no-text {
@@ -480,7 +546,8 @@
     .story-miracle-molecule__stage3,
     .story-miracle-molecule__pair-image,
     .story-miracle-molecule__pair-text,
-    .story-miracle-molecule__closing {
+    .story-miracle-molecule__closing,
+    .story-miracle-molecule__closing-image {
       opacity: 1 !important;
       transform: none !important;
       will-change: auto;
@@ -497,6 +564,14 @@
     .story-miracle-molecule__desat-layer,
     .story-miracle-molecule__blur-layer {
       display: none;
+    }
+
+    .story-miracle-molecule__gradient-top {
+      display: none;
+    }
+
+    .story-miracle-molecule__red-line-stroke {
+      stroke-dasharray: 8 8 !important;
     }
   }
 {% endstylesheet %}
@@ -535,10 +610,10 @@
       "label": "Poster image"
     },
     {
-      "type": "textarea",
+      "type": "inline_richtext",
       "id": "stage1_text_1",
       "label": "Text block 1",
-      "default": "And at the center of it all is one thing you were never taught to think about: Nitric oxide."
+      "default": "And at the center of it all is one thing you were never taught to think about: <strong>Nitric oxide.</strong>"
     },
     {
       "type": "textarea",
@@ -567,10 +642,15 @@
       "content": "Stage 3"
     },
     {
-      "type": "textarea",
+      "type": "inline_richtext",
       "id": "closing_text",
       "label": "Closing text",
-      "default": "– keeping those 60,000 miles open, flowing… and alive."
+      "default": "– keeping those <strong>60,000 miles</strong> open, flowing… and <strong>alive.</strong>"
+    },
+    {
+      "type": "image_picker",
+      "id": "closing_image",
+      "label": "Closing image"
     },
     {
       "type": "header",
