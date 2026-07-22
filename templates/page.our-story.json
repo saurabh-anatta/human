@@ -152,12 +152,30 @@
         "closing_text": "\u2013 keeping those 60,000 miles open, flowing\u2026 and alive.",
         "scroll_distance": 10
       }
+    },
+    "story_origin": {
+      "type": "story-origin",
+      "settings": {
+        "eyebrow_text": "ORIGIN",
+        "founding_heading_1": "In 1998, the discovery of what nitric oxide does for the human body won the Nobel Prize in Medicine.",
+        "founding_body_1": "We didn\u2019t discover it. But we did have the nerve to take the Nobel-winning science out of the lab \u2014 and bring it to the people who needed it. That\u2019s where the revolution started.",
+        "founding_heading_2": "In 2009, that same discovery led to a nitric oxide research program at the University of Texas. And that\u2019s where Humann came to life.",
+        "founding_body_2": "Fifteen years later, the science hasn\u2019t changed. Our commitment to it hasn\u2019t either.",
+        "archival_image_1": "shopify://shop_images/screenshot-2026-06-30-at-9-47-10-am-1-page-overview-for-client-section-108343522.png",
+        "archival_image_2": "shopify://shop_images/screenshot-2026-07-01-at-7-47-34-am-1-page-overview-for-client-section-108343527.png",
+        "video_poster": "shopify://shop_images/gif-page-overview-for-client-section-108343504.png",
+        "lockup_heading": "Founded in partnership with The University of Texas",
+        "lockup_subline": "A program created by a Nobel Laureate + academic researchers.",
+        "button_text": "WATCH DOCUMENTARY",
+        "scroll_distance": 5
+      }
     }
   },
   "order": [
     "story_subnav",
     "story_universal_truth",
     "story_the_problem",
-    "story_miracle_molecule"
+    "story_miracle_molecule",
+    "story_origin"
   ]
 }

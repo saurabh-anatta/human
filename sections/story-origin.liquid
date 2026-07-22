@@ -1,0 +1,735 @@
+{%- liquid
+  assign eyebrow_text = section.settings.eyebrow_text
+  assign founding_heading_1 = section.settings.founding_heading_1
+  assign founding_body_1 = section.settings.founding_body_1
+  assign founding_heading_2 = section.settings.founding_heading_2
+  assign founding_body_2 = section.settings.founding_body_2
+  assign archival_image_1 = section.settings.archival_image_1
+  assign archival_image_2 = section.settings.archival_image_2
+  assign bg_video = section.settings.bg_video
+  assign video_poster = section.settings.video_poster
+  assign logo_image = section.settings.logo_image
+  assign lockup_heading = section.settings.lockup_heading
+  assign lockup_subline = section.settings.lockup_subline
+  assign button_text = section.settings.button_text
+  assign doc_video_url = section.settings.doc_video_url
+  assign scroll_distance = section.settings.scroll_distance
+
+  assign poster_url = ''
+  if video_poster != blank
+    assign poster_url = video_poster | image_url: width: 1920
+  endif
+
+  assign founding_bg_style = ''
+  if video_poster != blank
+    assign founding_bg_style = video_poster | image_url: width: 1920
+  endif
+-%}
+
+{%- capture inline_styles -%}
+  --sor-scroll-distance: {{ scroll_distance }};
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-origin"
+  data-section-id="{{ section.id }}"
+  data-anchor="origin"
+  style="{{ inline_styles }}"
+>
+  {%- comment -%} Movement 1 — Founding story (normal document flow) {%- endcomment -%}
+  <div
+    class="story-origin__founding"
+    {%- if founding_bg_style != '' %} style="background-image: url('{{ founding_bg_style }}')"{% endif -%}
+  >
+    {%- comment -%} Text panel 1 — eyebrow + heading + body {%- endcomment -%}
+    <div class="story-origin__text-panel story-origin__text-panel--1">
+      {%- if eyebrow_text != blank -%}
+        <span class="story-origin__eyebrow">{{ eyebrow_text }}</span>
+      {%- endif -%}
+      {%- if founding_heading_1 != blank -%}
+        <h2 class="story-origin__heading">{{ founding_heading_1 }}</h2>
+      {%- endif -%}
+      {%- if founding_body_1 != blank -%}
+        <p class="story-origin__body">{{ founding_body_1 }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Text panel 2 — bold heading + body {%- endcomment -%}
+    <div class="story-origin__text-panel story-origin__text-panel--2">
+      {%- if founding_heading_2 != blank -%}
+        <h2 class="story-origin__heading story-origin__heading--bold">{{ founding_heading_2 }}</h2>
+      {%- endif -%}
+      {%- if founding_body_2 != blank -%}
+        <p class="story-origin__body">{{ founding_body_2 }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Archival imagery panel {%- endcomment -%}
+    <div class="story-origin__archival">
+      {%- if archival_image_1 != blank -%}
+        <img
+          src="{{ archival_image_1 | image_url: width: 1920 }}"
+          alt=""
+          width="{{ archival_image_1.width }}"
+          height="{{ archival_image_1.height }}"
+          loading="lazy"
+          class="story-origin__archival-img story-origin__archival-img--1"
+        >
+      {%- endif -%}
+      {%- if archival_image_2 != blank -%}
+        <img
+          src="{{ archival_image_2 | image_url: width: 1920 }}"
+          alt=""
+          width="{{ archival_image_2.width }}"
+          height="{{ archival_image_2.height }}"
+          loading="lazy"
+          class="story-origin__archival-img story-origin__archival-img--2"
+        >
+      {%- endif -%}
+      <div class="story-origin__archival-desat" aria-hidden="true"></div>
+      <svg class="story-origin__archival-svg" viewBox="0 0 1440 1000" fill="none" aria-hidden="true">
+        <line x1="200" y1="780" x2="1260" y2="220" stroke="#2983DC" stroke-width="3" transform="rotate(-1.6 730 500)" />
+        <polyline points="1180,280 1210,265 1195,295" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1195 280)" />
+        <polyline points="1230,255 1260,240 1245,270" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1245 255)" />
+      </svg>
+    </div>
+  </div>
+
+  {%- comment -%} Movement 2 — Documentary video (scroll-pinned) {%- endcomment -%}
+  <div class="story-origin__scroll-track">
+    <div class="story-origin__sticky">
+
+      {%- comment -%} Media layer — video or poster image {%- endcomment -%}
+      <div class="story-origin__media-layer">
+        {%- if bg_video != blank -%}
+          <video
+            class="story-origin__video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            {% if poster_url != '' %}poster="{{ poster_url }}"{% endif %}
+          >
+            {%- for source in bg_video.sources -%}
+              <source src="{{ source.url }}" type="{{ source.mime_type }}">
+            {%- endfor -%}
+          </video>
+        {%- elsif video_poster != blank -%}
+          <img
+            src="{{ poster_url }}"
+            alt=""
+            width="{{ video_poster.width }}"
+            height="{{ video_poster.height }}"
+            loading="eager"
+            class="story-origin__poster"
+          >
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Desaturation overlay {%- endcomment -%}
+      <div class="story-origin__desat" aria-hidden="true"></div>
+
+      {%- comment -%} Dark overlay (opacity driven by JS) {%- endcomment -%}
+      <div class="story-origin__dark-overlay" aria-hidden="true"></div>
+
+      {%- comment -%} Lockup container {%- endcomment -%}
+      <div class="story-origin__lockup">
+        {%- comment -%} Logo {%- endcomment -%}
+        <div class="story-origin__logo">
+          {%- if logo_image != blank -%}
+            <img
+              src="{{ logo_image | image_url: width: 528 }}"
+              alt=""
+              width="264"
+              height="47"
+              loading="lazy"
+              class="story-origin__logo-img"
+            >
+          {%- else -%}
+            <img
+              src="{{ 'humann-ut-logo-white-1.svg' | asset_url }}"
+              alt=""
+              width="264"
+              height="47"
+              loading="lazy"
+              class="story-origin__logo-img"
+            >
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Text container {%- endcomment -%}
+        <div class="story-origin__lockup-text">
+          {%- if lockup_heading != blank -%}
+            <h2 class="story-origin__lockup-heading">{{ lockup_heading }}</h2>
+          {%- endif -%}
+          {%- if lockup_subline != blank -%}
+            <p class="story-origin__lockup-subline">{{ lockup_subline }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Pill button — hidden if no URL set {%- endcomment -%}
+        {%- if doc_video_url != blank and button_text != blank -%}
+          <a
+            href="{{ doc_video_url }}"
+            class="story-origin__pill-btn"
+            target="_blank"
+            rel="noopener"
+          >
+            {{ button_text }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Video toggle button — only shown when video is present {%- endcomment -%}
+      {%- if bg_video != blank -%}
+        <button class="story-origin__video-toggle" type="button" aria-label="Pause video">
+          <svg class="story-origin__toggle-pause" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <rect x="5" y="3" width="3.5" height="14" rx="0.75" fill="currentColor"/>
+            <rect x="11.5" y="3" width="3.5" height="14" rx="0.75" fill="currentColor"/>
+          </svg>
+          <svg class="story-origin__toggle-play" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M6 3.868v12.264a1 1 0 001.507.864l10.011-6.132a1 1 0 000-1.728L7.507 3.004A1 1 0 006 3.868z" fill="currentColor"/>
+          </svg>
+        </button>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-origin.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     Origin — .story-origin
+     Prefix: --sor-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-origin-section {
+    background-color: #000000;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-origin {
+    position: relative;
+  }
+
+  /* ---- Movement 1: Founding story ---- */
+
+  .story-origin__founding {
+    position: relative;
+    background-color: #767676;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* Text panels — frosted glass */
+  .story-origin__text-panel {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    background: rgba(118, 118, 118, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    gap: 24px;
+  }
+
+  .story-origin__eyebrow {
+    font-family: "Uniforma Semibold", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #A0A0A0;
+  }
+
+  .story-origin__heading {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #F5F5F5;
+    margin: 0;
+    max-width: 926px;
+  }
+
+  .story-origin__heading--bold {
+    font-weight: 700;
+  }
+
+  .story-origin__body {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 36px;
+    letter-spacing: -0.5px;
+    color: #A0A0A0;
+    margin: 0;
+    max-width: 700px;
+  }
+
+  /* Archival imagery panel */
+  .story-origin__archival {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .story-origin__archival-img {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 63%;
+    object-fit: cover;
+  }
+
+  .story-origin__archival-img--1 {
+    top: 0;
+  }
+
+  .story-origin__archival-img--2 {
+    bottom: 0;
+  }
+
+  .story-origin__archival-desat {
+    position: absolute;
+    inset: 0;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .story-origin__archival-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ---- Movement 2: Documentary video (scroll-pinned) ---- */
+
+  /* Scroll track: tall container that drives sticky pinning */
+  .story-origin__scroll-track {
+    height: calc(var(--sor-scroll-distance, 5) * 100vh);
+  }
+
+  /* Sticky viewport */
+  .story-origin__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  /* Media layer — video or poster fills viewport */
+  .story-origin__media-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .story-origin__video,
+  .story-origin__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Desaturation overlay */
+  .story-origin__desat {
+    position: absolute;
+    inset: 0;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Dark overlay (opacity driven by JS) */
+  .story-origin__dark-overlay {
+    position: absolute;
+    inset: 0;
+    background: #000000;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Lockup container */
+  .story-origin__lockup {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 72px;
+    padding: 0 160px;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Logo */
+  .story-origin__logo {
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-origin__logo-img {
+    width: 264px;
+    height: 47px;
+  }
+
+  /* Text container */
+  .story-origin__lockup-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    max-width: 1120px;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-origin__lockup-heading {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  .story-origin__lockup-subline {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  /* Pill button */
+  .story-origin__pill-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border: 2px solid #FFFFFF;
+    border-radius: 28px;
+    font-family: "Uniforma Semibold", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    text-decoration: none;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: auto;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .story-origin__pill-btn:hover {
+    background-color: #FFFFFF;
+    color: #000000;
+  }
+
+  /* Video toggle button */
+  .story-origin__video-toggle {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 32px;
+    height: 32px;
+    border-radius: 28px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    z-index: 4;
+    color: #FFFFFF;
+  }
+
+  .story-origin__toggle-play {
+    display: none;
+  }
+
+  .story-origin__video-toggle.paused .story-origin__toggle-pause {
+    display: none;
+  }
+
+  .story-origin__video-toggle.paused .story-origin__toggle-play {
+    display: block;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-origin__scroll-track {
+      height: calc(var(--sor-scroll-distance, 5) * 60vh);
+    }
+
+    .story-origin__text-panel {
+      padding: 40px 16px;
+    }
+
+    .story-origin__heading {
+      font-size: 36px;
+      line-height: 44px;
+      max-width: 100%;
+    }
+
+    .story-origin__body {
+      font-size: 20px;
+      line-height: 30px;
+      max-width: 100%;
+    }
+
+    .story-origin__archival-img {
+      position: static;
+      width: 100%;
+      height: auto;
+    }
+
+    .story-origin__archival {
+      min-height: auto;
+    }
+
+    .story-origin__archival-svg {
+      display: none;
+    }
+
+    .story-origin__lockup {
+      padding: 0 24px;
+      gap: 48px;
+    }
+
+    .story-origin__logo-img {
+      width: 200px;
+      height: auto;
+    }
+
+    .story-origin__lockup-heading {
+      font-size: 32px;
+      line-height: 40px;
+    }
+
+    .story-origin__lockup-subline {
+      font-size: 20px;
+      line-height: 26px;
+    }
+
+    .story-origin__video-toggle {
+      bottom: 24px;
+      right: 24px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-origin__scroll-track {
+      height: auto;
+    }
+
+    .story-origin__sticky {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+
+    .story-origin__dark-overlay,
+    .story-origin__logo,
+    .story-origin__lockup-text,
+    .story-origin__pill-btn {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Origin",
+  "class": "story-origin-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Founding story"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "ORIGIN"
+    },
+    {
+      "type": "textarea",
+      "id": "founding_heading_1",
+      "label": "Heading 1",
+      "default": "In 1998, the discovery of what nitric oxide does for the human body won the Nobel Prize in Medicine."
+    },
+    {
+      "type": "textarea",
+      "id": "founding_body_1",
+      "label": "Body 1",
+      "default": "We didn\u2019t discover it. But we did have the nerve to take the Nobel-winning science out of the lab \u2014 and bring it to the people who needed it. That\u2019s where the revolution started."
+    },
+    {
+      "type": "textarea",
+      "id": "founding_heading_2",
+      "label": "Heading 2",
+      "default": "In 2009, that same discovery led to a nitric oxide research program at the University of Texas. And that\u2019s where Humann came to life."
+    },
+    {
+      "type": "textarea",
+      "id": "founding_body_2",
+      "label": "Body 2",
+      "default": "Fifteen years later, the science hasn\u2019t changed. Our commitment to it hasn\u2019t either."
+    },
+    {
+      "type": "header",
+      "content": "Archival imagery"
+    },
+    {
+      "type": "image_picker",
+      "id": "archival_image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "archival_image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "header",
+      "content": "Documentary video"
+    },
+    {
+      "type": "video",
+      "id": "bg_video",
+      "label": "Background video"
+    },
+    {
+      "type": "image_picker",
+      "id": "video_poster",
+      "label": "Poster image"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo lockup"
+    },
+    {
+      "type": "textarea",
+      "id": "lockup_heading",
+      "label": "Heading",
+      "default": "Founded in partnership with The University of Texas"
+    },
+    {
+      "type": "textarea",
+      "id": "lockup_subline",
+      "label": "Sub-line",
+      "default": "A program created by a Nobel Laureate + academic researchers."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "WATCH DOCUMENTARY"
+    },
+    {
+      "type": "url",
+      "id": "doc_video_url",
+      "label": "Documentary URL"
+    },
+    {
+      "type": "header",
+      "content": "Scroll distance"
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "label": "Scroll distance",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "unit": "\u00d7vh"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}
