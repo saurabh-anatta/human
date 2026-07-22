@@ -8280,7 +8280,7 @@
                           "name": "Video Modal",
                           "settings": {
                             "video_desktop": "shopify://files/videos/335 CVD Dr Davis 30_c925c358-4a38-4f53-b4be-f3c9e0195d3b.mp4",
-                            "video_mobile": "",
+
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
