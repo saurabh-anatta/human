@@ -9,17 +9,6 @@
  */
 {
   "sections": {
-    "story_cinematic_entry": {
-      "type": "story-cinematic-entry",
-      "settings": {
-        "poster_image": "shopify://shop_images/189681-886028714-1-page-overview-for-client-section-108343017.png",
-        "tagline_prefix": "Cardiovascular health is",
-        "tagline_emphasis": "everything health",
-        "discover_label": "Discover",
-        "show_ama": true,
-        "ama_text": "Ask me anything"
-      }
-    },
     "story_subnav": {
       "type": "story-subnav",
       "blocks": {
@@ -78,7 +67,6 @@
     }
   },
   "order": [
-    "story_cinematic_entry",
     "story_subnav"
   ]
 }
