@@ -1,3 +1,5 @@
+{% render 'story-stage-tokens' %}
+
 <div class="story-subnav" data-section-id="{{ section.id }}">
   <nav class="story-subnav__bar" aria-label="Story navigation">
     {%- for block in section.blocks -%}
@@ -44,6 +46,19 @@
     display: flex;
     justify-content: center;
     padding: 12px 0;
+    position: relative;
+  }
+
+  .story-subnav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--story-line-stroke-width, 2px);
+    height: 100%;
+    background-color: var(--story-line-color, #BC0F0F);
+    pointer-events: none;
   }
 
   .story-subnav__bar {
@@ -56,6 +71,7 @@
     border-radius: 999px;
     background-color: #EDEBE3;
     scrollbar-width: none;
+    position: relative;
   }
 
   .story-subnav__bar::-webkit-scrollbar {

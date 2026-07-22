@@ -1,0 +1,67 @@
+{% comment %}
+  Shared CSS custom properties for the Our Story page stage.
+  Rendered once by the subnav section. Provides grey progression palette,
+  story-line tokens, and utility classes for chapter sections.
+{% endcomment %}
+
+<style>
+  :root {
+    /* Stage top-edge radius (rounded card effect) */
+    --story-stage-radius-top: 32px;
+
+    /* Grey progression — lightest to near-black */
+    --story-stage-grey-1: #F5F5F5;
+    --story-stage-grey-2: #E8E8E8;
+    --story-stage-grey-3: #333333;
+    --story-stage-grey-4: #1A1A1A;
+    --story-stage-grey-5: #0A0A0A;
+
+    /* Red story-line tokens */
+    --story-line-color: var(--color-brand-red, #BC0F0F);
+    --story-line-stroke-width: 2px;
+  }
+
+  /* ------------------------------------------------------------------ *\
+     .story-line-layer — convention for red-line SVG segments
+     Each chapter section places a child div.story-line-layer inside its
+     root; the SVG path within is animated via initStrokeDraw.
+  \* ------------------------------------------------------------------ */
+
+  .story-line-layer {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .story-line-layer svg {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    height: 100%;
+  }
+
+  .story-line-layer path,
+  .story-line-layer line {
+    stroke: var(--story-line-color);
+    stroke-width: var(--story-line-stroke-width);
+    fill: none;
+  }
+
+  /* ------------------------------------------------------------------ *\
+     .story-stage-first — rounded top edge on the first chapter section
+  \* ------------------------------------------------------------------ */
+
+  .story-stage-first {
+    border-top-left-radius: var(--story-stage-radius-top);
+    border-top-right-radius: var(--story-stage-radius-top);
+    overflow: hidden;
+  }
+</style>

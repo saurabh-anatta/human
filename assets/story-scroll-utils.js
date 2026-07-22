@@ -118,3 +118,29 @@ export function createRevealObserver(elements, options) {
 
   return observer;
 }
+
+/**
+ * Initialises stroke-draw animation on an SVG path element.
+ * Sets up stroke-dasharray / stroke-dashoffset so the path starts hidden
+ * and draws on as `update(progress)` is called with values from 0 to 1.
+ *
+ * @param {SVGPathElement} svgPathElement - The SVG path to animate.
+ * @returns {{ update: function(number): void }} Controller with an `update` method.
+ */
+export function initStrokeDraw(svgPathElement) {
+  const totalLength = svgPathElement.getTotalLength();
+
+  svgPathElement.style.strokeDasharray = totalLength;
+  svgPathElement.style.strokeDashoffset = totalLength;
+
+  if (prefersReducedMotion()) {
+    svgPathElement.style.strokeDashoffset = 0;
+    return { update: function () {} };
+  }
+
+  return {
+    update: function (progress) {
+      svgPathElement.style.strokeDashoffset = totalLength * (1 - progress);
+    }
+  };
+}

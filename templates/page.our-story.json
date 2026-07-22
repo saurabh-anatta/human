@@ -19,13 +19,6 @@
             "anchor_id": "universal-truth"
           }
         },
-        "nav_the_problem": {
-          "type": "nav_item",
-          "settings": {
-            "label": "THE PROBLEM",
-            "anchor_id": "problem"
-          }
-        },
         "nav_the_science": {
           "type": "nav_item",
           "settings": {
@@ -47,13 +40,6 @@
             "anchor_id": "proof"
           }
         },
-        "nav_in_memoriam": {
-          "type": "nav_item",
-          "settings": {
-            "label": "IN MEMORIAM",
-            "anchor_id": "in-memoriam"
-          }
-        },
         "nav_the_people": {
           "type": "nav_item",
           "settings": {
@@ -71,11 +57,9 @@
       },
       "block_order": [
         "nav_how_it_started",
-        "nav_the_problem",
         "nav_the_science",
         "nav_why_we_made_it",
         "nav_the_proof",
-        "nav_in_memoriam",
         "nav_the_people",
         "nav_whats_next"
       ],
