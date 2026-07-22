@@ -1,0 +1,150 @@
+<div class="story-subnav" data-section-id="{{ section.id }}">
+  <nav class="story-subnav__bar" aria-label="Story navigation">
+    {%- for block in section.blocks -%}
+      <a
+        href="#{{ block.settings.anchor_id }}"
+        class="story-subnav__pill"
+        data-anchor="{{ block.settings.anchor_id }}"
+        {{ block.shopify_attributes }}
+      >
+        {{- block.settings.label -}}
+      </a>
+    {%- endfor -%}
+  </nav>
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-subnav.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.initSubnav(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     Story Sub Nav — .story-subnav
+     Prefix: --ssn-
+  \* ------------------------------------------------------------------ */
+
+  /* Sticky positioning on the .shopify-section wrapper */
+  .story-subnav-section {
+    position: sticky;
+    top: var(--header-height, 0px);
+    z-index: 10;
+    background-color: #FFFFFF;
+  }
+
+  .story-subnav {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  .story-subnav__bar {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 999px;
+    background-color: #EDEBE3;
+    scrollbar-width: none;
+  }
+
+  .story-subnav__bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .story-subnav__pill {
+    flex-shrink: 0;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-family: "Uniforma Semibold", sans-serif;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #1A1C1C;
+    background: transparent;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+  }
+
+  .story-subnav__pill:hover {
+    background-color: rgba(33, 33, 33, 0.08);
+  }
+
+  .story-subnav__pill.is-active {
+    background-color: #212121;
+    color: #F6F4ED;
+  }
+
+  .story-subnav__pill.is-active:hover {
+    background-color: #212121;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-subnav {
+      padding: 8px 16px;
+    }
+
+    .story-subnav__bar {
+      overflow-x: auto;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-subnav__pill {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story sub nav",
+  "class": "story-subnav-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "nav_item",
+      "name": "Nav item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "NAV ITEM"
+        },
+        {
+          "type": "text",
+          "id": "anchor_id",
+          "label": "Anchor ID",
+          "default": "section-id",
+          "info": "The section anchor ID to scroll to (without #)"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
