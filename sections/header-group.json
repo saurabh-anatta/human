@@ -21,7 +21,7 @@
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.875rem",
-            "weight": "600",
+            "weight": "500",
             "letter_spacing": "normal",
             "case": "none"
           },
@@ -34,7 +34,7 @@
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.875rem",
-            "weight": "600",
+            "weight": "500",
             "letter_spacing": "normal",
             "case": "none"
           },
@@ -93,7 +93,6 @@
             "color_scheme": "",
             "drawer_accordion": false,
             "drawer_accordion_expand_first": false,
-            "drawer_dividers": true,
             "drawer_slide_submenus": true,
             "banner_section_title": "Featured",
             "mega_menu_banner_object": [
@@ -119,7 +118,7 @@
         "country_selector_style": false,
         "show_language": false,
         "localization_font": "heading",
-        "localization_font_size": "0.875rem",
+        "localization_font_size": "1rem",
         "localization_position": "right",
         "localization_row": "top",
         "section_width": "page-width",

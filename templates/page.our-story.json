@@ -1,0 +1,72 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "story_subnav": {
+      "type": "story-subnav",
+      "blocks": {
+        "nav_how_it_started": {
+          "type": "nav_item",
+          "settings": {
+            "label": "HOW IT STARTED",
+            "anchor_id": "universal-truth"
+          }
+        },
+        "nav_the_science": {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE SCIENCE",
+            "anchor_id": "miracle-molecule"
+          }
+        },
+        "nav_why_we_made_it": {
+          "type": "nav_item",
+          "settings": {
+            "label": "WHY WE MADE IT",
+            "anchor_id": "origin"
+          }
+        },
+        "nav_the_proof": {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE PROOF",
+            "anchor_id": "proof"
+          }
+        },
+        "nav_the_people": {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE PEOPLE",
+            "anchor_id": "advisory-board"
+          }
+        },
+        "nav_whats_next": {
+          "type": "nav_item",
+          "settings": {
+            "label": "WHAT'S NEXT",
+            "anchor_id": "product-reveal"
+          }
+        }
+      },
+      "block_order": [
+        "nav_how_it_started",
+        "nav_the_science",
+        "nav_why_we_made_it",
+        "nav_the_proof",
+        "nav_the_people",
+        "nav_whats_next"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "story_subnav"
+  ]
+}

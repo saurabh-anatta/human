@@ -16,6 +16,19 @@
         "label": "Storefront Access Token",
         "info": "Required for badges and descriptions.",
         "default": "55ef6599eca52a4969a83ad7565972a0"
+      },
+      {
+        "type": "text",
+        "id": "rebuy_api_key",
+        "label": "Rebuy Public API Key",
+        "default": "ff2c2b82e23a2adf315988951cdea942692cb74a"
+      },
+      {
+        "type": "text",
+        "id": "gtm_container_id",
+        "label": "GTM Container ID",
+        "info": "GTM Container used for Datalayer push in checkout",
+        "default": "GTM-KHTR46FH"
       }
     ]
   },
@@ -71,6 +84,23 @@
   {
     "name": "t:names.colors",
     "settings": [
+      {
+        "type": "color_palette",
+        "id": "color_palette",
+        "default": {
+          "white": "#FFFFFF",
+          "black": "#000000",
+          "neutral_900": "#414141",
+          "neutral_700": "#767676",
+          "neutral_500": "#ADADAD",
+          "neutral_200": "#D9D9D9",
+          "neutral_100": "#F5F5F5",
+          "brand_red": "#BC0F0F",
+          "berry": "#8C0132",
+          "pink": "#E6305E",
+          "orange": "#D54427"
+        }
+      },
       {
         "type": "color_scheme_group",
         "id": "color_schemes",
@@ -1456,6 +1486,87 @@
         ],
         "default": "lift",
         "info": "t:info.hover_effects"
+      },
+      {
+        "type": "header",
+        "content": "Scroll reveal animation"
+      },
+      {
+        "type": "checkbox",
+        "id": "scroll_animation_enabled",
+        "label": "Enable scroll reveal animation",
+        "default": false,
+        "info": "Fade-up animation for sections as they scroll into view"
+      },
+      {
+        "type": "checkbox",
+        "id": "scroll_animation_homepage",
+        "label": "Homepage",
+        "default": true,
+        "visible_if": "{{ settings.scroll_animation_enabled }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "scroll_animation_collection",
+        "label": "Collection pages",
+        "default": false,
+        "visible_if": "{{ settings.scroll_animation_enabled }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "scroll_animation_product",
+        "label": "Product pages",
+        "default": false,
+        "visible_if": "{{ settings.scroll_animation_enabled }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "scroll_animation_page",
+        "label": "Pages",
+        "default": false,
+        "visible_if": "{{ settings.scroll_animation_enabled }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "scroll_animation_blog",
+        "label": "Blog and article pages",
+        "default": false,
+        "visible_if": "{{ settings.scroll_animation_enabled }}"
+      },
+      {
+        "type": "range",
+        "id": "scroll_animation_offset",
+        "label": "Reveal offset",
+        "min": 0,
+        "max": 200,
+        "step": 10,
+        "default": 80,
+        "unit": "px",
+        "info": "How far sections translate upward during reveal",
+        "visible_if": "{{ settings.scroll_animation_enabled }}"
+      },
+      {
+        "type": "range",
+        "id": "scroll_animation_duration",
+        "label": "Animation duration",
+        "min": 100,
+        "max": 1500,
+        "step": 50,
+        "default": 600,
+        "unit": "ms",
+        "visible_if": "{{ settings.scroll_animation_enabled }}"
+      },
+      {
+        "type": "range",
+        "id": "scroll_animation_stagger",
+        "label": "Stagger delay",
+        "min": 0,
+        "max": 300,
+        "step": 25,
+        "default": 100,
+        "unit": "ms",
+        "info": "Delay between sibling sections animating in",
+        "visible_if": "{{ settings.scroll_animation_enabled }}"
       }
     ]
   },
@@ -1792,10 +1903,81 @@
         "default": true
       },
       {
+        "type": "text",
+        "id": "empty_cart_button_text",
+        "label": "t:settings.empty_cart_button_text",
+        "default": "Shop now"
+      },
+      {
         "type": "url",
         "id": "empty_cart_button_link",
         "label": "t:settings.empty_cart_button_link",
         "default": "/collections/all"
+      },
+      {
+        "type": "header",
+        "content": "Cart Bestsellers"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_bestsellers_enabled",
+        "label": "Enable bestsellers",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_bestsellers_heading",
+        "label": "Heading",
+        "default": "GET 10% OFF BESTSELLERS"
+      },
+      {
+        "type": "collection",
+        "id": "cart_bestsellers_collection",
+        "label": "Collection"
+      },
+      {
+        "type": "range",
+        "id": "cart_bestsellers_max_products",
+        "label": "Max products",
+        "min": 2,
+        "max": 10,
+        "step": 1,
+        "default": 6
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_bestsellers_use_rebuy",
+        "label": "Use Rebuy widget",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "cart_bestsellers_rebuy_widget_id",
+        "label": "Rebuy widget ID",
+        "default": "299481",
+        "visible_if": "{{ settings.cart_bestsellers_use_rebuy == true }}"
+      },
+      {
+        "type": "header",
+        "content": "Trust Signals"
+      },
+      {
+        "type": "text",
+        "id": "cart_guarantee_text",
+        "label": "Guarantee text",
+        "default": "90 DAY MONEY BACK GUARANTEE"
+      },
+      {
+        "type": "text",
+        "id": "cart_trust_text_1",
+        "label": "Trust text 1",
+        "default": "Trusted by 2M+ Customers"
+      },
+      {
+        "type": "text",
+        "id": "cart_trust_text_2",
+        "label": "Trust text 2",
+        "default": "Over 10,000 5 Star Reviews"
       },
       {
         "type": "header",
@@ -1848,6 +2030,49 @@
         "step": 1,
         "unit": "px",
         "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Cart milestones"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cart_milestones",
+        "label": "Enable cart milestones",
+        "default": false
+      },
+      {
+        "type": "metaobject_list",
+        "id": "cart_milestones",
+        "label": "Milestones",
+        "info": "Choose which cart milestones appear. The lowest threshold is the start of the bar and the highest is the end (100%).",
+        "metaobject_type": "cart_milestone",
+        "limit": 10
+      },
+      {
+        "type": "paragraph",
+        "content": "Progress bar messages. Use {amount} for the money value and {perk} for the milestone reward."
+      },
+      {
+        "type": "text",
+        "id": "cart_milestone_msg_initial",
+        "label": "Initial message",
+        "info": "Shown before any progress. Supports {amount} and {perk}.",
+        "default": "Spend {amount} and get {perk}!"
+      },
+      {
+        "type": "text",
+        "id": "cart_milestone_msg_in_progress",
+        "label": "In-progress message",
+        "info": "Shown while the cart is below the next milestone. Supports {amount} and {perk}.",
+        "default": "You are {amount} away from {perk}!"
+      },
+      {
+        "type": "text",
+        "id": "cart_milestone_msg_achieved",
+        "label": "All-achieved message",
+        "info": "Shown once every milestone is reached. Supports {perk}.",
+        "default": "Congrats, you get a {perk}!"
       }
     ]
   },
