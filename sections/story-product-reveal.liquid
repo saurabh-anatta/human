@@ -1,0 +1,456 @@
+{%- liquid
+  assign section_heading = section.settings.section_heading
+  assign supporting_copy = section.settings.supporting_copy
+  assign frame_base_url = section.settings.frame_base_url
+  assign frame_count = section.settings.frame_count
+  assign settled_image = section.settings.settled_image
+  assign retailer_strip_image = section.settings.retailer_strip_image
+  assign scroll_distance = section.settings.scroll_distance
+
+  assign is_static = false
+  if frame_count == 0 or frame_base_url == blank
+    assign is_static = true
+  endif
+
+  assign has_individual_logos = false
+  for block in section.blocks
+    if block.settings.logo != blank
+      assign has_individual_logos = true
+      break
+    endif
+  endfor
+-%}
+
+{%- capture inline_styles -%}
+  --sprl-scroll-distance: {{ scroll_distance }};
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-product-reveal{% if is_static %} story-product-reveal--static{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-anchor="product-reveal"
+  data-frame-base-url="{{ frame_base_url }}"
+  data-frame-count="{{ frame_count }}"
+  style="{{ inline_styles }}"
+>
+  <div class="story-product-reveal__scroll-track">
+    <div class="story-product-reveal__sticky">
+
+      {%- comment -%} Canvas layer — frame sequence drawn by JS {%- endcomment -%}
+      <canvas class="story-product-reveal__canvas" aria-hidden="true"></canvas>
+
+      {%- comment -%} Fallback image — shown when canvas is hidden (static mode) {%- endcomment -%}
+      {%- if settled_image != blank -%}
+        <img
+          src="{{ settled_image | image_url: width: 1920 }}"
+          alt=""
+          width="{{ settled_image.width }}"
+          height="{{ settled_image.height }}"
+          loading="lazy"
+          class="story-product-reveal__fallback"
+        >
+      {%- endif -%}
+
+      {%- comment -%} Heading copy {%- endcomment -%}
+      {%- if section_heading != blank -%}
+        <h2 class="story-product-reveal__heading">{{ section_heading | newline_to_br }}</h2>
+      {%- endif -%}
+
+      {%- comment -%} Supporting copy {%- endcomment -%}
+      {%- if supporting_copy != blank -%}
+        <p class="story-product-reveal__supporting-copy">{{ supporting_copy }}</p>
+      {%- endif -%}
+
+      {%- comment -%} Retailer logo row {%- endcomment -%}
+      <div class="story-product-reveal__retailer-row">
+        {%- if section.blocks.size > 0 and has_individual_logos -%}
+          {%- for block in section.blocks -%}
+            <div class="story-product-reveal__retailer-logo" {{ block.shopify_attributes }}>
+              {%- if block.settings.logo != blank -%}
+                {%- if block.settings.url != blank -%}
+                  <a href="{{ block.settings.url }}">
+                    <img
+                      src="{{ block.settings.logo | image_url: width: 200 }}"
+                      alt="{{ block.settings.alt_text }}"
+                      loading="lazy"
+                    >
+                  </a>
+                {%- else -%}
+                  <img
+                    src="{{ block.settings.logo | image_url: width: 200 }}"
+                    alt="{{ block.settings.alt_text }}"
+                    loading="lazy"
+                  >
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- elsif retailer_strip_image != blank -%}
+          <img
+            src="{{ retailer_strip_image | image_url: width: 1440 }}"
+            alt="Available at retailers"
+            loading="lazy"
+            class="story-product-reveal__retailer-strip"
+          >
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-product-reveal.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     Product reveal — .story-product-reveal
+     Prefix: --sprl-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-product-reveal-section {
+    background-color: #F5F5F5;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-product-reveal {
+    position: relative;
+  }
+
+  /* Scroll track: tall container that drives sticky pinning */
+  .story-product-reveal__scroll-track {
+    height: calc(var(--sprl-scroll-distance, 5) * 100vh);
+  }
+
+  /* Sticky viewport */
+  .story-product-reveal__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Canvas — frame sequence */
+  .story-product-reveal__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 0;
+  }
+
+  /* Hide canvas in static mode */
+  .story-product-reveal--static .story-product-reveal__canvas {
+    display: none;
+  }
+
+  /* Fallback image — shown only in static mode */
+  .story-product-reveal__fallback {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 0;
+    display: none;
+  }
+
+  .story-product-reveal--static .story-product-reveal__fallback {
+    display: block;
+  }
+
+  /* Heading */
+  .story-product-reveal__heading {
+    position: relative;
+    z-index: 2;
+    font-family: 'Moderat Serif', serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 60px;
+    letter-spacing: -1px;
+    text-align: center;
+    color: #A0A0A0;
+    max-width: 700px;
+    margin: 0;
+    padding: 0 24px;
+    opacity: 0;
+    transform: translateY(40px);
+    will-change: opacity, transform;
+  }
+
+  .story-product-reveal--static .story-product-reveal__heading {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Supporting copy */
+  .story-product-reveal__supporting-copy {
+    position: relative;
+    z-index: 2;
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-size: 18px;
+    line-height: 26px;
+    text-align: center;
+    color: #A0A0A0;
+    max-width: 600px;
+    margin: 16px 0 0;
+    padding: 0 24px;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-product-reveal--static .story-product-reveal__supporting-copy {
+    opacity: 1;
+  }
+
+  /* Retailer logo row */
+  .story-product-reveal__retailer-row {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 0 40px;
+    opacity: 0;
+    transform: translateY(20px);
+    will-change: opacity, transform;
+  }
+
+  .story-product-reveal--static .story-product-reveal__retailer-row {
+    opacity: 1;
+    transform: none;
+  }
+
+  .story-product-reveal__retailer-logo img {
+    height: 40px;
+    width: auto;
+    display: block;
+  }
+
+  .story-product-reveal__retailer-strip {
+    height: 48px;
+    width: auto;
+    max-width: 100%;
+    display: block;
+  }
+
+  .story-product-reveal__retailer-placeholder {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-size: 14px;
+    color: #A0A0A0;
+    white-space: nowrap;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-product-reveal__scroll-track {
+      height: calc(var(--sprl-scroll-distance, 5) * 60vh);
+    }
+
+    .story-product-reveal__heading {
+      font-size: 36px;
+      line-height: 36px;
+    }
+
+    .story-product-reveal__supporting-copy {
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .story-product-reveal__retailer-row {
+      flex-wrap: wrap;
+      gap: 20px 24px;
+      bottom: 24px;
+      padding: 0 16px;
+    }
+
+    .story-product-reveal__retailer-logo img {
+      height: 28px;
+    }
+
+    .story-product-reveal__retailer-strip {
+      height: 32px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-product-reveal__scroll-track {
+      height: auto;
+    }
+
+    .story-product-reveal__sticky {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+
+    .story-product-reveal__canvas {
+      display: none;
+    }
+
+    .story-product-reveal__fallback {
+      display: block;
+    }
+
+    .story-product-reveal__heading,
+    .story-product-reveal__supporting-copy,
+    .story-product-reveal__retailer-row {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product reveal",
+  "class": "story-product-reveal-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "section_heading",
+      "label": "Heading",
+      "default": "Not just science-backed.\nScience-born."
+    },
+    {
+      "type": "textarea",
+      "id": "supporting_copy",
+      "label": "Supporting copy",
+      "default": "We didn't build this business to sell supplements. We built it with a chief cardiologist, a chief medical officer, and a chief science officer on staff from day one."
+    },
+    {
+      "type": "header",
+      "content": "Frame sequence"
+    },
+    {
+      "type": "text",
+      "id": "frame_base_url",
+      "label": "Frame base URL",
+      "info": "URL prefix for frame images. Frames load as {base}0001.jpg, {base}0002.jpg, etc. Leave blank for static fallback."
+    },
+    {
+      "type": "range",
+      "id": "frame_count",
+      "label": "Frame count",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "image_picker",
+      "id": "settled_image",
+      "label": "Settled / fallback image"
+    },
+    {
+      "type": "header",
+      "content": "Retailer logos"
+    },
+    {
+      "type": "image_picker",
+      "id": "retailer_strip_image",
+      "label": "Retailer logo strip (fallback)",
+      "info": "Shown when no individual retailer logo blocks are added."
+    },
+    {
+      "type": "header",
+      "content": "Scroll distance"
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "label": "Scroll distance",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "unit": "\u00d7vh"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "retailer_logo",
+      "name": "Retailer logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt text",
+          "default": "Retailer"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

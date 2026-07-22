@@ -413,6 +413,61 @@
         "vessel_color": "#BC0F0F",
         "scroll_distance": 6
       }
+    },
+    "story_product_reveal": {
+      "type": "story-product-reveal",
+      "blocks": {
+        "retailer_walmart": {
+          "type": "retailer_logo",
+          "settings": {
+            "alt_text": "Walmart"
+          }
+        },
+        "retailer_sams_club": {
+          "type": "retailer_logo",
+          "settings": {
+            "alt_text": "Sam's Club"
+          }
+        },
+        "retailer_sprouts": {
+          "type": "retailer_logo",
+          "settings": {
+            "alt_text": "Sprouts Farmers Market"
+          }
+        },
+        "retailer_walgreens": {
+          "type": "retailer_logo",
+          "settings": {
+            "alt_text": "Walgreens"
+          }
+        },
+        "retailer_gnc": {
+          "type": "retailer_logo",
+          "settings": {
+            "alt_text": "GNC"
+          }
+        },
+        "retailer_target": {
+          "type": "retailer_logo",
+          "settings": {
+            "alt_text": "Target"
+          }
+        }
+      },
+      "block_order": [
+        "retailer_walmart",
+        "retailer_sams_club",
+        "retailer_sprouts",
+        "retailer_walgreens",
+        "retailer_gnc",
+        "retailer_target"
+      ],
+      "settings": {
+        "section_heading": "Not just science-backed.\nScience-born.",
+        "supporting_copy": "We didn't build this business to sell supplements. We built it with a chief cardiologist, a chief medical officer, and a chief science officer on staff from day one.",
+        "retailer_strip_image": "shopify://shop_images/screenshot-2026-06-27-at-3-57-34-pm-1-page-overview-for-client-section-108346263.png",
+        "scroll_distance": 5
+      }
     }
   },
   "order": [
@@ -425,6 +480,7 @@
     "story_proof",
     "story_in_memoriam",
     "story_advisory_board",
-    "story_timeline"
+    "story_timeline",
+    "story_product_reveal"
   ]
 }
