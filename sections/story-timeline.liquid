@@ -47,7 +47,7 @@
       </div>
 
       {%- comment -%} Section title — animated by JS {%- endcomment -%}
-      <h2 class="story-timeline__section-title">{{ section_title }}</h2>
+      <div class="story-timeline__section-title" role="heading" aria-level="2">{{ section_title }}</div>
 
       {%- comment -%} Decorative line — SVG arrow, animated by JS {%- endcomment -%}
       <svg class="story-timeline__decorative-line" aria-hidden="true" width="120" height="24" viewBox="0 0 120 24" fill="none">
@@ -284,6 +284,10 @@
     max-width: 467px;
     opacity: 0;
     will-change: opacity, transform;
+  }
+
+  .story-timeline__section-title p {
+    margin: 0;
   }
 
   .story-timeline__section-title b,
@@ -667,10 +671,10 @@
       "content": "Section title"
     },
     {
-      "type": "inline_richtext",
+      "type": "richtext",
       "id": "section_title",
       "label": "Title",
-      "default": "15 years.<br>One <b>mission.</b>"
+      "default": "<p>15 years.</p><p>One mission.</p>"
     },
     {
       "type": "header",
