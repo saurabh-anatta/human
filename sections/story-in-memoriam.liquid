@@ -1,0 +1,383 @@
+{%- liquid
+  assign bg_image = section.settings.bg_image
+  assign caption_text = section.settings.caption_text
+  assign eyebrow_text = section.settings.eyebrow_text
+  assign quote_text = section.settings.quote_text
+  assign scroll_distance = section.settings.scroll_distance
+-%}
+
+{%- capture inline_styles -%}
+  --sim-scroll-distance: {{ scroll_distance }};
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-in-memoriam"
+  data-section-id="{{ section.id }}"
+  data-anchor="in-memoriam"
+  style="{{ inline_styles }}"
+>
+  <div class="story-in-memoriam__scroll-track">
+    <div class="story-in-memoriam__sticky">
+
+      {%- comment -%} Media layer — full-bleed image with clip-path animation {%- endcomment -%}
+      <div class="story-in-memoriam__media-layer">
+        {%- if bg_image != blank -%}
+          <img
+            src="{{ bg_image | image_url: width: 1920 }}"
+            alt=""
+            width="{{ bg_image.width }}"
+            height="{{ bg_image.height }}"
+            loading="eager"
+            class="story-in-memoriam__image"
+          >
+        {%- endif -%}
+        <div class="story-in-memoriam__desat" aria-hidden="true"></div>
+      </div>
+
+      {%- comment -%} Caption chip — positioned at the bottom edge of the settled image card {%- endcomment -%}
+      {%- if caption_text != blank -%}
+        <div class="story-in-memoriam__caption-chip">{{ caption_text }}</div>
+      {%- endif -%}
+
+      {%- comment -%} Content — quote ticks, eyebrow, quote text {%- endcomment -%}
+      <div class="story-in-memoriam__content">
+        <div class="story-in-memoriam__quote-ticks" aria-hidden="true">
+          <svg width="50" height="50" viewBox="0 0 50 50" fill="none" style="transform: rotate(-0.8deg)">
+            <rect x="0.5" y="0.5" width="49" height="49" stroke="#2983DC" stroke-width="1"/>
+          </svg>
+          <svg width="50" height="50" viewBox="0 0 50 50" fill="none" style="transform: rotate(-2.4deg)">
+            <rect x="0.5" y="0.5" width="49" height="49" stroke="#2983DC" stroke-width="1"/>
+          </svg>
+        </div>
+
+        {%- if eyebrow_text != blank -%}
+          <span class="story-in-memoriam__eyebrow">{{ eyebrow_text }}</span>
+        {%- endif -%}
+
+        {%- if quote_text != blank -%}
+          <blockquote class="story-in-memoriam__quote">{{ quote_text }}</blockquote>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-in-memoriam.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     In memoriam — .story-in-memoriam
+     Prefix: --sim-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-in-memoriam-section {
+    background-color: #F5F5F5;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-in-memoriam {
+    position: relative;
+  }
+
+  /* Scroll track: tall container that drives sticky pinning */
+  .story-in-memoriam__scroll-track {
+    height: calc(var(--sim-scroll-distance, 5) * 100vh);
+  }
+
+  /* Sticky viewport */
+  .story-in-memoriam__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  /* Media layer — clip-path driven by JS */
+  .story-in-memoriam__media-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    will-change: clip-path;
+  }
+
+  .story-in-memoriam__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Desaturation overlay */
+  .story-in-memoriam__desat {
+    position: absolute;
+    inset: 0;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Caption chip — centred at the bottom edge of the settled image card */
+  .story-in-memoriam__caption-chip {
+    position: absolute;
+    z-index: 2;
+    bottom: 32%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    line-height: 18px;
+    color: #FFFFFF;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 8px 16px;
+    border-radius: 20px;
+    opacity: 0;
+    will-change: opacity, transform;
+    white-space: nowrap;
+  }
+
+  /* Content — quote ticks, eyebrow, quote */
+  .story-in-memoriam__content {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 24px;
+  }
+
+  /* Decorative quote-tick squares */
+  .story-in-memoriam__quote-ticks {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .story-in-memoriam__quote-ticks svg {
+    width: 50px;
+    height: 50px;
+  }
+
+  /* Eyebrow */
+  .story-in-memoriam__eyebrow {
+    font-family: 'Uniforma', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 20px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #767676;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  /* Quote */
+  .story-in-memoriam__quote {
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #767676;
+    text-align: center;
+    max-width: 1065px;
+    margin: 0;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-in-memoriam__scroll-track {
+      height: calc(var(--sim-scroll-distance, 5) * 60vh);
+    }
+
+    .story-in-memoriam__content {
+      padding: 0 16px;
+    }
+
+    .story-in-memoriam__quote {
+      font-size: 28px;
+      line-height: 32px;
+      letter-spacing: -0.5px;
+    }
+
+    .story-in-memoriam__eyebrow {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .story-in-memoriam__quote-ticks svg {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-in-memoriam__scroll-track {
+      height: auto;
+    }
+
+    .story-in-memoriam__sticky {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+
+    .story-in-memoriam__media-layer {
+      position: relative;
+      width: 54%;
+      margin: 0 auto;
+      aspect-ratio: 778 / 682;
+      border-radius: 12px;
+      clip-path: none;
+      overflow: hidden;
+    }
+
+    .story-in-memoriam__image {
+      position: absolute;
+      inset: 0;
+      will-change: auto;
+    }
+
+    .story-in-memoriam__desat {
+      display: none;
+    }
+
+    .story-in-memoriam__caption-chip {
+      position: relative;
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+      margin: 0 auto;
+      bottom: auto;
+      left: auto;
+    }
+
+    .story-in-memoriam__content {
+      position: relative;
+      height: auto;
+      padding: 32px 24px;
+    }
+
+    .story-in-memoriam__quote-ticks,
+    .story-in-memoriam__eyebrow,
+    .story-in-memoriam__quote {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "In memoriam",
+  "class": "story-in-memoriam-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "caption_text",
+      "label": "Caption",
+      "default": "Dr. Ferid Murad, Nobel Laureate 1936 \u2013 2023"
+    },
+    {
+      "type": "header",
+      "content": "Quote"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "IN MEMORIAM"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_text",
+      "label": "Quote text",
+      "default": "\u201cFor someone with my father\u2019s scientific background, collaborating with a supplement company was unusual. Humann\u2019s evidence-based approach aligned with his values.\u201d"
+    },
+    {
+      "type": "header",
+      "content": "Scroll distance"
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "label": "Scroll distance",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "unit": "\u00d7vh"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}

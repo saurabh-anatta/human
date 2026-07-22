@@ -47,6 +47,13 @@
             "anchor_id": "proof"
           }
         },
+        "nav_in_memoriam": {
+          "type": "nav_item",
+          "settings": {
+            "label": "IN MEMORIAM",
+            "anchor_id": "in-memoriam"
+          }
+        },
         "nav_the_people": {
           "type": "nav_item",
           "settings": {
@@ -68,6 +75,7 @@
         "nav_the_science",
         "nav_why_we_made_it",
         "nav_the_proof",
+        "nav_in_memoriam",
         "nav_the_people",
         "nav_whats_next"
       ],
@@ -238,6 +246,16 @@
         "intro_body": "The most cardiologist-, pharmacist-, and doctor-recommended beet brand for heart health support in America.",
         "scroll_distance": 5
       }
+    },
+    "story_in_memoriam": {
+      "type": "story-in-memoriam",
+      "settings": {
+        "bg_image": "shopify://shop_images/screenshot-2026-06-29-at-12-34-43-pm-1-page-overview-for-client-section-108345013.png",
+        "caption_text": "Dr. Ferid Murad, Nobel Laureate 1936 \u2013 2023",
+        "eyebrow_text": "IN MEMORIAM",
+        "quote_text": "\u201cFor someone with my father\u2019s scientific background, collaborating with a supplement company was unusual. Humann\u2019s evidence-based approach aligned with his values.\u201d",
+        "scroll_distance": 5
+      }
     }
   },
   "order": [
@@ -246,6 +264,7 @@
     "story_the_problem",
     "story_miracle_molecule",
     "story_origin",
-    "story_proof"
+    "story_proof",
+    "story_in_memoriam"
   ]
 }
