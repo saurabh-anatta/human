@@ -468,6 +468,18 @@
         "retailer_strip_image": "shopify://shop_images/screenshot-2026-06-27-at-3-57-34-pm-1-page-overview-for-client-section-108346263.png",
         "scroll_distance": 5
       }
+    },
+    "story_mission_close": {
+      "type": "story-mission-close",
+      "settings": {
+        "poster_image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-27-pm-2-page-overview-for-client-section-108344923.png",
+        "vessel_line_image": "shopify://shop_images/sbhczs-omi-19-1-page-overview-for-client-section-108344953.png",
+        "text_block_1_heading": "So yes, we're fifteen years in — but we're still just getting started.",
+        "text_block_1_body": "The early chapters were all about this one molecule — nitric oxide — and the science that proved it could change lives. But the next chapter? That's about making cardiovascular health something everyone thinks about. Not just patients. Not just athletes. Everyone.",
+        "text_block_2_line_1": "There isn't a single person on Earth\nwho doesn't benefit\nfrom better blood flow",
+        "text_block_2_line_2": "We're here to make cardiovascular health central. Not supplemental.",
+        "scroll_distance": 6
+      }
     }
   },
   "order": [
@@ -481,6 +493,7 @@
     "story_in_memoriam",
     "story_advisory_board",
     "story_timeline",
-    "story_product_reveal"
+    "story_product_reveal",
+    "story_mission_close"
   ]
 }

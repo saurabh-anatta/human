@@ -1,0 +1,430 @@
+{%- liquid
+  assign video = section.settings.video
+  assign poster_image = section.settings.poster_image
+  assign text_block_1_heading = section.settings.text_block_1_heading
+  assign text_block_1_body = section.settings.text_block_1_body
+  assign text_block_2_line_1 = section.settings.text_block_2_line_1
+  assign text_block_2_line_2 = section.settings.text_block_2_line_2
+  assign vessel_line_image = section.settings.vessel_line_image
+  assign scroll_distance = section.settings.scroll_distance
+-%}
+
+{%- capture inline_styles -%}
+  --smc-scroll-distance: {{ scroll_distance }};
+  padding-block-start: {{ section.settings['padding-block-start'] }}px;
+  padding-block-end: {{ section.settings['padding-block-end'] }}px;
+{%- endcapture -%}
+
+<div
+  class="story-mission-close"
+  data-section-id="{{ section.id }}"
+  data-anchor="mission-close"
+  style="{{ inline_styles }}"
+>
+  <div class="story-mission-close__scroll-track">
+
+    {%- comment -%} Sticky viewport — pinned video + overlays {%- endcomment -%}
+    <div class="story-mission-close__sticky">
+
+      {%- comment -%} Video layer {%- endcomment -%}
+      {%- if video != blank -%}
+        {{
+          video
+          | video_tag:
+            class: 'story-mission-close__video',
+            autoplay: true,
+            muted: true,
+            loop: true,
+            playsinline: true,
+            image_size: '1920x'
+        }}
+      {%- elsif poster_image != blank -%}
+        <img
+          src="{{ poster_image | image_url: width: 1920 }}"
+          alt=""
+          width="{{ poster_image.width }}"
+          height="{{ poster_image.height }}"
+          loading="eager"
+          class="story-mission-close__poster"
+        >
+      {%- else -%}
+        <div class="story-mission-close__placeholder" aria-hidden="true"></div>
+      {%- endif -%}
+
+      {%- comment -%} Desaturation overlay (Rectangle 6 pattern) {%- endcomment -%}
+      <div class="story-mission-close__desat" aria-hidden="true"></div>
+
+      {%- comment -%} Vessel-line overlay image {%- endcomment -%}
+      {%- if vessel_line_image != blank -%}
+        <img
+          src="{{ vessel_line_image | image_url: width: 1920 }}"
+          alt=""
+          width="{{ vessel_line_image.width }}"
+          height="{{ vessel_line_image.height }}"
+          loading="eager"
+          class="story-mission-close__vessel-line"
+        >
+      {%- endif -%}
+
+    </div>
+
+    {%- comment -%} Text block 1 — scrolls over pinned video {%- endcomment -%}
+    {%- if text_block_1_heading != blank or text_block_1_body != blank -%}
+      <div class="story-mission-close__text-block story-mission-close__text-block--1">
+        <div class="story-mission-close__text-inner">
+          {%- if text_block_1_heading != blank -%}
+            <h2 class="story-mission-close__heading">{{ text_block_1_heading }}</h2>
+          {%- endif -%}
+          {%- if text_block_1_body != blank -%}
+            <p class="story-mission-close__body">{{ text_block_1_body }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Text block 2 — scrolls over pinned video {%- endcomment -%}
+    {%- if text_block_2_line_1 != blank or text_block_2_line_2 != blank -%}
+      <div class="story-mission-close__text-block story-mission-close__text-block--2">
+        <div class="story-mission-close__text-inner">
+          {%- if text_block_2_line_1 != blank -%}
+            <h2 class="story-mission-close__heading">{{ text_block_2_line_1 }}</h2>
+          {%- endif -%}
+          {%- if text_block_2_line_2 != blank -%}
+            <p class="story-mission-close__subheading">{{ text_block_2_line_2 }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    const utilsUrl = {{ 'story-scroll-utils.js' | asset_url | json }};
+    const sectionUrl = {{ 'story-mission-close.js' | asset_url | json }};
+
+    Promise.all([import(utilsUrl), import(sectionUrl)]).then(function ([utils, section]) {
+      const sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!sectionEl) return;
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ------------------------------------------------------------------ *\
+     Mission close — .story-mission-close
+     Prefix: --smc-
+  \* ------------------------------------------------------------------ */
+
+  /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
+  .story-mission-close-section {
+    background-color: #F5F5F5;
+    position: relative;
+    z-index: 1;
+  }
+
+  .story-mission-close {
+    position: relative;
+  }
+
+  /* Scroll track: tall container that drives sticky pinning */
+  .story-mission-close__scroll-track {
+    height: calc(var(--smc-scroll-distance, 6) * 100vh);
+  }
+
+  /* Sticky viewport — pins the video while text blocks scroll over */
+  .story-mission-close__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  /* Video fills viewport */
+  .story-mission-close__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* Poster fallback fills viewport */
+  .story-mission-close__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* Placeholder when no video or poster */
+  .story-mission-close__placeholder {
+    position: absolute;
+    inset: 0;
+    background: #333333;
+    z-index: 0;
+  }
+
+  /* Desaturation overlay */
+  .story-mission-close__desat {
+    position: absolute;
+    inset: 0;
+    background: #D9D9D9;
+    mix-blend-mode: color;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  /* Vessel-line overlay image */
+  .story-mission-close__vessel-line {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity;
+  }
+
+  /* Text blocks — scroll over the pinned video */
+  .story-mission-close__text-block {
+    position: relative;
+    z-index: 3;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  /* Inner container for text content */
+  .story-mission-close__text-inner {
+    text-align: center;
+    max-width: 800px;
+    padding: 0 24px;
+  }
+
+  /* Heading — Moderat Serif 400 60/60 ls:-1px */
+  .story-mission-close__heading {
+    font-family: 'Moderat Serif', serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 60px;
+    letter-spacing: -1px;
+    color: #A0A0A0;
+    text-align: center;
+    margin: 0;
+    white-space: pre-line;
+  }
+
+  /* Body paragraph below text block 1 heading */
+  .story-mission-close__body {
+    font-family: var(--font-body--family), sans-serif;
+    font-size: 18px;
+    line-height: 26px;
+    color: #A0A0A0;
+    margin: 16px 0 0;
+    max-width: 600px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  /* Subheading — second line of text block 2 */
+  .story-mission-close__subheading {
+    font-family: 'Moderat Serif', serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 60px;
+    letter-spacing: -1px;
+    color: #A0A0A0;
+    text-align: center;
+    margin: 16px 0 0;
+    white-space: pre-line;
+  }
+
+  /* ------ Mobile ------ */
+
+  @media screen and (max-width: 749px) {
+    .story-mission-close__scroll-track {
+      height: calc(var(--smc-scroll-distance, 6) * 60vh);
+    }
+
+    .story-mission-close__text-block {
+      min-height: 60vh;
+    }
+
+    .story-mission-close__text-inner {
+      background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4) 0%, transparent 70%);
+      padding: 40px 16px;
+    }
+
+    .story-mission-close__heading {
+      font-size: 36px;
+      line-height: 36px;
+    }
+
+    .story-mission-close__body {
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .story-mission-close__subheading {
+      font-size: 36px;
+      line-height: 36px;
+    }
+  }
+
+  /* ------ Reduced motion ------ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-mission-close__scroll-track {
+      height: auto;
+    }
+
+    .story-mission-close__sticky {
+      position: relative;
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+
+    .story-mission-close__desat {
+      opacity: 0 !important;
+      will-change: auto;
+    }
+
+    .story-mission-close__vessel-line {
+      opacity: 1 !important;
+      will-change: auto;
+    }
+
+    .story-mission-close__text-block {
+      min-height: auto;
+      padding: 60px 24px;
+    }
+
+    .story-mission-close__heading,
+    .story-mission-close__body,
+    .story-mission-close__subheading {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Mission close",
+  "class": "story-mission-close-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster image"
+    },
+    {
+      "type": "header",
+      "content": "Text block 1"
+    },
+    {
+      "type": "textarea",
+      "id": "text_block_1_heading",
+      "label": "Heading",
+      "default": "So yes, we're fifteen years in — but we're still just getting started."
+    },
+    {
+      "type": "textarea",
+      "id": "text_block_1_body",
+      "label": "Body",
+      "default": "The early chapters were all about this one molecule — nitric oxide — and the science that proved it could change lives. But the next chapter? That's about making cardiovascular health something everyone thinks about. Not just patients. Not just athletes. Everyone."
+    },
+    {
+      "type": "header",
+      "content": "Text block 2"
+    },
+    {
+      "type": "textarea",
+      "id": "text_block_2_line_1",
+      "label": "Line 1",
+      "default": "There isn't a single person on Earth\nwho doesn't benefit\nfrom better blood flow"
+    },
+    {
+      "type": "textarea",
+      "id": "text_block_2_line_2",
+      "label": "Line 2",
+      "default": "We're here to make cardiovascular health central. Not supplemental."
+    },
+    {
+      "type": "header",
+      "content": "Vessel line"
+    },
+    {
+      "type": "image_picker",
+      "id": "vessel_line_image",
+      "label": "Vessel line image"
+    },
+    {
+      "type": "header",
+      "content": "Scroll distance"
+    },
+    {
+      "type": "range",
+      "id": "scroll_distance",
+      "label": "Scroll distance",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "×vh"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}
