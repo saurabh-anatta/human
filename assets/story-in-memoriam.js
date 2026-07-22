@@ -55,9 +55,9 @@ export function init(sectionEl, utils) {
 
   /* Reduced motion: show settled state immediately, skip scroll animation */
   if (utils.prefersReducedMotion()) {
-    if (desatEl) desatEl.style.opacity = '0';
+    if (desatEl) desatEl.style.display = 'none';
     if (mediaLayer) {
-      mediaLayer.style.clipPath = 'inset(' + SETTLED_TOP + '% ' + SETTLED_RIGHT + '% ' + SETTLED_BOTTOM + '% ' + SETTLED_LEFT + '% round ' + SETTLED_RADIUS + 'px)';
+      mediaLayer.style.clipPath = 'none';
     }
     if (captionChip) {
       captionChip.style.opacity = '1';
