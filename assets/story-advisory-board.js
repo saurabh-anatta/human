@@ -136,11 +136,10 @@ export function init(sectionEl, utils) {
   if (utils.prefersReducedMotion()) {
     if (headingArea) {
       headingArea.style.opacity = '1';
-      headingArea.style.transform = 'translateX(-50%)';
+      headingArea.style.transform = '';
     }
     if (decorativeLine) {
-      decorativeLine.style.opacity = '1';
-      decorativeLine.style.transform = 'rotate(3deg)';
+      decorativeLine.style.opacity = '0';
     }
     entranceX = 0;
     isSettled = true;
@@ -156,26 +155,34 @@ export function init(sectionEl, utils) {
 
   /* ---- Scroll entrance ---- */
   var viewportWidth = window.innerWidth;
+  var viewportHeight = window.innerHeight;
 
   var cleanupScroll = utils.createScrollProgress(scrollTrack, {
     onProgress: function (p) {
       requestAnimationFrame(function () {
-        /* Phase A (0.0-0.4): heading-area opacity 0->1, translateY 30->0 */
+        /* Phase A (0.0-0.4): heading-area opacity 0->1, translateY from ~55vh to 0 */
         if (headingArea) {
           var headingT = phaseProgress(p, 0.0, 0.4);
           var headingOpacity = lerp(0, 1, headingT);
-          var headingY = lerp(30, 0, headingT);
+          var headingYStart = Math.min(viewportHeight * 0.55, 550);
+          var headingY = lerp(headingYStart, 0, headingT);
           headingArea.style.opacity = headingOpacity;
-          headingArea.style.transform = 'translateX(-50%) translateY(' + headingY + 'px)';
+          headingArea.style.transform = 'translateY(' + headingY + 'px)';
         }
 
-        /* Phase B (0.05-0.25): decorative-line opacity 0->1, rotation -2->3deg */
+        /* Phase B (0.05-0.40): decorative-line rotation -90->0deg, then (0.40-0.55) fade out */
         if (decorativeLine) {
-          var lineT = phaseProgress(p, 0.05, 0.25);
-          var lineOpacity = lerp(0, 1, lineT);
-          var lineRotation = lerp(-2, 3, lineT);
+          var lineT = phaseProgress(p, 0.05, 0.40);
+          var lineRotation = lerp(-90, 0, lineT);
+          var lineOpacity;
+          if (p < 0.40) {
+            lineOpacity = lerp(0, 1, lineT);
+          } else {
+            var fadeT = phaseProgress(p, 0.40, 0.55);
+            lineOpacity = lerp(1, 0, fadeT);
+          }
           decorativeLine.style.opacity = lineOpacity;
-          decorativeLine.style.transform = 'rotate(' + lineRotation + 'deg)';
+          decorativeLine.style.transform = 'translate(-50%, -50%) rotate(' + lineRotation + 'deg)';
         }
 
         /* Phase C (0.15-0.65): carousel-track entrance from offscreen-left */
@@ -293,6 +300,7 @@ export function init(sectionEl, utils) {
 
   function onResize() {
     viewportWidth = window.innerWidth;
+    viewportHeight = window.innerHeight;
     recalcMinOffset();
     /* Clamp current offset in case container got wider */
     carouselOffset = clamp(carouselOffset, minOffset, 0);

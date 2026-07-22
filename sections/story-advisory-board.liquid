@@ -36,12 +36,17 @@
   <div class="story-advisory-board__scroll-track">
     <div class="story-advisory-board__sticky">
 
+      {%- comment -%} Decorative line — SVG arrow, animated by JS independently {%- endcomment -%}
+      <svg class="story-advisory-board__decorative-line" aria-hidden="true" width="120" height="24" viewBox="0 0 120 24" fill="none">
+        <line x1="120" y1="12" x2="8" y2="12" stroke="#2983DC" stroke-width="3" stroke-linecap="round"></line>
+        <polyline points="16,4 4,12 16,20" stroke="#2983DC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"></polyline>
+      </svg>
+
       {%- comment -%} Heading area — animated by JS {%- endcomment -%}
       <div class="story-advisory-board__heading-area">
         {%- if heading_text != blank -%}
           <h2 class="story-advisory-board__heading">{{ heading_text }}</h2>
         {%- endif -%}
-        <div class="story-advisory-board__decorative-line" aria-hidden="true"></div>
       </div>
 
       {%- comment -%} Carousel — interactive after entrance settles {%- endcomment -%}
@@ -187,9 +192,12 @@
   .story-advisory-board__heading-area {
     position: absolute;
     z-index: 2;
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 12%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     opacity: 0;
     will-change: opacity, transform;
@@ -197,20 +205,28 @@
 
   .story-advisory-board__heading {
     font-family: 'Stabil Grotesk', sans-serif;
-    font-weight: 700;
+    font-weight: 400;
     font-size: 60px;
     line-height: 60px;
     color: #767676;
     text-align: center;
-    margin: 0;
-    white-space: pre-line;
+    margin: 0 auto;
+    white-space: normal;
+    max-width: 467px;
+  }
+
+  .story-advisory-board__heading b,
+  .story-advisory-board__heading strong {
+    font-weight: 700;
   }
 
   .story-advisory-board__decorative-line {
-    width: 120px;
-    height: 3px;
-    background: #2983DC;
-    margin: 16px auto 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center;
+    z-index: 2;
     opacity: 0;
     will-change: opacity, transform;
   }
@@ -407,6 +423,7 @@
     .story-advisory-board__heading {
       font-size: 36px;
       line-height: 40px;
+      max-width: 300px;
     }
 
     .story-advisory-board__carousel {
@@ -479,8 +496,9 @@
 
     .story-advisory-board__heading-area {
       position: relative;
-      bottom: auto;
+      top: auto;
       left: auto;
+      right: auto;
       transform: none !important;
       opacity: 1 !important;
       will-change: auto;
@@ -488,7 +506,7 @@
     }
 
     .story-advisory-board__decorative-line {
-      opacity: 1 !important;
+      opacity: 0 !important;
       transform: none !important;
       will-change: auto;
     }
@@ -547,10 +565,10 @@
       "content": "Heading"
     },
     {
-      "type": "text",
+      "type": "inline_richtext",
       "id": "heading_text",
       "label": "Heading",
-      "default": "Meet the Advisory Board."
+      "default": "Meet the<br><b>Advisory Board.</b>"
     },
     {
       "type": "header",
