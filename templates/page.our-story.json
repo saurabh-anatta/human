@@ -12,13 +12,18 @@
     "story_cinematic_entry": {
       "type": "story-cinematic-entry",
       "settings": {
+        "wordmark_image": "shopify://shop_images/screenshot-2026-06-30-at-1-09-31-pm-1-page-overview-for-client-section-108344962.png",
         "tagline_prefix": "Cardiovascular health is",
         "tagline_emphasis": "everything health",
         "discover_label": "Discover",
         "show_ama": false,
         "ama_text": "Ask me anything",
+        "ama_url": "",
         "ai_search_label": "Try AI Search →",
-        "show_lockup": false
+        "ai_search_url": "",
+        "show_lockup": false,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_subnav": {
@@ -85,7 +90,9 @@
         "supporting_line_1": "Some say it's about your heart problems. Or something you deal with in old age.",
         "text_block_2_eyebrow": "BUT THE REAL STORY ISN'T ABOUT THE HEART —",
         "text_block_2": "<p>It's about the <strong>60,000 miles of blood vessels</strong> doing the heavy lifting behind it. every second, <strong>for every one of us.</strong></p>",
-        "vessel_color": "#BC0F0F"
+        "vessel_color": "#bc0f0f",
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_the_problem": {
@@ -95,6 +102,7 @@
           "type": "media_slide",
           "settings": {
             "image": "shopify://shop_images/kambria-trout-rdm2emlablm-unsplash-1-concept-14-out-diet-full-bleed-slide-final-design-125732198.jpg",
+            "video_url": "",
             "caption": "You can't out-diet it."
           }
         },
@@ -102,6 +110,7 @@
           "type": "media_slide",
           "settings": {
             "image": "shopify://shop_images/screenshot-2026-07-16-at-10-53-24-am-2-concept-14-out-train-full-bleed-slide-final-design-125732196.png",
+            "video_url": "",
             "caption": "You can't out-train it."
           }
         }
@@ -119,7 +128,10 @@
         "annotation_2": "Poor diet and lack of exercise accelerate the drop",
         "annotation_3": "By age 40, you produce 50% or less of what you did at 20",
         "stat_value": "50%",
-        "stat_label": "of nitric oxide by the average 40-year-old"
+        "stat_label": "of nitric oxide by the average 40-year-old",
+        "scroll_distance": 6,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_miracle_molecule": {
@@ -160,7 +172,9 @@
         "stage2_no_headline": "NO",
         "stage2_subheadline": "the most important molecule in your cardiovascular system",
         "closing_text": "– keeping those <strong>60,000 miles</strong> open, flowing… and <strong>alive.</strong>",
-        "scroll_distance": 10
+        "scroll_distance": 10,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_origin": {
@@ -177,7 +191,10 @@
         "lockup_heading": "Founded in partnership with The University of Texas",
         "lockup_subline": "A program created by a Nobel Laureate + academic researchers.",
         "button_text": "WATCH DOCUMENTARY",
-        "scroll_distance": 5
+        "doc_video_url": "",
+        "scroll_distance": 5,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_proof": {
@@ -255,7 +272,9 @@
         "eyebrow_text": "THE PROOF",
         "intro_heading": "Today, more than 6,000 medical practitioners trust us.",
         "intro_body": "The most cardiologist-, pharmacist-, and doctor-recommended beet brand for heart health support in America.",
-        "scroll_distance": 5
+        "scroll_distance": 5,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_in_memoriam": {
@@ -265,7 +284,9 @@
         "caption_text": "Dr. Ferid Murad, Nobel Laureate 1936 – 2023",
         "eyebrow_text": "IN MEMORIAM",
         "quote_text": "“For someone with my father’s scientific background, collaborating with a supplement company was unusual. Humann’s evidence-based approach aligned with his values.”",
-        "scroll_distance": 5
+        "scroll_distance": 5,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_advisory_board": {
@@ -352,7 +373,14 @@
         "cred_4"
       ],
       "settings": {
-        "scroll_distance": 4
+        "lead_in_text_1": "We are the most cardiologist-, pharmacist-, and doctor-recommended beet brand for heart health support in America.",
+        "lead_in_text_2": "When you do things right from the start, you get noticed. First, from doctors. They recommended us thirteen years before we ever sat on a retail shelf. We’ve been built by the best since before day one.",
+        "heading_text": "Meet the <strong>Advisory Board.</strong>",
+        "cta_text": "",
+        "cta_url": "",
+        "scroll_distance": 4,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_timeline": {
@@ -401,6 +429,7 @@
         "milestone_4",
         "milestone_5"
       ],
+      "disabled": true,
       "settings": {
         "section_title": "<p>15 years.</p><p>One mission.</p>",
         "athletes_heading": "Then the athletes showed up.",
@@ -409,8 +438,10 @@
         "everyone_heading": "And then, everyone else.",
         "everyone_body": "Millions of customers. Hundreds of millions of doses. One mission: to support cardiovascular health for everyone.",
         "everyone_image": "shopify://shop_images/screenshot-2026-06-30-at-1-14-04-pm-1-page-overview-for-client-section-108346093.png",
-        "vessel_color": "#BC0F0F",
-        "scroll_distance": 6
+        "vessel_color": "#bc0f0f",
+        "scroll_distance": 6,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_product_reveal": {
@@ -419,37 +450,43 @@
         "retailer_walmart": {
           "type": "retailer_logo",
           "settings": {
-            "alt_text": "Walmart"
+            "alt_text": "Walmart",
+            "url": ""
           }
         },
         "retailer_sams_club": {
           "type": "retailer_logo",
           "settings": {
-            "alt_text": "Sam's Club"
+            "alt_text": "Sam's Club",
+            "url": ""
           }
         },
         "retailer_sprouts": {
           "type": "retailer_logo",
           "settings": {
-            "alt_text": "Sprouts Farmers Market"
+            "alt_text": "Sprouts Farmers Market",
+            "url": ""
           }
         },
         "retailer_walgreens": {
           "type": "retailer_logo",
           "settings": {
-            "alt_text": "Walgreens"
+            "alt_text": "Walgreens",
+            "url": ""
           }
         },
         "retailer_gnc": {
           "type": "retailer_logo",
           "settings": {
-            "alt_text": "GNC"
+            "alt_text": "GNC",
+            "url": ""
           }
         },
         "retailer_target": {
           "type": "retailer_logo",
           "settings": {
-            "alt_text": "Target"
+            "alt_text": "Target",
+            "url": ""
           }
         }
       },
@@ -464,20 +501,27 @@
       "settings": {
         "section_heading": "Not just science-backed.\nScience-born.",
         "supporting_copy": "We didn't build this business to sell supplements. We built it with a chief cardiologist, a chief medical officer, and a chief science officer on staff from day one.",
+        "frame_base_url": "",
+        "frame_count": 0,
         "retailer_strip_image": "shopify://shop_images/screenshot-2026-06-27-at-3-57-34-pm-1-page-overview-for-client-section-108346263.png",
-        "scroll_distance": 5
+        "scroll_distance": 5,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_mission_close": {
       "type": "story-mission-close",
+      "disabled": true,
       "settings": {
         "poster_image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-27-pm-2-page-overview-for-client-section-108344923.png",
-        "vessel_line_image": "shopify://shop_images/sbhczs-omi-19-1-page-overview-for-client-section-108344953.png",
         "text_block_1_heading": "So yes, we're fifteen years in — but we're still just getting started.",
         "text_block_1_body": "The early chapters were all about this one molecule — nitric oxide — and the science that proved it could change lives. But the next chapter? That's about making cardiovascular health something everyone thinks about. Not just patients. Not just athletes. Everyone.",
         "text_block_2_line_1": "There isn't a person on Earth who doesn't benefit from better cardiovascular health.",
         "text_block_2_line_2": "We're here to make cardiovascular health central. Not supplemental.",
-        "scroll_distance": 6
+        "vessel_line_image": "shopify://shop_images/sbhczs-omi-19-1-page-overview-for-client-section-108344953.png",
+        "scroll_distance": 6,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "story_final_cta": {
@@ -488,7 +532,11 @@
         "tagline": "Your cardiovascular routine",
         "tagline_emphasis": "starts here.",
         "primary_button_label": "GET STARTED",
-        "secondary_button_label": "LEARN MORE"
+        "primary_button_url": "",
+        "secondary_button_label": "LEARN MORE",
+        "secondary_button_url": "",
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     }
   },
