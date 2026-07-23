@@ -543,7 +543,6 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -732,7 +731,6 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -921,7 +919,6 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -1110,7 +1107,6 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -1299,7 +1295,6 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
