@@ -1,0 +1,150 @@
+{{ 'story-scroll.css' | asset_url | stylesheet_tag }}
+
+<nav
+  class="story-subnav"
+  data-section-id="{{ section.id }}"
+  data-anchor="subnav"
+>
+  <div class="story-subnav__capsule">
+    {%- for block in section.blocks -%}
+      <a
+        class="story-subnav__item"
+        href="#{{ block.settings.anchor }}"
+        {{ block.shopify_attributes }}
+      >
+        {{- block.settings.label -}}
+      </a>
+    {%- endfor -%}
+  </div>
+</nav>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var subnavUrl = {{ 'story-subnav.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+    Promise.all([import(utilsUrl), import(subnavUrl)]).then(function (modules) {
+      var utils = modules[0];
+      var subnav = modules[1];
+      subnav.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Story Sub-Nav Section Wrapper (applied via schema "class") --- */
+  .story-subnav-section {
+    position: sticky;
+    top: var(--ssn-header-height, 0px);
+    z-index: 100;
+    margin-bottom: -43px;
+    pointer-events: none;
+    background: transparent;
+  }
+
+  /* --- Nav container --- */
+  .story-subnav {
+    display: flex;
+    justify-content: center;
+    padding-top: 21px;
+    pointer-events: none;
+  }
+
+  /* --- Capsule pill bar --- */
+  .story-subnav__capsule {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #FFFFFF;
+    border-radius: 22px;
+    padding: 4px;
+    pointer-events: auto;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  /* --- Individual nav items --- */
+  .story-subnav__item {
+    font-family: var(--font-labels--family);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    line-height: 15px;
+    padding: 10px 16px;
+    border-radius: 18px;
+    color: #414141;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .story-subnav__item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  /* --- Active state (red pill) --- */
+  .story-subnav__item--active {
+    background-color: var(--os-color-red, #BC0F0F);
+    color: #FFFFFF;
+  }
+
+  .story-subnav__item--active:hover {
+    background-color: var(--os-color-red, #BC0F0F);
+  }
+
+  /* --- Mobile: horizontal scroll capsule --- */
+  @media screen and (max-width: 749px) {
+    .story-subnav__capsule {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      max-width: calc(100vw - 32px);
+    }
+
+    .story-subnav__capsule::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-subnav__item {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Sub-Nav",
+  "class": "story-subnav-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "nav_item",
+      "name": "Nav Item",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "NAV ITEM"
+        },
+        {
+          "type": "text",
+          "id": "anchor",
+          "label": "Anchor ID",
+          "info": "The data-anchor value of the target chapter section (without #)"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

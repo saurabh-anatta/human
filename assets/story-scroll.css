@@ -1,0 +1,64 @@
+/* ==========================================================================
+   Our Story — Shared Scroll-Pin Architecture CSS
+   Loaded once by the story-subnav section; used by all story chapter sections.
+   ========================================================================== */
+
+/* --- Design tokens --- */
+:root {
+  --os-color-red: #BC0F0F;
+  --os-color-red-line: #D72A2A;
+  --os-color-black: #000000;
+  --os-color-dark-text: #414141;
+  --os-color-light-text: #F5F5F5;
+  --os-color-red-dark: #5a0808;
+}
+
+/* --- Tall wrapper for each pinned chapter --- */
+.story-chapter {
+  position: relative;
+  z-index: var(--os-chapter-z, 1);
+}
+
+/* --- Viewport-pinned inner child --- */
+.story-chapter__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* --- Overlay modifier (slides over previous chapter via negative margin-top set inline) --- */
+.story-chapter--overlay {
+  /* negative margin-top is set inline per section */
+}
+
+/* --- Reveal animation utility --- */
+.story-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.story-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .story-chapter {
+    height: auto !important;
+  }
+
+  .story-chapter__sticky {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .story-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

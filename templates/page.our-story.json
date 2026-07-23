@@ -1,0 +1,63 @@
+{
+  "sections": {
+    "story_subnav": {
+      "type": "story-subnav",
+      "blocks": {
+        "nav_how_it_started": {
+          "type": "nav_item",
+          "settings": {
+            "label": "HOW IT STARTED",
+            "anchor": "how-it-started"
+          }
+        },
+        "nav_the_science": {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE SCIENCE",
+            "anchor": "the-science"
+          }
+        },
+        "nav_why_we_made_it": {
+          "type": "nav_item",
+          "settings": {
+            "label": "WHY WE MADE IT",
+            "anchor": "why-we-made-it"
+          }
+        },
+        "nav_the_proof": {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE PROOF",
+            "anchor": "the-proof"
+          }
+        },
+        "nav_the_people": {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE PEOPLE",
+            "anchor": "the-people"
+          }
+        },
+        "nav_whats_next": {
+          "type": "nav_item",
+          "settings": {
+            "label": "WHAT'S NEXT",
+            "anchor": "whats-next"
+          }
+        }
+      },
+      "block_order": [
+        "nav_how_it_started",
+        "nav_the_science",
+        "nav_why_we_made_it",
+        "nav_the_proof",
+        "nav_the_people",
+        "nav_whats_next"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "story_subnav"
+  ]
+}
