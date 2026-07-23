@@ -42,11 +42,19 @@ export function initSubnav(sectionEl, utils) {
     }
   }
 
+  /* Story sections expose anchors as data-anchor attributes, not ids */
+  function findTarget(anchorId) {
+    return (
+      document.getElementById(anchorId) ||
+      document.querySelector('[data-anchor="' + anchorId + '"]')
+    );
+  }
+
   for (const pill of pills) {
     const anchorId = pill.getAttribute('data-anchor');
     if (!anchorId) continue;
 
-    const target = document.getElementById(anchorId);
+    const target = findTarget(anchorId);
     if (!target) continue;
 
     const observer = new IntersectionObserver(
@@ -76,13 +84,13 @@ export function initSubnav(sectionEl, utils) {
     const pill = e.target.closest('.story-subnav__pill');
     if (!pill) return;
 
-    e.preventDefault();
-
     const anchorId = pill.getAttribute('data-anchor');
     if (!anchorId) return;
 
-    const target = document.getElementById(anchorId);
+    const target = findTarget(anchorId);
     if (!target) return;
+
+    e.preventDefault();
 
     /* Read header offset from CSS variable maintained by header.js */
     const headerHeight =
@@ -97,8 +105,12 @@ export function initSubnav(sectionEl, utils) {
 
     const totalOffset = headerHeight + barHeight + gap;
 
+    /* offsetTop is relative to the section's position:relative wrapper (≈0);
+       measure the document position instead */
+    const targetTop = target.getBoundingClientRect().top + window.scrollY;
+
     window.scrollTo({
-      top: target.offsetTop - totalOffset,
+      top: targetTop - totalOffset,
       behavior: utils.prefersReducedMotion() ? 'auto' : 'smooth'
     });
   }

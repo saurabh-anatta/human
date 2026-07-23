@@ -54,7 +54,7 @@
     </div>
 
     <div class="story-universal-truth__line-fill">
-      <div class="story-universal-truth__line" style="height: 100%;" data-sut-draw="line"></div>
+      <div class="story-universal-truth__line" data-sut-draw="line"></div>
     </div>
   </div>
 
@@ -191,6 +191,14 @@
     display: flex;
     justify-content: center;
     width: 2px;
+  }
+
+  /* height: 100% cannot resolve against the flex-grown wrapper (indefinite
+     height → offsetHeight 0 → the scrub skips the segment). Auto height +
+     stretch measures the wrapper's real layout height instead. */
+  .story-universal-truth__line-fill .story-universal-truth__line {
+    height: auto;
+    align-self: stretch;
   }
 
   /* ---- Heartbeats, flare & converge: SVG stroke draw via pathLength=1 ---- */

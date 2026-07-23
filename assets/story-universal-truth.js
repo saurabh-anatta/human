@@ -60,7 +60,12 @@ export function init(sectionEl, utils) {
          offsetHeight, but they are never transformed so rect.height is safe.
          rect.top stays correct for scaled lines because transform-origin is
          top. */
-      const height = item.el.offsetHeight || rect.height;
+      let height = item.el.offsetHeight || rect.height;
+      /* A percentage/auto-height line inside a flex-grown wrapper can measure
+         0 — use the wrapper's layout height so the segment still draws. */
+      if (height === 0 && item.el.parentElement) {
+        height = item.el.parentElement.offsetHeight;
+      }
       if (height === 0) continue;
 
       /* 0 when the element's top reaches the pen, 1 when its bottom passes it */
