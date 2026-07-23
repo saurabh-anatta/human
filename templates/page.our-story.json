@@ -95,11 +95,24 @@
         }
       },
       "block_order": ["narrative_1", "narrative_2", "narrative_3"]
+    },
+    "story_no_molecule": {
+      "type": "story-no-molecule",
+      "settings": {
+        "headline_text": "<p>And at the center of it all is one thing you were never taught to think about: <strong>Nitric oxide.<\/strong><\/p>",
+        "side_copy_serif": "<p>They call it the miracle molecule.<br>But scientists don\u2019t call it that lightly.<\/p>",
+        "side_copy_bold": "<p>It is the most important molecule in your cardiovascular system.<\/p>",
+        "hint_label": "\u2193 scroll to reveal",
+        "pin_distance": 4000,
+        "overlap_distance": 5000,
+        "fallback_image": "shopify://shop_images/screenshot-2026-07-18-at-9-24-21-am-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281216.png"
+      }
     }
   },
   "order": [
     "story_subnav",
     "story_hero",
-    "story_heartbeat"
+    "story_heartbeat",
+    "story_no_molecule"
   ]
 }

@@ -1,0 +1,455 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 4000
+  assign overlap_distance = section.settings.overlap_distance | default: 5000
+-%}
+
+{%- capture inline_styles -%}
+  --os-chapter-z: 30; margin-top: -{{ overlap_distance }}px;
+{%- endcapture -%}
+
+<div
+  class="story-chapter story-chapter--overlay"
+  data-anchor="the-science"
+  style="height: calc(100vh + {{ pin_distance }}px); {{ inline_styles }}"
+>
+  <div
+    class="story-chapter__sticky story-no-molecule"
+    data-section-id="{{ section.id }}"
+  >
+
+    <div class="story-no-molecule__headline">
+      {{ section.settings.headline_text }}
+    </div>
+
+    <div class="story-no-molecule__flat-view">
+      <div class="story-no-molecule__flat-atom story-no-molecule__flat-atom--n">N</div>
+      <div class="story-no-molecule__flat-bond"></div>
+      <div class="story-no-molecule__flat-atom story-no-molecule__flat-atom--o">O</div>
+    </div>
+
+    <canvas class="story-no-molecule__three-canvas" aria-hidden="true"></canvas>
+
+    <div class="story-no-molecule__label story-no-molecule__label--n" aria-hidden="true">N</div>
+    <div class="story-no-molecule__label story-no-molecule__label--o" aria-hidden="true">O</div>
+
+    <div class="story-no-molecule__shadow story-no-molecule__shadow--n" aria-hidden="true"></div>
+    <div class="story-no-molecule__shadow story-no-molecule__shadow--o" aria-hidden="true"></div>
+
+    <div class="story-no-molecule__copy">
+      <div class="story-no-molecule__copy-serif">
+        {{ section.settings.side_copy_serif }}
+      </div>
+      <div class="story-no-molecule__copy-bold">
+        {{ section.settings.side_copy_bold }}
+      </div>
+    </div>
+
+    <div class="story-no-molecule__scroll-hint">
+      <span class="story-no-molecule__scroll-label">{{ section.settings.hint_label }}</span>
+      <span class="story-no-molecule__scroll-chevron" aria-hidden="true">↓</span>
+    </div>
+
+    {%- if section.settings.fallback_image != blank -%}
+      <div class="story-no-molecule__fallback">
+        {{
+          section.settings.fallback_image
+          | image_url: width: 1854
+          | image_tag:
+            widths: '400,600,927,1400,1854',
+            sizes: '(min-width: 750px) 50vw, 90vw',
+            alt: 'Nitric oxide molecule',
+            loading: 'lazy',
+            class: 'story-no-molecule__fallback-img'
+        }}
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var sectionUrl = {{ 'story-no-molecule.js' | asset_url | json }};
+    var threeUrl = {{ 'three.module.min.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+
+    var target = sectionEl.closest('.story-chapter') || sectionEl;
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          observer.disconnect();
+          Promise.all([import(utilsUrl), import(sectionUrl)]).then(function (modules) {
+            var utils = modules[0];
+            var section = modules[1];
+            section.init(sectionEl, utils, threeUrl);
+          });
+          break;
+        }
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(target);
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-no-molecule-section {
+    background: transparent;
+  }
+
+  /* --- Sticky child — owns the red background --- */
+  .story-no-molecule {
+    position: relative;
+    background-color: var(--os-color-red, #BC0F0F);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* --- Headline (Phase A) --- */
+  .story-no-molecule__headline {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    max-width: 951px;
+    text-align: center;
+    font-family: var(--font-heading--family);
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #ffffff;
+    z-index: 3;
+    padding-inline: 24px;
+  }
+
+  .story-no-molecule__headline p {
+    margin: 0;
+  }
+
+  .story-no-molecule__headline strong {
+    font-weight: 700;
+  }
+
+  /* --- Flat DOM molecule (Phase A) --- */
+  .story-no-molecule__flat-view {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 2;
+  }
+
+  .story-no-molecule__flat-atom {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 28px;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .story-no-molecule__flat-bond {
+    width: 40px;
+    height: 1.5px;
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  /* --- Three.js canvas --- */
+  .story-no-molecule__three-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    opacity: 0;
+  }
+
+  /* --- Projected atom labels (positioned by JS) --- */
+  .story-no-molecule__label {
+    position: absolute;
+    z-index: 3;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.85);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  /* --- Ground shadows (positioned by JS) --- */
+  .story-no-molecule__shadow {
+    position: absolute;
+    z-index: 1;
+    width: 260px;
+    height: 46px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.25) 0%, transparent 70%);
+    filter: blur(10px);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  /* --- Side copy (Phase C) --- */
+  .story-no-molecule__copy {
+    position: absolute;
+    left: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 473px;
+    z-index: 3;
+    opacity: 0;
+  }
+
+  .story-no-molecule__copy p {
+    margin: 0;
+  }
+
+  .story-no-molecule__copy-serif {
+    font-family: var(--font-heading--family);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 40px;
+    letter-spacing: -1px;
+    color: #ffffff;
+    margin-bottom: 24px;
+  }
+
+  .story-no-molecule__copy-bold {
+    font-family: var(--font-accent--family);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 40px;
+    color: #ffffff;
+  }
+
+  /* --- Scroll hint --- */
+  .story-no-molecule__scroll-hint {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    z-index: 3;
+  }
+
+  .story-no-molecule__scroll-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.32);
+  }
+
+  .story-no-molecule__scroll-chevron {
+    color: rgba(255, 255, 255, 0.32);
+    font-size: 14px;
+    animation: sno-bob 2s ease-in-out infinite;
+  }
+
+  @keyframes sno-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
+  }
+
+  /* --- Fallback image (hidden by default, shown with reduced motion) --- */
+  .story-no-molecule__fallback {
+    display: none;
+  }
+
+  .story-no-molecule__fallback-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-no-molecule__headline {
+      font-size: 32px;
+      line-height: 38px;
+      max-width: 90%;
+    }
+
+    .story-no-molecule__copy {
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      bottom: 80px;
+      top: auto;
+      max-width: 90%;
+    }
+
+    .story-no-molecule__copy-serif {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    .story-no-molecule__copy-bold {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    .story-no-molecule__flat-atom {
+      width: 60px;
+      height: 60px;
+      font-size: 22px;
+    }
+
+    .story-no-molecule__flat-bond {
+      width: 28px;
+    }
+
+    .story-no-molecule__scroll-hint {
+      bottom: 16px;
+    }
+  }
+
+  /* --- Reduced motion: static fallback layout --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-no-molecule {
+      flex-direction: row;
+      padding: 60px 48px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .story-no-molecule__headline,
+    .story-no-molecule__flat-view,
+    .story-no-molecule__three-canvas,
+    .story-no-molecule__label,
+    .story-no-molecule__shadow,
+    .story-no-molecule__scroll-hint {
+      display: none;
+    }
+
+    .story-no-molecule__copy {
+      position: static;
+      opacity: 1;
+      transform: none;
+      flex: 0 0 45%;
+    }
+
+    .story-no-molecule__fallback {
+      display: block;
+      flex: 0 0 50%;
+    }
+
+    .story-no-molecule__scroll-chevron {
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Nitric Oxide Chapter",
+  "class": "story-no-molecule-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "headline_text",
+      "label": "Headline",
+      "default": "<p>And at the center of it all is one thing you were never taught to think about: <strong>Nitric oxide.</strong></p>"
+    },
+    {
+      "type": "richtext",
+      "id": "side_copy_serif",
+      "label": "Side copy (serif)",
+      "default": "<p>They call it the miracle molecule.<br>But scientists don't call it that lightly.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "side_copy_bold",
+      "label": "Side copy (bold)",
+      "default": "<p>It is the most important molecule in your cardiovascular system.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Scroll hint"
+    },
+    {
+      "type": "text",
+      "id": "hint_label",
+      "label": "Hint label",
+      "default": "↓ scroll to reveal"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "default": 4000,
+      "unit": "px",
+      "info": "Extra scroll height while the scene stays pinned"
+    },
+    {
+      "type": "range",
+      "id": "overlap_distance",
+      "label": "Overlap distance",
+      "min": 1000,
+      "max": 15000,
+      "step": 500,
+      "default": 5000,
+      "unit": "px",
+      "info": "How far this section slides over the previous chapter. Keep this smaller than the heartbeat chapter total height (100vh + its pin distance)."
+    },
+    {
+      "type": "header",
+      "content": "Reduced motion fallback"
+    },
+    {
+      "type": "image_picker",
+      "id": "fallback_image",
+      "label": "Fallback image"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}
