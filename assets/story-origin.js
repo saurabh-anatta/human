@@ -80,42 +80,35 @@ export function init(sectionEl, utils) {
   }
 
   /* ------------------------------------------------------------------ */
-  /* Movement 1 — archival collage parallax                              */
-  /* The two photos drift in opposite directions (±60px, matching the    */
-  /* CSS bleed) as the panel crosses the viewport.                       */
+  /* Movement 1 — archival imagery: pinned track, images reveal one by   */
+  /* one with a slow upward parallax drift (mirrors the-science stage 3) */
   /* ------------------------------------------------------------------ */
 
-  var archivalPanel = sectionEl.querySelector('.story-origin__archival');
+  var archivalTrack = sectionEl.querySelector('.story-origin__archival-track');
   var archivalImg1 = sectionEl.querySelector('.story-origin__archival-img--1');
   var archivalImg2 = sectionEl.querySelector('.story-origin__archival-img--2');
-  var PARALLAX_RANGE = 60;
-  var parallaxTicking = false;
-  var hasParallax = archivalPanel && (archivalImg1 || archivalImg2);
+  var cleanupArchival = null;
 
-  function applyParallax() {
-    parallaxTicking = false;
-    var rect = archivalPanel.getBoundingClientRect();
-    var vh = window.innerHeight;
-    if (rect.bottom < 0 || rect.top > vh) return;
+  if (archivalTrack && (archivalImg1 || archivalImg2)) {
+    cleanupArchival = utils.createScrollProgress(archivalTrack, {
+      onProgress: function (p) {
+        requestAnimationFrame(function () {
+          /* Image 1: shown while pinned, hands off at the midpoint */
+          if (archivalImg1) {
+            archivalImg1.style.opacity = 1 - phaseProgress(p, 0.4, 0.55);
+            archivalImg1.style.transform =
+              'scale(1.08) translateY(' + lerp(20, -20, phaseProgress(p, 0.0, 0.55)) + 'px)';
+          }
 
-    /* +1 as the panel enters from below → -1 as it exits above */
-    var t = (rect.top + rect.height / 2 - vh / 2) / ((vh + rect.height) / 2);
-    t = Math.min(Math.max(t, -1), 1);
-
-    if (archivalImg1) archivalImg1.style.transform = 'translateY(' + t * PARALLAX_RANGE + 'px)';
-    if (archivalImg2) archivalImg2.style.transform = 'translateY(' + -t * PARALLAX_RANGE + 'px)';
-  }
-
-  function onParallaxScroll() {
-    if (parallaxTicking) return;
-    parallaxTicking = true;
-    requestAnimationFrame(applyParallax);
-  }
-
-  if (hasParallax) {
-    window.addEventListener('scroll', onParallaxScroll, { passive: true });
-    window.addEventListener('resize', onParallaxScroll, { passive: true });
-    onParallaxScroll();
+          /* Image 2: takes over at the midpoint, keeps drifting */
+          if (archivalImg2) {
+            archivalImg2.style.opacity = phaseProgress(p, 0.4, 0.55);
+            archivalImg2.style.transform =
+              'scale(1.08) translateY(' + lerp(20, -20, phaseProgress(p, 0.4, 1.0)) + 'px)';
+          }
+        });
+      }
+    });
   }
 
   var cleanupScroll = utils.createScrollProgress(scrollTrack, {
@@ -150,10 +143,7 @@ export function init(sectionEl, utils) {
 
   return function cleanup() {
     cleanupScroll();
-    if (hasParallax) {
-      window.removeEventListener('scroll', onParallaxScroll);
-      window.removeEventListener('resize', onParallaxScroll);
-    }
+    if (cleanupArchival) cleanupArchival();
     if (toggleBtn) toggleBtn.removeEventListener('click', handleToggle);
   };
 }

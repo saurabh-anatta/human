@@ -66,7 +66,9 @@
       {%- endif -%}
     </div>
 
-    {%- comment -%} Archival imagery panel {%- endcomment -%}
+    {%- comment -%} Archival imagery panel — pinned, images reveal one by one
+        with a slow parallax drift (mirrors the-science stage 3) {%- endcomment -%}
+    <div class="story-origin__archival-track">
     <div class="story-origin__archival">
       {%- if archival_image_1 != blank -%}
         <img
@@ -94,6 +96,7 @@
         <polyline points="1180,280 1210,265 1195,295" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1195 280)" />
         <polyline points="1230,255 1260,240 1245,270" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1245 255)" />
       </svg>
+    </div>
     </div>
   </div>
 
@@ -295,32 +298,36 @@
     max-width: 700px;
   }
 
-  /* Archival imagery panel */
-  .story-origin__archival {
+  /* Archival imagery — pinned track, images reveal one by one on scroll */
+  .story-origin__archival-track {
+    height: calc(2.5 * 100vh);
+    height: calc(2.5 * 100svh);
     position: relative;
-    min-height: 100vh;
-    min-height: 100svh;
-    overflow: hidden;
     z-index: 1;
   }
 
-  /* 60px bleed on the anchored edge so the parallax drift (±60px in JS)
-     never exposes a gap at the panel edges */
-  .story-origin__archival-img {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: calc(63% + 120px);
-    object-fit: cover;
-    will-change: transform;
+  .story-origin__archival {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
   }
 
-  .story-origin__archival-img--1 {
-    top: -60px;
+  /* Full-bleed stacked images; JS crossfades and drifts them.
+     scale(1.08) provides bleed so the drift never exposes edges. */
+  .story-origin__archival-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.08);
+    will-change: transform, opacity;
   }
 
   .story-origin__archival-img--2 {
-    bottom: -60px;
+    opacity: 0;
   }
 
   .story-origin__archival-desat {
@@ -533,14 +540,9 @@
       max-width: 100%;
     }
 
-    .story-origin__archival-img {
-      position: static;
-      width: 100%;
-      height: auto;
-    }
-
-    .story-origin__archival {
-      min-height: auto;
+    .story-origin__archival-track {
+      height: calc(2 * 100vh);
+      height: calc(2 * 100svh);
     }
 
     .story-origin__archival-svg {
@@ -578,6 +580,22 @@
   @media (prefers-reduced-motion: reduce) {
     .story-origin__scroll-track {
       height: auto;
+    }
+
+    .story-origin__archival-track {
+      height: auto;
+    }
+
+    .story-origin__archival {
+      position: relative;
+      height: auto;
+    }
+
+    .story-origin__archival-img {
+      position: static;
+      height: auto;
+      transform: none !important;
+      opacity: 1 !important;
     }
 
     .story-origin__sticky {
