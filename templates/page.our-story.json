@@ -15,7 +15,7 @@
         "tagline_prefix": "Cardiovascular health is",
         "tagline_emphasis": "everything health",
         "discover_label": "Discover",
-        "show_ama": true,
+        "show_ama": false,
         "ama_text": "Ask me anything",
         "ai_search_label": "Try AI Search →",
         "show_lockup": false
