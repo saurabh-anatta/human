@@ -107,12 +107,35 @@
         "overlap_distance": 5000,
         "fallback_image": "shopify://shop_images/screenshot-2026-07-18-at-9-24-21-am-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281216.png"
       }
+    },
+    "story_blood_vessels": {
+      "type": "story-blood-vessels",
+      "settings": {
+        "headline_text": "<p>Nitric Oxide keeps those 60,000 miles open, flowing\u2026 and <strong>alive.<\/strong><\/p>",
+        "exit_copy_serif": "<p>We didn\u2019t discover it. But we did have the nerve to <strong>take the Nobel-winning science out of the lab<\/strong><\/p>",
+        "exit_copy_bold": "<p>\u2014 and bring it to the people who needed it. That\u2019s where the revolution started.<\/p>",
+        "hint_label": "scroll to reveal",
+        "pin_distance": 5000,
+        "overlap_distance": 5000,
+        "fallback_image": "shopify://shop_images/screenshot-2026-07-17-at-4-43-38-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281133.png"
+      },
+      "blocks": {
+        "narrative_1": {
+          "type": "narrative_copy",
+          "settings": {
+            "enabled": false,
+            "text": "<p>Your heart pumps 2,000 gallons \/ Through 100,000 beats<\/p>"
+          }
+        }
+      },
+      "block_order": ["narrative_1"]
     }
   },
   "order": [
     "story_subnav",
     "story_hero",
     "story_heartbeat",
-    "story_no_molecule"
+    "story_no_molecule",
+    "story_blood_vessels"
   ]
 }
