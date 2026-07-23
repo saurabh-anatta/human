@@ -62,13 +62,11 @@
       {%- endif -%}
     </div>
 
-    {%- comment -%} Text panel 2 — bold heading + body {%- endcomment -%}
+    {%- comment -%} Text panel 2 — bold heading (body moves to the archival
+        phase, where it reveals over the imagery) {%- endcomment -%}
     <div class="story-origin__text-panel story-origin__text-panel--2">
       {%- if founding_heading_2 != blank -%}
         <h2 class="story-origin__heading story-origin__heading--bold">{{ founding_heading_2 }}</h2>
-      {%- endif -%}
-      {%- if founding_body_2 != blank -%}
-        <p class="story-origin__body">{{ founding_body_2 }}</p>
       {%- endif -%}
     </div>
 
@@ -96,12 +94,21 @@
       {%- endif -%}
       <div class="story-origin__archival-desat" aria-hidden="true"></div>
       <svg class="story-origin__archival-svg" viewBox="0 0 1440 1000" fill="none" aria-hidden="true">
-        <line class="story-origin__archival-line" pathLength="1" x1="200" y1="780" x2="1260" y2="220" stroke="#2983DC" stroke-width="3" transform="rotate(-1.6 730 500)" />
-        <g class="story-origin__archival-arrows">
-          <polyline points="1180,280 1210,265 1195,295" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1195 280)" />
-          <polyline points="1230,255 1260,240 1245,270" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1245 255)" />
+        {%- comment -%} Arrows share the line's transform space and sit on its
+            tip (line direction ≈ -27.8°), so they always track the line {%- endcomment -%}
+        <g transform="rotate(-1.6 730 500)">
+          <line class="story-origin__archival-line" pathLength="1" x1="200" y1="780" x2="1260" y2="220" stroke="#2983DC" stroke-width="3" />
+          <g class="story-origin__archival-arrows" stroke="#FFFFFF" stroke-width="2" fill="none">
+            <polyline points="1246.2,240.9 1260,220 1235,219.7" />
+            <polyline points="1216.1,256.8 1229.9,235.9 1204.9,235.6" />
+          </g>
         </g>
       </svg>
+
+      {%- comment -%} Payoff line revealed over the imagery {%- endcomment -%}
+      {%- if founding_body_2 != blank -%}
+        <p class="story-origin__archival-text">{{ founding_body_2 }}</p>
+      {%- endif -%}
     </div>
   </div>
   </div>
@@ -364,6 +371,28 @@
     will-change: opacity;
   }
 
+  /* Payoff line over the archival imagery */
+  .story-origin__archival-text {
+    position: absolute;
+    left: 50%;
+    bottom: 18%;
+    transform: translateX(-50%) translateY(24px);
+    z-index: 3;
+    width: 100%;
+    max-width: 700px;
+    padding-inline: 24px;
+    text-align: center;
+    font-family: var(--font-heading--family), serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 40px;
+    letter-spacing: -0.5px;
+    color: #FFFFFF;
+    margin: 0;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
   .story-origin__archival-desat {
     position: absolute;
     inset: 0;
@@ -583,6 +612,12 @@
       display: none;
     }
 
+    .story-origin__archival-text {
+      font-size: 20px;
+      line-height: 30px;
+      bottom: 14%;
+    }
+
     .story-origin__lockup {
       padding: 0 24px;
       gap: 48px;
@@ -654,6 +689,13 @@
 
     .story-origin__archival-arrows {
       opacity: 1;
+    }
+
+    .story-origin__archival-text {
+      position: static;
+      transform: none !important;
+      opacity: 1 !important;
+      margin: 24px auto;
     }
 
     .story-origin__sticky {

@@ -93,6 +93,7 @@ export function init(sectionEl, utils) {
   var archivalImg2 = sectionEl.querySelector('.story-origin__archival-img--2');
   var archivalLine = sectionEl.querySelector('.story-origin__archival-line');
   var archivalArrows = sectionEl.querySelector('.story-origin__archival-arrows');
+  var archivalText = sectionEl.querySelector('.story-origin__archival-text');
   var cleanupM1 = null;
 
   /* Fade+rise in, hold, fade out — all panels share the same slot */
@@ -136,6 +137,15 @@ export function init(sectionEl, utils) {
           }
           if (archivalArrows) {
             archivalArrows.style.opacity = phaseProgress(p, 0.82, 0.88);
+          }
+
+          /* Payoff line (“Fifteen years later…”) rises in over the imagery
+             and stays until the canvas unpins */
+          if (archivalText) {
+            var atIn = phaseProgress(p, 0.72, 0.80);
+            archivalText.style.opacity = atIn;
+            archivalText.style.transform =
+              'translateX(-50%) translateY(' + lerp(24, 0, atIn) + 'px)';
           }
         });
       }
