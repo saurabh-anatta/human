@@ -5,11 +5,9 @@
   assign text_block_2_eyebrow = section.settings.text_block_2_eyebrow
   assign text_block_2 = section.settings.text_block_2
   assign vessel_color = section.settings.vessel_color
-  assign scroll_distance = section.settings.scroll_distance
 -%}
 
 {%- capture inline_styles -%}
-  --sut-scroll-distance: {{ scroll_distance }};
   --sut-vessel-color: {{ vessel_color }};
   padding-block-start: {{ section.settings['padding-block-start'] }}px;
   padding-block-end: {{ section.settings['padding-block-end'] }}px;
@@ -21,121 +19,110 @@
   data-anchor="universal-truth"
   style="{{ inline_styles }}"
 >
-  <div class="story-universal-truth__scroll-track">
-    <div class="story-universal-truth__sticky">
+  {%- comment -%} Screen 1: nav gap → small heartbeat → big heartbeat → text → line {%- endcomment -%}
+  <div class="story-universal-truth__screen story-universal-truth__screen--intro">
+    <div class="story-universal-truth__line" style="height: 160px;" data-sut-reveal></div>
 
-      {%- comment -%} Background decorative vessel network {%- endcomment -%}
-      <svg
-        class="story-universal-truth__bg-vessels"
-        viewBox="0 0 1440 1000"
-        preserveAspectRatio="xMidYMid slice"
-        aria-hidden="true"
-      >
-        <path d="M 310,300 C 360,390 410,350 490,440 C 570,530 540,580 590,680" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 1090,280 C 1040,370 1000,340 940,430 C 880,520 910,570 860,660" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 220,480 C 290,510 350,470 420,530 C 490,590 460,630 510,700" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 1180,460 C 1120,500 1060,480 1000,540 C 940,600 970,640 920,710" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 380,220 C 410,300 370,360 400,420" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1" stroke-linecap="round"/>
-        <path d="M 1060,230 C 1030,310 1070,360 1040,420" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1" stroke-linecap="round"/>
-      </svg>
+    <svg
+      class="story-universal-truth__beat story-universal-truth__beat--small"
+      width="120" height="50" viewBox="0 0 120 50" fill="none" aria-hidden="true"
+      data-sut-reveal
+    >
+      <path pathLength="1" d="M 60,0 C 60,8 69,12 50,18 C 39,22 74,27 61,33 C 58,37 60,42 60,50" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
 
-      {%- comment -%} Inline SVG vessel with stroke-animated paths {%- endcomment -%}
-      <svg
-        class="story-universal-truth__vessel"
-        viewBox="0 0 1440 1000"
-        preserveAspectRatio="xMidYMid slice"
-        aria-hidden="true"
-      >
-        {%- comment -%} Stem enter: central line continuing down from the sub-nav {%- endcomment -%}
-        <path
-          class="story-universal-truth__vessel-path"
-          data-phase="stem-enter"
-          d="M 720 0 Q 719 65 720 130"
-          fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
-        />
+    <svg
+      class="story-universal-truth__beat story-universal-truth__beat--big"
+      width="240" height="110" viewBox="0 0 240 110" fill="none" aria-hidden="true"
+      data-sut-reveal
+    >
+      <path pathLength="1" d="M 120,0 C 123,12 128,20 100,26 C 52,35 200,33 218,42 C 238,52 44,56 26,66 C 10,75 96,82 114,90 C 121,97 120,103 120,110" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
 
-        {%- comment -%} Heartbeat: small pulse, then a big pulse, then a tail leading to the text {%- endcomment -%}
-        <path
-          class="story-universal-truth__vessel-path"
-          data-phase="heartbeat"
-          d="M 720,130 C 720,136 727,140 712,145 C 703,148 731,152 721,157 C 719,160 720,163 720,166"
-          fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
-        />
-        <path
-          class="story-universal-truth__vessel-path"
-          data-phase="heartbeat"
-          d="M 720,166 C 722,175 727,181 705,185 C 666,192 784,191 798,198 C 814,206 658,209 644,217 C 632,224 704,229 718,235 C 721,241 720,248 720,256"
-          fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
-        />
-        <path
-          class="story-universal-truth__vessel-path"
-          data-phase="heartbeat"
-          d="M 720 256 Q 721 300 720 345"
-          fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
-        />
+    <div class="story-universal-truth__line" style="height: 48px;" data-sut-reveal></div>
 
-        {%- comment -%} Stem mid: plain vertical run down to the bulb split {%- endcomment -%}
-        <path
-          class="story-universal-truth__vessel-path"
-          data-phase="stem-mid"
-          d="M 720 345 Q 721 400 720 455"
-          fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
-        />
-
-        {%- comment -%} Bulb top — 7 strands split on a slant, round into verticals, cut off above the text.
-            Center strand stays perfectly straight. {%- endcomment -%}
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 L 720,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 754,477 817,495 817,545 L 817,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 686,477 623,495 623,545 L 623,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 788,481 914,501 914,553 L 914,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.75" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 652,481 526,501 526,553 L 526,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.75" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 822,485 1011,507 1011,561 L 1011,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 618,485 429,507 429,561 L 429,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-
-        {%- comment -%} Bulb bottom — strands restart below the text and merge back into one {%- endcomment -%}
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,812 L 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 817,812 L 817,842 C 817,872 754,884 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 623,812 L 623,842 C 623,872 686,884 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 914,812 L 914,834 C 914,866 788,880 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.75" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 526,812 L 526,834 C 526,866 652,880 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.75" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 1011,812 L 1011,826 C 1011,860 822,876 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 429,812 L 429,826 C 429,860 618,876 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-
-        {%- comment -%} Stem exit: merged line continues downward to next chapter {%- endcomment -%}
-        <path
-          class="story-universal-truth__vessel-path"
-          data-phase="stem-exit"
-          d="M 720 902 Q 721 951 720 1000"
-          fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
-        />
-      </svg>
-
-      {%- comment -%} Text content layer {%- endcomment -%}
-      <div class="story-universal-truth__content">
-        {%- if eyebrow_text != blank -%}
-          <span class="story-universal-truth__eyebrow">{{ eyebrow_text }}</span>
-        {%- endif -%}
-
-        <div class="story-universal-truth__text-block-1">
-          {%- if text_block_1 != blank -%}
-            <h2 class="story-universal-truth__heading">{{ text_block_1 }}</h2>
-          {%- endif -%}
-          {%- if supporting_line_1 != blank -%}
-            <p class="story-universal-truth__supporting story-universal-truth__supporting-words">{{ supporting_line_1 }}</p>
-          {%- endif -%}
-        </div>
-
-        <div class="story-universal-truth__text-block-2">
-          {%- if text_block_2_eyebrow != blank -%}
-            <span class="story-universal-truth__eyebrow-inline">{{ text_block_2_eyebrow }}</span>
-          {%- endif -%}
-          {%- if text_block_2 != blank -%}
-            <div class="story-universal-truth__body">{{ text_block_2 }}</div>
-          {%- endif -%}
-        </div>
-      </div>
-
+    <div class="story-universal-truth__content story-universal-truth__text-block-1" data-sut-reveal>
+      {%- if eyebrow_text != blank -%}
+        <span class="story-universal-truth__eyebrow">{{ eyebrow_text }}</span>
+      {%- endif -%}
+      {%- if text_block_1 != blank -%}
+        <h2 class="story-universal-truth__heading">{{ text_block_1 }}</h2>
+      {%- endif -%}
+      {%- if supporting_line_1 != blank -%}
+        <p class="story-universal-truth__supporting">{{ supporting_line_1 }}</p>
+      {%- endif -%}
     </div>
+
+    <div class="story-universal-truth__line-fill" data-sut-reveal>
+      <div class="story-universal-truth__line" style="height: 100%;"></div>
+    </div>
+  </div>
+
+  {%- comment -%} Screen 2: long line → tree flare (slant + round) → 7 vertical strands {%- endcomment -%}
+  <div class="story-universal-truth__screen story-universal-truth__screen--tree">
+    <div class="story-universal-truth__line" style="height: 250px;" data-sut-reveal></div>
+
+    <svg
+      class="story-universal-truth__flare"
+      width="340" height="150" viewBox="0 0 340 150" fill="none" aria-hidden="true"
+      data-sut-reveal
+    >
+      <path pathLength="1" d="M 170,0 L 170,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 170,0 C 188,28 222,44 222,86 L 222,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 170,0 C 152,28 118,44 118,86 L 118,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 170,0 C 205,34 274,54 274,98 L 274,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 170,0 C 135,34 66,54 66,98 L 66,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 170,0 C 222,40 326,64 326,110 L 326,150" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+      <path pathLength="1" d="M 170,0 C 118,40 14,64 14,110 L 14,150" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+
+    <div class="story-universal-truth__strands" data-sut-reveal>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: 0px;"></span>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: 52px;"></span>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: -52px;"></span>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: 104px;"></span>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: -104px;"></span>
+      <span class="story-universal-truth__strand story-universal-truth__strand--thin" style="--sut-strand-x: 156px;"></span>
+      <span class="story-universal-truth__strand story-universal-truth__strand--thin" style="--sut-strand-x: -156px;"></span>
+    </div>
+  </div>
+
+  {%- comment -%} Screen 3: text → strands resume → merge into one → long line out {%- endcomment -%}
+  <div class="story-universal-truth__screen story-universal-truth__screen--outro">
+    <div class="story-universal-truth__content story-universal-truth__text-block-2" data-sut-reveal>
+      {%- if text_block_2_eyebrow != blank -%}
+        <span class="story-universal-truth__eyebrow-inline">{{ text_block_2_eyebrow }}</span>
+      {%- endif -%}
+      {%- if text_block_2 != blank -%}
+        <div class="story-universal-truth__body">{{ text_block_2 }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="story-universal-truth__strands" data-sut-reveal>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: 0px;"></span>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: 52px;"></span>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: -52px;"></span>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: 104px;"></span>
+      <span class="story-universal-truth__strand" style="--sut-strand-x: -104px;"></span>
+      <span class="story-universal-truth__strand story-universal-truth__strand--thin" style="--sut-strand-x: 156px;"></span>
+      <span class="story-universal-truth__strand story-universal-truth__strand--thin" style="--sut-strand-x: -156px;"></span>
+    </div>
+
+    <svg
+      class="story-universal-truth__converge"
+      width="340" height="150" viewBox="0 0 340 150" fill="none" aria-hidden="true"
+      data-sut-reveal
+    >
+      <path pathLength="1" d="M 170,0 L 170,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 222,0 L 222,64 C 222,106 188,122 170,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 118,0 L 118,64 C 118,106 152,122 170,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 274,0 L 274,52 C 274,96 205,116 170,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 66,0 L 66,52 C 66,96 135,116 170,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+      <path pathLength="1" d="M 326,0 L 326,40 C 326,86 222,110 170,150" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+      <path pathLength="1" d="M 14,0 L 14,40 C 14,86 118,110 170,150" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+
+    <div class="story-universal-truth__line" style="height: 250px;" data-sut-reveal></div>
   </div>
 </div>
 
@@ -156,6 +143,9 @@
   /* ------------------------------------------------------------------ *\
      Universal Truth — .story-universal-truth
      Prefix: --sut-
+     Natural-flow vessel canvas: three stacked screens the user scrolls
+     through. Line segments, heartbeats, tree flare/converge and strands
+     draw in one-shot when they enter the viewport (.is-visible).
   \* ------------------------------------------------------------------ */
 
   /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
@@ -170,63 +160,170 @@
     position: relative;
   }
 
-  /* Scroll track: tall container that drives the sticky pinning */
-  .story-universal-truth__scroll-track {
-    height: calc(var(--sut-scroll-distance, 5) * 100vh);
-  }
-
-  /* Sticky viewport: pins while the scroll track scrolls past */
-  .story-universal-truth__sticky {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100svh;
-    overflow: hidden;
+  .story-universal-truth__screen {
+    min-height: 100svh;
     display: flex;
+    flex-direction: column;
     align-items: center;
+  }
+
+  .story-universal-truth__screen--outro .story-universal-truth__text-block-2 {
+    padding-block: 48px 40px;
+  }
+
+  /* ---- Vessel line segments ---- */
+
+  .story-universal-truth__line {
+    width: 2px;
+    flex-shrink: 0;
+    background-color: var(--sut-vessel-color);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .story-universal-truth__line.is-visible {
+    transform: scaleY(1);
+  }
+
+  /* Grow segment that fills the rest of a screen */
+  .story-universal-truth__line-fill {
+    flex-grow: 1;
+    min-height: 80px;
+    display: flex;
     justify-content: center;
+    width: 2px;
   }
 
-  /* Background decorative vessel network */
-  .story-universal-truth__bg-vessels {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0;
+  .story-universal-truth__line-fill .story-universal-truth__line {
+    transition-duration: 1.2s;
   }
 
-  /* SVG vessel overlay */
-  .story-universal-truth__vessel {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
+  .story-universal-truth__line-fill.is-visible .story-universal-truth__line {
+    transform: scaleY(1);
   }
 
-  /* Text content layer */
-  .story-universal-truth__content {
+  /* ---- Heartbeats, flare & converge: SVG stroke draw via pathLength=1 ---- */
+
+  .story-universal-truth__beat,
+  .story-universal-truth__flare,
+  .story-universal-truth__converge {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .story-universal-truth__beat path,
+  .story-universal-truth__flare path,
+  .story-universal-truth__converge path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1s ease-out;
+  }
+
+  .story-universal-truth__beat.is-visible path,
+  .story-universal-truth__flare.is-visible path,
+  .story-universal-truth__converge.is-visible path {
+    stroke-dashoffset: 0;
+  }
+
+  .story-universal-truth__beat--big.is-visible path {
+    transition-duration: 1.2s;
+    transition-delay: 0.1s;
+  }
+
+  .story-universal-truth__flare path:nth-child(2),
+  .story-universal-truth__flare path:nth-child(3),
+  .story-universal-truth__converge path:nth-child(2),
+  .story-universal-truth__converge path:nth-child(3) {
+    transition-delay: 0.08s;
+  }
+
+  .story-universal-truth__flare path:nth-child(4),
+  .story-universal-truth__flare path:nth-child(5),
+  .story-universal-truth__converge path:nth-child(4),
+  .story-universal-truth__converge path:nth-child(5) {
+    transition-delay: 0.16s;
+  }
+
+  .story-universal-truth__flare path:nth-child(6),
+  .story-universal-truth__flare path:nth-child(7),
+  .story-universal-truth__converge path:nth-child(6),
+  .story-universal-truth__converge path:nth-child(7) {
+    transition-delay: 0.24s;
+  }
+
+  /* ---- Vertical strand runs (7 lines, fixed offsets from centre) ---- */
+
+  .story-universal-truth__strands {
     position: relative;
-    z-index: 3;
-    display: grid;
-    grid-template-rows: auto auto;
-    justify-items: center;
-    align-content: center;
+    flex-grow: 1;
+    min-height: 300px;
+    width: 340px;
+    flex-shrink: 0;
+  }
+
+  .story-universal-truth__strand {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(50% + var(--sut-strand-x, 0px) - 1px);
+    width: 2px;
+    background-color: var(--sut-vessel-color);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 1.2s ease-out;
+  }
+
+  .story-universal-truth__strand--thin {
+    width: 1.5px;
+  }
+
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand {
+    transform: scaleY(1);
+  }
+
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(2),
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(3) {
+    transition-delay: 0.08s;
+  }
+
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(4),
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(5) {
+    transition-delay: 0.16s;
+  }
+
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(6),
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(7) {
+    transition-delay: 0.24s;
+  }
+
+  /* ---- Text content ---- */
+
+  .story-universal-truth__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
     text-align: center;
     max-width: 800px;
     width: 100%;
     padding-inline: 24px;
-    gap: 20px;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
   }
 
-  /* Eyebrow (grid row 1) */
-  .story-universal-truth__eyebrow {
-    grid-row: 1;
-    grid-column: 1;
+  .story-universal-truth__content.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .story-universal-truth__text-block-1 {
+    padding-block: 40px;
+  }
+
+  .story-universal-truth__eyebrow,
+  .story-universal-truth__eyebrow-inline {
     font-family: "Uniforma Semibold", sans-serif;
     font-weight: 600;
     font-size: 12px;
@@ -234,23 +331,6 @@
     letter-spacing: 0.75px;
     text-transform: uppercase;
     color: #FFFFFF;
-    opacity: 0;
-  }
-
-  /* Text blocks stack in the same grid cell (row 2) */
-  .story-universal-truth__text-block-1,
-  .story-universal-truth__text-block-2 {
-    grid-row: 2;
-    grid-column: 1;
-    will-change: transform, opacity;
-  }
-
-  /* Text block 1 */
-  .story-universal-truth__text-block-1 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
   }
 
   .story-universal-truth__heading {
@@ -261,9 +341,6 @@
     letter-spacing: 0;
     color: #FFFFFF;
     margin: 0;
-    opacity: 0;
-    transform: scale(3.5);
-    will-change: transform, opacity;
   }
 
   .story-universal-truth__heading em {
@@ -280,35 +357,6 @@
     letter-spacing: -0.5px;
     color: #E4E4E2;
     margin: 0;
-  }
-
-  .story-universal-truth__word {
-    display: inline;
-    opacity: 0;
-    will-change: opacity;
-  }
-
-  /* Text block 2 — nudged below viewport centre so it sits in the gap
-     between the two vessel bulbs (bulb 1 converges above, bulb 2 opens below) */
-  .story-universal-truth__text-block-2 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    opacity: 0;
-    transform: scale(1.3);
-    position: relative;
-    top: 20svh;
-  }
-
-  .story-universal-truth__eyebrow-inline {
-    font-family: "Uniforma Semibold", sans-serif;
-    font-weight: 600;
-    font-size: 12px;
-    line-height: 16px;
-    letter-spacing: 0.75px;
-    text-transform: uppercase;
-    color: #FFFFFF;
   }
 
   .story-universal-truth__body {
@@ -332,10 +380,6 @@
   /* ------ Mobile ------ */
 
   @media screen and (max-width: 749px) {
-    .story-universal-truth__scroll-track {
-      height: calc(var(--sut-scroll-distance, 5) * 60vh);
-    }
-
     .story-universal-truth__content {
       max-width: 90vw;
       padding-inline: 16px;
@@ -360,42 +404,20 @@
   /* ------ Reduced motion ------ */
 
   @media (prefers-reduced-motion: reduce) {
-    .story-universal-truth__scroll-track {
-      height: auto;
+    .story-universal-truth__line,
+    .story-universal-truth__line-fill .story-universal-truth__line,
+    .story-universal-truth__strand,
+    .story-universal-truth__content {
+      transition: none;
+      transform: none;
+      opacity: 1;
     }
 
-    .story-universal-truth__sticky {
-      position: relative;
-      height: auto;
-      min-height: 100vh;
-      min-height: 100svh;
-    }
-
-    .story-universal-truth__eyebrow,
-    .story-universal-truth__heading,
-    .story-universal-truth__supporting,
-    .story-universal-truth__text-block-1,
-    .story-universal-truth__text-block-2,
-    .story-universal-truth__word,
-    .story-universal-truth__bg-vessels {
-      opacity: 1 !important;
-      transform: none !important;
-    }
-
-    .story-universal-truth__vessel-path {
-      stroke-dashoffset: 0 !important;
-    }
-
-    .story-universal-truth__bg-vessels path {
-      stroke-dashoffset: 0 !important;
-    }
-
-    .story-universal-truth__heading,
-    .story-universal-truth__supporting,
-    .story-universal-truth__text-block-1,
-    .story-universal-truth__text-block-2,
-    .story-universal-truth__word {
-      will-change: auto;
+    .story-universal-truth__beat path,
+    .story-universal-truth__flare path,
+    .story-universal-truth__converge path {
+      transition: none;
+      stroke-dashoffset: 0;
     }
   }
 {% endstylesheet %}
@@ -443,7 +465,7 @@
       "type": "text",
       "id": "text_block_2_eyebrow",
       "label": "Eyebrow",
-      "default": "BUT THE REAL STORY ISN'T ABOUT THE HEART \u2014"
+      "default": "BUT THE REAL STORY ISN'T ABOUT THE HEART —"
     },
     {
       "type": "richtext",
@@ -460,20 +482,6 @@
       "id": "vessel_color",
       "label": "Vessel color",
       "default": "#BC0F0F"
-    },
-    {
-      "type": "header",
-      "content": "Scroll distance"
-    },
-    {
-      "type": "range",
-      "id": "scroll_distance",
-      "label": "Scroll distance",
-      "min": 2,
-      "max": 8,
-      "step": 1,
-      "default": 5,
-      "unit": "\u00d7vh"
     },
     {
       "type": "header",
