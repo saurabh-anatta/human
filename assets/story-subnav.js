@@ -42,11 +42,13 @@ export function initSubnav(sectionEl, utils) {
     }
   }
 
-  /* Story sections expose anchors as data-anchor attributes, not ids */
+  /* Story sections expose anchors as data-anchor attributes, not ids.
+     The nav pills carry the same data-anchor value and come earlier in the
+     DOM, so they must be excluded or the lookup finds the pill itself. */
   function findTarget(anchorId) {
     return (
       document.getElementById(anchorId) ||
-      document.querySelector('[data-anchor="' + anchorId + '"]')
+      document.querySelector('[data-anchor="' + anchorId + '"]:not(.story-subnav__pill)')
     );
   }
 
