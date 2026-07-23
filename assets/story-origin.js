@@ -80,31 +80,62 @@ export function init(sectionEl, utils) {
   }
 
   /* ------------------------------------------------------------------ */
-  /* Movement 1 — archival imagery: pinned track, images reveal one by   */
-  /* one with a slow upward parallax drift (mirrors the-science stage 3) */
+  /* Movement 1 — pinned canvas: texts reveal one by one over the same   */
+  /* background, then the archival imagery takes over with a parallax    */
+  /* drift while the blue annotation line draws in.                      */
   /* ------------------------------------------------------------------ */
 
-  var archivalTrack = sectionEl.querySelector('.story-origin__archival-track');
+  var m1Track = sectionEl.querySelector('.story-origin__m1-track');
+  var textPanel1 = sectionEl.querySelector('.story-origin__text-panel--1');
+  var textPanel2 = sectionEl.querySelector('.story-origin__text-panel--2');
+  var archivalEl = sectionEl.querySelector('.story-origin__archival');
   var archivalImg1 = sectionEl.querySelector('.story-origin__archival-img--1');
   var archivalImg2 = sectionEl.querySelector('.story-origin__archival-img--2');
-  var cleanupArchival = null;
+  var archivalLine = sectionEl.querySelector('.story-origin__archival-line');
+  var archivalArrows = sectionEl.querySelector('.story-origin__archival-arrows');
+  var cleanupM1 = null;
 
-  if (archivalTrack && (archivalImg1 || archivalImg2)) {
-    cleanupArchival = utils.createScrollProgress(archivalTrack, {
+  /* Fade+rise in, hold, fade out — all panels share the same slot */
+  function panelOpacity(el, p, inStart, inEnd, outStart, outEnd) {
+    var inP = phaseProgress(p, inStart, inEnd);
+    var outP = phaseProgress(p, outStart, outEnd);
+    el.style.opacity = inP * (1 - outP);
+    el.style.transform = 'translateY(' + lerp(24, 0, inP) + 'px)';
+  }
+
+  if (m1Track) {
+    cleanupM1 = utils.createScrollProgress(m1Track, {
       onProgress: function (p) {
         requestAnimationFrame(function () {
-          /* Image 1: shown while pinned, hands off at the midpoint */
-          if (archivalImg1) {
-            archivalImg1.style.opacity = 1 - phaseProgress(p, 0.4, 0.55);
-            archivalImg1.style.transform =
-              'scale(1.08) translateY(' + lerp(20, -20, phaseProgress(p, 0.0, 0.55)) + 'px)';
+          /* Text 1 (“In 1998…”): in 0.03-0.10, out 0.24-0.31 */
+          if (textPanel1) panelOpacity(textPanel1, p, 0.03, 0.10, 0.24, 0.31);
+
+          /* Text 2 (“In 2009…”): in 0.34-0.41, out 0.55-0.62 */
+          if (textPanel2) panelOpacity(textPanel2, p, 0.34, 0.41, 0.55, 0.62);
+
+          /* Archival imagery takes over the canvas: in 0.63-0.69 */
+          if (archivalEl) {
+            archivalEl.style.opacity = phaseProgress(p, 0.63, 0.69);
           }
 
-          /* Image 2: takes over at the midpoint, keeps drifting */
+          /* Image 1 drifts, hands off to image 2 at 0.80-0.86 */
+          if (archivalImg1) {
+            archivalImg1.style.opacity = 1 - phaseProgress(p, 0.80, 0.86);
+            archivalImg1.style.transform =
+              'scale(1.08) translateY(' + lerp(20, -20, phaseProgress(p, 0.63, 0.86)) + 'px)';
+          }
           if (archivalImg2) {
-            archivalImg2.style.opacity = phaseProgress(p, 0.4, 0.55);
+            archivalImg2.style.opacity = phaseProgress(p, 0.80, 0.86);
             archivalImg2.style.transform =
-              'scale(1.08) translateY(' + lerp(20, -20, phaseProgress(p, 0.4, 1.0)) + 'px)';
+              'scale(1.08) translateY(' + lerp(20, -20, phaseProgress(p, 0.80, 1.0)) + 'px)';
+          }
+
+          /* Blue annotation line draws across, then the arrows appear */
+          if (archivalLine) {
+            archivalLine.style.strokeDashoffset = 1 - phaseProgress(p, 0.68, 0.82);
+          }
+          if (archivalArrows) {
+            archivalArrows.style.opacity = phaseProgress(p, 0.82, 0.88);
           }
         });
       }
@@ -143,7 +174,7 @@ export function init(sectionEl, utils) {
 
   return function cleanup() {
     cleanupScroll();
-    if (cleanupArchival) cleanupArchival();
+    if (cleanupM1) cleanupM1();
     if (toggleBtn) toggleBtn.removeEventListener('click', handleToggle);
   };
 }

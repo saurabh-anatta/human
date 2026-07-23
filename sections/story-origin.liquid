@@ -38,11 +38,17 @@
   data-anchor="origin"
   style="{{ inline_styles }}"
 >
-  {%- comment -%} Movement 1 — Founding story (normal document flow) {%- endcomment -%}
+  {%- comment -%} Movement 1 — Founding story: pinned canvas. Texts reveal
+      one by one over the same background (mirrors the-science), then the
+      archival imagery takes over on the same screen with a parallax drift
+      and the blue annotation line draws in. {%- endcomment -%}
+  <div class="story-origin__m1-track">
   <div
-    class="story-origin__founding"
+    class="story-origin__m1-sticky"
     {%- if founding_bg_style != '' %} style="background-image: url('{{ founding_bg_style }}')"{% endif -%}
   >
+    <div class="story-origin__m1-frost" aria-hidden="true"></div>
+
     {%- comment -%} Text panel 1 — eyebrow + heading + body {%- endcomment -%}
     <div class="story-origin__text-panel story-origin__text-panel--1">
       {%- if eyebrow_text != blank -%}
@@ -66,9 +72,7 @@
       {%- endif -%}
     </div>
 
-    {%- comment -%} Archival imagery panel — pinned, images reveal one by one
-        with a slow parallax drift (mirrors the-science stage 3) {%- endcomment -%}
-    <div class="story-origin__archival-track">
+    {%- comment -%} Archival imagery — takes over the pinned canvas {%- endcomment -%}
     <div class="story-origin__archival">
       {%- if archival_image_1 != blank -%}
         <img
@@ -92,12 +96,14 @@
       {%- endif -%}
       <div class="story-origin__archival-desat" aria-hidden="true"></div>
       <svg class="story-origin__archival-svg" viewBox="0 0 1440 1000" fill="none" aria-hidden="true">
-        <line x1="200" y1="780" x2="1260" y2="220" stroke="#2983DC" stroke-width="3" transform="rotate(-1.6 730 500)" />
-        <polyline points="1180,280 1210,265 1195,295" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1195 280)" />
-        <polyline points="1230,255 1260,240 1245,270" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1245 255)" />
+        <line class="story-origin__archival-line" pathLength="1" x1="200" y1="780" x2="1260" y2="220" stroke="#2983DC" stroke-width="3" transform="rotate(-1.6 730 500)" />
+        <g class="story-origin__archival-arrows">
+          <polyline points="1180,280 1210,265 1195,295" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1195 280)" />
+          <polyline points="1230,255 1260,240 1245,270" stroke="#FFFFFF" stroke-width="2" fill="none" transform="rotate(1.6 1245 255)" />
+        </g>
       </svg>
     </div>
-    </div>
+  </div>
   </div>
 
   {%- comment -%} Movement 2 — Documentary video (scroll-pinned) {%- endcomment -%}
@@ -233,32 +239,54 @@
     position: relative;
   }
 
-  /* ---- Movement 1: Founding story ---- */
+  /* ---- Movement 1: Founding story (pinned canvas) ---- */
 
-  .story-origin__founding {
+  .story-origin__m1-track {
+    height: calc(4 * 100vh);
+    height: calc(4 * 100svh);
     position: relative;
+    z-index: 1;
+  }
+
+  .story-origin__m1-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
     background-color: #767676;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
   }
 
-  /* Text panels — frosted glass */
+  /* Frosted glass over the shared background */
+  .story-origin__m1-frost {
+    position: absolute;
+    inset: 0;
+    background: rgba(118, 118, 118, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Text panels — stacked overlays on the pinned canvas, JS-sequenced */
   .story-origin__text-panel {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    min-height: 100svh;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     padding: 60px 24px;
-    background: rgba(118, 118, 118, 0.7);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
     gap: 24px;
+    opacity: 0;
+    transform: translateY(24px);
+    will-change: opacity, transform;
+    pointer-events: none;
   }
 
   .story-origin__eyebrow {
@@ -298,20 +326,14 @@
     max-width: 700px;
   }
 
-  /* Archival imagery — pinned track, images reveal one by one on scroll */
-  .story-origin__archival-track {
-    height: calc(2.5 * 100vh);
-    height: calc(2.5 * 100svh);
-    position: relative;
-    z-index: 1;
-  }
-
+  /* Archival imagery — takes over the pinned canvas in the final phase */
   .story-origin__archival {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100svh;
-    overflow: hidden;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    will-change: opacity;
+    pointer-events: none;
   }
 
   /* Full-bleed stacked images; JS crossfades and drifts them.
@@ -328,6 +350,18 @@
 
   .story-origin__archival-img--2 {
     opacity: 0;
+  }
+
+  /* Blue annotation line draws in with scroll; arrows fade after */
+  .story-origin__archival-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    will-change: stroke-dashoffset;
+  }
+
+  .story-origin__archival-arrows {
+    opacity: 0;
+    will-change: opacity;
   }
 
   .story-origin__archival-desat {
@@ -540,9 +574,9 @@
       max-width: 100%;
     }
 
-    .story-origin__archival-track {
-      height: calc(2 * 100vh);
-      height: calc(2 * 100svh);
+    .story-origin__m1-track {
+      height: calc(4 * 80vh);
+      height: calc(4 * 80svh);
     }
 
     .story-origin__archival-svg {
@@ -582,13 +616,29 @@
       height: auto;
     }
 
-    .story-origin__archival-track {
+    .story-origin__m1-track {
       height: auto;
+    }
+
+    .story-origin__m1-sticky {
+      position: relative;
+      height: auto;
+    }
+
+    .story-origin__text-panel {
+      position: relative;
+      inset: auto;
+      min-height: 100vh;
+      min-height: 100svh;
+      opacity: 1 !important;
+      transform: none !important;
     }
 
     .story-origin__archival {
       position: relative;
+      inset: auto;
       height: auto;
+      opacity: 1 !important;
     }
 
     .story-origin__archival-img {
@@ -596,6 +646,14 @@
       height: auto;
       transform: none !important;
       opacity: 1 !important;
+    }
+
+    .story-origin__archival-line {
+      stroke-dashoffset: 0;
+    }
+
+    .story-origin__archival-arrows {
+      opacity: 1;
     }
 
     .story-origin__sticky {
