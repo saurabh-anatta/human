@@ -8279,8 +8279,8 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "shopify://files/videos/335 CVD Dr Davis 30_c925c358-4a38-4f53-b4be-f3c9e0195d3b.mp4",
-                            "video_mobile": "shopify://files/videos/Davis-tv-video.mp4",
+                            "video_desktop": "",
+                            "video_mobile": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -8637,8 +8637,8 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "shopify://files/videos/335 CVD Dr Davis 30_c925c358-4a38-4f53-b4be-f3c9e0195d3b.mp4",
-                            "video_mobile": "shopify://files/videos/ZS_Mobile_Hero_Video_Animated.mp4",
+                            "video_desktop": "",
+                            "video_mobile": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -8995,8 +8995,8 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "shopify://files/videos/335 CVD Dr Davis 30_c925c358-4a38-4f53-b4be-f3c9e0195d3b.mp4",
-                            "video_mobile": "shopify://files/videos/ZS_Mobile_Hero_Video_Animated.mp4",
+                            "video_desktop": "",
+                            "video_mobile": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -12875,7 +12875,7 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "shopify://files/videos/UT - Nutrition - Brad Solomon - Approved.mov",
+                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -13064,7 +13064,7 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "shopify://files/videos/CV PDP_b (1).mp4",
+                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -13253,7 +13253,7 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "shopify://files/videos/tile-2-doctor_8e97e7af-aa9f-4cb2-b3ae-e6a9549d05b5.mp4",
+                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -13442,7 +13442,7 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "shopify://files/videos/tile-2-doctor_8e97e7af-aa9f-4cb2-b3ae-e6a9549d05b5.mp4",
+                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -13631,7 +13631,7 @@
                           "type": "video-modal",
                           "name": "Video Modal",
                           "settings": {
-                            "video_desktop": "shopify://files/videos/335 CVD Dr Davis 30.mp4",
+                            "video_desktop": "",
                             "autoplay_on_open": true,
                             "start_unmuted": true,
                             "loop": false,
@@ -14885,8 +14885,8 @@
               "type": "video-modal",
               "name": "Video Modal",
               "settings": {
-                "video_desktop": "shopify://files/videos/FromLabToLegacy_16x9_F_Web 1.mp4",
-                "video_mobile": "shopify://files/videos/FromLabToLegacy_16x9_F_Web 1.mp4",
+                "video_desktop": "",
+                "video_mobile": "",
                 "autoplay_on_open": true,
                 "start_unmuted": true,
                 "loop": false,
