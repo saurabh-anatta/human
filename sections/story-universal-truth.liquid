@@ -21,12 +21,12 @@
 >
   {%- comment -%} Screen 1: nav gap → small heartbeat → big heartbeat → text → line {%- endcomment -%}
   <div class="story-universal-truth__screen story-universal-truth__screen--intro">
-    <div class="story-universal-truth__line" style="height: 160px;" data-sut-draw="line"></div>
+    <div class="story-universal-truth__line" style="height: 160px;" data-sut-reveal></div>
 
     <svg
       class="story-universal-truth__beat story-universal-truth__beat--small"
       width="120" height="50" viewBox="0 0 120 50" fill="none" aria-hidden="true"
-      data-sut-draw="svg"
+      data-sut-reveal
     >
       <path pathLength="1" d="M 60,0 C 60,8 69,12 50,18 C 39,22 74,27 61,33 C 58,37 60,42 60,50" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
     </svg>
@@ -34,14 +34,14 @@
     <svg
       class="story-universal-truth__beat story-universal-truth__beat--big"
       width="240" height="110" viewBox="0 0 240 110" fill="none" aria-hidden="true"
-      data-sut-draw="svg"
+      data-sut-reveal
     >
       <path pathLength="1" d="M 120,0 C 123,12 128,20 100,26 C 52,35 200,33 218,42 C 238,52 44,56 26,66 C 10,75 96,82 114,90 C 121,97 120,103 120,110" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
     </svg>
 
-    <div class="story-universal-truth__line" style="height: 48px;" data-sut-draw="line"></div>
+    <div class="story-universal-truth__line" style="height: 48px;" data-sut-reveal></div>
 
-    <div class="story-universal-truth__content story-universal-truth__text-block-1" data-sut-draw="text">
+    <div class="story-universal-truth__content story-universal-truth__text-block-1" data-sut-reveal>
       {%- if eyebrow_text != blank -%}
         <span class="story-universal-truth__eyebrow">{{ eyebrow_text }}</span>
       {%- endif -%}
@@ -53,19 +53,19 @@
       {%- endif -%}
     </div>
 
-    <div class="story-universal-truth__line-fill">
-      <div class="story-universal-truth__line" style="height: 100%;" data-sut-draw="line"></div>
+    <div class="story-universal-truth__line-fill" data-sut-reveal>
+      <div class="story-universal-truth__line" style="height: 100%;"></div>
     </div>
   </div>
 
   {%- comment -%} Screen 2: long line → tree flare (slant + round) → 7 vertical strands {%- endcomment -%}
   <div class="story-universal-truth__screen story-universal-truth__screen--tree">
-    <div class="story-universal-truth__line" style="height: 250px;" data-sut-draw="line"></div>
+    <div class="story-universal-truth__line" style="height: 250px;" data-sut-reveal></div>
 
     <svg
       class="story-universal-truth__flare"
       width="340" height="150" viewBox="0 0 340 150" fill="none" aria-hidden="true"
-      data-sut-draw="svg"
+      data-sut-reveal
     >
       <path pathLength="1" d="M 170,0 L 170,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
       <path pathLength="1" d="M 170,0 C 188,28 222,44 222,86 L 222,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
@@ -76,7 +76,7 @@
       <path pathLength="1" d="M 170,0 C 118,40 14,64 14,110 L 14,150" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
 
-    <div class="story-universal-truth__strands" data-sut-draw="strands">
+    <div class="story-universal-truth__strands" data-sut-reveal>
       <span class="story-universal-truth__strand" style="--sut-strand-x: 0px;"></span>
       <span class="story-universal-truth__strand" style="--sut-strand-x: 52px;"></span>
       <span class="story-universal-truth__strand" style="--sut-strand-x: -52px;"></span>
@@ -89,7 +89,7 @@
 
   {%- comment -%} Screen 3: text → strands resume → merge into one → long line out {%- endcomment -%}
   <div class="story-universal-truth__screen story-universal-truth__screen--outro">
-    <div class="story-universal-truth__content story-universal-truth__text-block-2" data-sut-draw="text">
+    <div class="story-universal-truth__content story-universal-truth__text-block-2" data-sut-reveal>
       {%- if text_block_2_eyebrow != blank -%}
         <span class="story-universal-truth__eyebrow-inline">{{ text_block_2_eyebrow }}</span>
       {%- endif -%}
@@ -98,7 +98,7 @@
       {%- endif -%}
     </div>
 
-    <div class="story-universal-truth__strands" data-sut-draw="strands">
+    <div class="story-universal-truth__strands" data-sut-reveal>
       <span class="story-universal-truth__strand" style="--sut-strand-x: 0px;"></span>
       <span class="story-universal-truth__strand" style="--sut-strand-x: 52px;"></span>
       <span class="story-universal-truth__strand" style="--sut-strand-x: -52px;"></span>
@@ -111,7 +111,7 @@
     <svg
       class="story-universal-truth__converge"
       width="340" height="150" viewBox="0 0 340 150" fill="none" aria-hidden="true"
-      data-sut-draw="svg"
+      data-sut-reveal
     >
       <path pathLength="1" d="M 170,0 L 170,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
       <path pathLength="1" d="M 222,0 L 222,64 C 222,106 188,122 170,150" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
@@ -122,7 +122,7 @@
       <path pathLength="1" d="M 14,0 L 14,40 C 14,86 118,110 170,150" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
 
-    <div class="story-universal-truth__line" style="height: 250px;" data-sut-draw="line"></div>
+    <div class="story-universal-truth__line" style="height: 250px;" data-sut-reveal></div>
   </div>
 </div>
 
@@ -171,9 +171,7 @@
     padding-block: 48px 40px;
   }
 
-  /* ---- Vessel line segments (scroll-scrubbed via JS: scaleY tracks the
-     draw-line at ~88% of the viewport, so the tree builds on scroll down
-     and un-builds on scroll up) ---- */
+  /* ---- Vessel line segments ---- */
 
   .story-universal-truth__line {
     width: 2px;
@@ -181,7 +179,11 @@
     background-color: var(--sut-vessel-color);
     transform: scaleY(0);
     transform-origin: top;
-    will-change: transform;
+    transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .story-universal-truth__line.is-visible {
+    transform: scaleY(1);
   }
 
   /* Grow segment that fills the rest of a screen */
@@ -191,6 +193,14 @@
     display: flex;
     justify-content: center;
     width: 2px;
+  }
+
+  .story-universal-truth__line-fill .story-universal-truth__line {
+    transition-duration: 1.2s;
+  }
+
+  .story-universal-truth__line-fill.is-visible .story-universal-truth__line {
+    transform: scaleY(1);
   }
 
   /* ---- Heartbeats, flare & converge: SVG stroke draw via pathLength=1 ---- */
@@ -207,7 +217,39 @@
   .story-universal-truth__converge path {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
-    will-change: stroke-dashoffset;
+    transition: stroke-dashoffset 1s ease-out;
+  }
+
+  .story-universal-truth__beat.is-visible path,
+  .story-universal-truth__flare.is-visible path,
+  .story-universal-truth__converge.is-visible path {
+    stroke-dashoffset: 0;
+  }
+
+  .story-universal-truth__beat--big.is-visible path {
+    transition-duration: 1.2s;
+    transition-delay: 0.1s;
+  }
+
+  .story-universal-truth__flare path:nth-child(2),
+  .story-universal-truth__flare path:nth-child(3),
+  .story-universal-truth__converge path:nth-child(2),
+  .story-universal-truth__converge path:nth-child(3) {
+    transition-delay: 0.08s;
+  }
+
+  .story-universal-truth__flare path:nth-child(4),
+  .story-universal-truth__flare path:nth-child(5),
+  .story-universal-truth__converge path:nth-child(4),
+  .story-universal-truth__converge path:nth-child(5) {
+    transition-delay: 0.16s;
+  }
+
+  .story-universal-truth__flare path:nth-child(6),
+  .story-universal-truth__flare path:nth-child(7),
+  .story-universal-truth__converge path:nth-child(6),
+  .story-universal-truth__converge path:nth-child(7) {
+    transition-delay: 0.24s;
   }
 
   /* ---- Vertical strand runs (7 lines, fixed offsets from centre) ---- */
@@ -229,11 +271,30 @@
     background-color: var(--sut-vessel-color);
     transform: scaleY(0);
     transform-origin: top;
-    will-change: transform;
+    transition: transform 1.2s ease-out;
   }
 
   .story-universal-truth__strand--thin {
     width: 1.5px;
+  }
+
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand {
+    transform: scaleY(1);
+  }
+
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(2),
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(3) {
+    transition-delay: 0.08s;
+  }
+
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(4),
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(5) {
+    transition-delay: 0.16s;
+  }
+
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(6),
+  .story-universal-truth__strands.is-visible .story-universal-truth__strand:nth-child(7) {
+    transition-delay: 0.24s;
   }
 
   /* ---- Text content ---- */
@@ -249,7 +310,12 @@
     padding-inline: 24px;
     opacity: 0;
     transform: translateY(24px);
-    will-change: opacity, transform;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .story-universal-truth__content.is-visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .story-universal-truth__text-block-1 {

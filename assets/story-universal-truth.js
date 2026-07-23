@@ -1,95 +1,27 @@
 /**
  * Section-specific JS for the universal-truth vessel canvas.
- *
- * Scroll-scrubbed drawing: an invisible "pen" sits at ~88% of the viewport
- * height. Every [data-sut-draw] element draws exactly as far as it has
- * scrolled past the pen — lines grow via scaleY, SVG strokes draw via
- * pathLength-normalised dashoffset, text fades up. Because progress is
- * recomputed from scroll position every frame, scrolling back up reverses
- * the drawing.
+ * The section is a natural-flow, ~3-screen-tall canvas; every vessel piece
+ * (line segments, heartbeats, tree flare/converge, strands) and text block
+ * carries [data-sut-reveal] and draws in one-shot via CSS transitions when
+ * it enters the viewport. Reduced motion is handled by createRevealObserver
+ * (reveals everything immediately) plus the section's CSS.
  *
  * @module story-universal-truth
  */
-
-/**
- * Smoothstep easing for text reveals (gentler than linear).
- * @param {number} t - Progress (0-1).
- * @returns {number}
- */
-function smoothstep(t) {
-  return t * t * (3 - 2 * t);
-}
 
 /**
  * Initialises the universal-truth section.
  *
  * @param {HTMLElement} sectionEl - The section root element.
  * @param {Object} utils - The story-scroll-utils module.
- * @returns {Function} Cleanup function that removes listeners.
+ * @returns {Function} Cleanup function that disconnects the observer.
  */
 export function init(sectionEl, utils) {
-  /* Reduced motion: the section CSS renders everything fully drawn. */
-  if (utils.prefersReducedMotion()) {
-    return function cleanup() {};
-  }
+  const revealEls = sectionEl.querySelectorAll('[data-sut-reveal]');
 
-  const items = [];
-  const drawEls = sectionEl.querySelectorAll('[data-sut-draw]');
-
-  for (const el of drawEls) {
-    const kind = el.getAttribute('data-sut-draw');
-    items.push({
-      el: el,
-      kind: kind,
-      paths: kind === 'svg' ? el.querySelectorAll('path') : null,
-      strands: kind === 'strands' ? el.querySelectorAll('.story-universal-truth__strand') : null
-    });
-  }
-
-  let ticking = false;
-
-  function applyDraw() {
-    const penY = window.innerHeight * 0.88;
-
-    for (const item of items) {
-      const rect = item.el.getBoundingClientRect();
-      if (rect.height === 0) continue;
-
-      /* 0 when the element's top reaches the pen, 1 when its bottom passes it */
-      const progress = Math.min(Math.max((penY - rect.top) / rect.height, 0), 1);
-
-      if (item.kind === 'line') {
-        item.el.style.transform = 'scaleY(' + progress + ')';
-      } else if (item.kind === 'svg') {
-        for (const path of item.paths) {
-          path.style.strokeDashoffset = 1 - progress;
-        }
-      } else if (item.kind === 'strands') {
-        for (const strand of item.strands) {
-          strand.style.transform = 'scaleY(' + progress + ')';
-        }
-      } else if (item.kind === 'text') {
-        const eased = smoothstep(progress);
-        item.el.style.opacity = eased;
-        item.el.style.transform = 'translateY(' + (1 - eased) * 24 + 'px)';
-      }
-    }
-
-    ticking = false;
-  }
-
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(applyDraw);
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
-  onScroll();
+  const observer = utils.createRevealObserver(revealEls, { threshold: 0.15 });
 
   return function cleanup() {
-    window.removeEventListener('scroll', onScroll);
-    window.removeEventListener('resize', onScroll);
+    if (observer) observer.disconnect();
   };
 }
