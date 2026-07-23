@@ -53,10 +53,18 @@ export function init(sectionEl, utils) {
 
     for (const item of items) {
       const rect = item.el.getBoundingClientRect();
-      if (rect.height === 0) continue;
+
+      /* getBoundingClientRect reports the TRANSFORMED size — a line at
+         scaleY(0) measures 0 tall and would never draw. offsetHeight is the
+         layout height, immune to transforms; SVG elements have no
+         offsetHeight, but they are never transformed so rect.height is safe.
+         rect.top stays correct for scaled lines because transform-origin is
+         top. */
+      const height = item.el.offsetHeight || rect.height;
+      if (height === 0) continue;
 
       /* 0 when the element's top reaches the pen, 1 when its bottom passes it */
-      const progress = Math.min(Math.max((penY - rect.top) / rect.height, 0), 1);
+      const progress = Math.min(Math.max((penY - rect.top) / height, 0), 1);
 
       if (item.kind === 'line') {
         item.el.style.transform = 'scaleY(' + progress + ')';
