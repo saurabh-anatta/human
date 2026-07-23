@@ -70,7 +70,6 @@
               "type": "image",
               "name": "t:names.image",
               "settings": {
-                "image": "shopify://shop_images/logo_646d6054-c661-4de7-a473-78df252df926.png",
                 "custom_mobile_image": false,
                 "link": "",
                 "image_ratio": "adapt",
@@ -108,6 +107,7 @@
       "block_order": [
         "group_jfLpCR"
       ],
+      "disabled": true,
       "name": "Brand statement",
       "settings": {
         "content_max_width": "custom",
@@ -403,7 +403,7 @@
               "type": "menu",
               "name": "t:names.menu",
               "settings": {
-                "menu": "dev-mobile-menu-bottom",
+                "menu": "",
                 "heading": "Shop",
                 "menu_spacing": 8,
                 "show_as_accordion": true,
@@ -424,7 +424,7 @@
               "type": "menu",
               "name": "t:names.menu",
               "settings": {
-                "menu": "about-footer",
+                "menu": "",
                 "heading": "Learn",
                 "menu_spacing": 8,
                 "show_as_accordion": true,
@@ -445,7 +445,7 @@
               "type": "menu",
               "name": "t:names.menu",
               "settings": {
-                "menu": "support-menu-footer",
+                "menu": "",
                 "heading": "Support",
                 "menu_spacing": 8,
                 "show_as_accordion": true,
@@ -522,6 +522,7 @@
         "group_H6VpwJ",
         "group_pgeFDt"
       ],
+      "disabled": true,
       "custom_css": [],
       "name": "t:names.footer",
       "settings": {
@@ -735,7 +736,7 @@
           "type": "footer-policy-menu",
           "name": "t:names.policy_list",
           "settings": {
-            "policy_menu": "policy-menu"
+            "policy_menu": ""
           },
           "blocks": {}
         },
@@ -759,6 +760,7 @@
         "footer_policy_menu_tcGENR",
         "footer_copyright_zRxhz7"
       ],
+      "disabled": true,
       "name": "t:names.utilities",
       "settings": {
         "section_width": "page-width",
