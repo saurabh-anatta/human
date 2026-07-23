@@ -1,5 +1,5 @@
 {%- liquid
-  assign pin_distance = section.settings.pin_distance | default: 12000
+  assign pin_distance = section.settings.pin_distance | default: 8000
 -%}
 
 {%- capture inline_styles -%}
@@ -440,10 +440,10 @@
       "type": "range",
       "id": "pin_distance",
       "label": "Pin distance",
-      "min": 4000,
-      "max": 16000,
+      "min": 2000,
+      "max": 9500,
       "step": 500,
-      "default": 12000,
+      "default": 8000,
       "unit": "px",
       "info": "Extra scroll height while the scene stays pinned"
     },
