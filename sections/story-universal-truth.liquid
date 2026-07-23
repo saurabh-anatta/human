@@ -31,12 +31,12 @@
         preserveAspectRatio="xMidYMid slice"
         aria-hidden="true"
       >
-        <path d="M 310,300 C 360,390 410,350 490,440 C 570,530 540,580 590,680" fill="none" stroke="#CACACA" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 1090,280 C 1040,370 1000,340 940,430 C 880,520 910,570 860,660" fill="none" stroke="#CACACA" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 220,480 C 290,510 350,470 420,530 C 490,590 460,630 510,700" fill="none" stroke="#CACACA" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 1180,460 C 1120,500 1060,480 1000,540 C 940,600 970,640 920,710" fill="none" stroke="#CACACA" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 380,220 C 410,300 370,360 400,420" fill="none" stroke="#CACACA" stroke-width="1" stroke-linecap="round"/>
-        <path d="M 1060,230 C 1030,310 1070,360 1040,420" fill="none" stroke="#CACACA" stroke-width="1" stroke-linecap="round"/>
+        <path d="M 310,300 C 360,390 410,350 490,440 C 570,530 540,580 590,680" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 1090,280 C 1040,370 1000,340 940,430 C 880,520 910,570 860,660" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 220,480 C 290,510 350,470 420,530 C 490,590 460,630 510,700" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 1180,460 C 1120,500 1060,480 1000,540 C 940,600 970,640 920,710" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 380,220 C 410,300 370,360 400,420" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1" stroke-linecap="round"/>
+        <path d="M 1060,230 C 1030,310 1070,360 1040,420" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1" stroke-linecap="round"/>
       </svg>
 
       {%- comment -%} Inline SVG vessel with stroke-animated paths {%- endcomment -%}
@@ -50,7 +50,7 @@
         <path
           class="story-universal-truth__vessel-path"
           data-phase="stem-enter"
-          d="M 720 0 Q 718 130 720 260"
+          d="M 720 0 Q 718 60 720 122"
           fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
         />
 
@@ -58,110 +58,50 @@
         <path
           class="story-universal-truth__vessel-path"
           data-phase="heartbeat"
-          d="M 720,258 C 720,264 722,268 723,272 C 725,278 716,282 714,286 C 710,294 738,258 740,272 C 742,286 722,296 720,302 C 718,308 720,314 720,322"
+          d="M 720,122 C 720,128 722,132 723,136 C 725,142 716,146 714,150 C 710,158 738,122 740,136 C 742,150 722,160 720,166 C 718,172 720,178 720,186"
           fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
         />
         <path
           class="story-universal-truth__vessel-path"
           data-phase="heartbeat"
-          d="M 721,262 C 721,268 719,274 718,280 C 716,288 724,282 726,290 C 728,298 718,302 719,310 C 720,316 720,320 720,324"
+          d="M 721,126 C 721,132 719,138 718,144 C 716,152 724,146 726,154 C 728,162 718,166 719,174 C 720,180 720,184 720,188"
           fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"
         />
 
-        {%- comment -%} Stem mid: long vertical run — generous breathing room {%- endcomment -%}
+        {%- comment -%} Stem mid: long vertical run down to the first bulb split {%- endcomment -%}
         <path
           class="story-universal-truth__vessel-path"
           data-phase="stem-mid"
-          d="M 720 320 Q 721 510 720 700"
+          d="M 720 186 Q 721 265 720 344"
           fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
         />
 
-        {%- comment -%} Cage 1 — right side strands (inner to outer, stroke-width varies) {%- endcomment -%}
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 733,718 748,733 751,754 C 748,776 731,791 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 747,717 781,732 787,756 C 780,778 745,792 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 764,716 818,730 827,753 C 818,778 763,793 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 783,714 858,729 873,756 C 856,780 781,795 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 800,712 900,727 918,754 C 898,781 799,797 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 819,711 940,726 963,752 C 939,783 817,798 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 840,709 985,724 1020,753 C 985,785 840,800 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1" stroke-linecap="round"/>
+        {%- comment -%} Bulb 1 — vertical strands splitting from the stem, converging above the text {%- endcomment -%}
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 L 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,376 817,380 817,416 L 817,436 C 817,472 720,476 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,376 623,380 623,416 L 623,436 C 623,472 720,476 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,378 914,382 914,418 L 914,434 C 914,470 720,474 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,378 526,382 526,418 L 526,434 C 526,470 720,474 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,380 1011,384 1011,420 L 1011,432 C 1011,468 720,472 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.25" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,380 429,384 429,420 L 429,432 C 429,468 720,472 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.25" stroke-linecap="round"/>
 
-        {%- comment -%} Cage 1 — left side strands (mirror, inner to outer) {%- endcomment -%}
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 707,719 692,734 689,756 C 692,777 709,792 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 693,718 659,733 653,754 C 660,776 695,791 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 676,717 623,731 613,755 C 622,779 677,794 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 657,715 582,730 567,754 C 584,779 659,795 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 640,713 541,728 522,755 C 542,781 641,797 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 621,712 501,727 477,753 C 501,782 623,798 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,700 C 600,710 455,725 420,754 C 455,785 600,801 720,810" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1" stroke-linecap="round"/>
-
-        {%- comment -%} Cage 2 — right side strands (inner to outer) {%- endcomment -%}
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 734,828 749,843 752,864 C 749,886 732,901 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 748,826 783,841 789,866 C 781,888 746,903 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 765,824 820,838 829,864 C 819,889 764,904 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 784,823 860,837 875,863 C 858,890 782,905 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 801,821 902,835 920,862 C 900,891 800,906 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 820,820 942,834 965,861 C 940,892 818,907 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 842,818 988,832 1022,862 C 988,893 842,908 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1" stroke-linecap="round"/>
-
-        {%- comment -%} Cage 2 — left side strands (mirror, inner to outer) {%- endcomment -%}
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 706,829 691,844 688,866 C 691,887 708,902 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 692,827 657,842 651,864 C 659,887 694,902 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 675,825 620,839 611,865 C 621,889 676,904 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 656,824 580,838 565,863 C 582,890 658,905 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 639,822 538,836 520,862 C 540,891 641,906 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 620,821 498,835 475,861 C 500,892 622,907 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,810 C 598,819 452,833 418,862 C 452,893 598,908 720,920" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1" stroke-linecap="round"/>
+        {%- comment -%} Bulb 2 — reopens below the text, converges into the exit stem {%- endcomment -%}
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 L 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,727 817,731 817,767 L 817,833 C 817,869 720,873 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,727 623,731 623,767 L 623,833 C 623,869 720,873 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,729 914,733 914,769 L 914,831 C 914,867 720,871 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,729 526,733 526,769 L 526,831 C 526,867 720,871 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,731 1011,735 1011,771 L 1011,829 C 1011,865 720,869 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.25" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,731 429,735 429,771 L 429,829 C 429,865 720,869 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.25" stroke-linecap="round"/>
 
         {%- comment -%} Stem exit: continues downward to next chapter {%- endcomment -%}
         <path
           class="story-universal-truth__vessel-path"
           data-phase="stem-exit"
-          d="M 720 920 Q 721 960 720 1000"
+          d="M 720 905 Q 721 952 720 1000"
           fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
         />
       </svg>
-
-      {%- comment -%} Decorative arrow elements {%- endcomment -%}
-      <img
-        class="story-universal-truth__arrow"
-        src="{{ 'arrow-8.svg' | asset_url }}"
-        alt=""
-        width="57"
-        height="57"
-        loading="lazy"
-        style="top: 22%; left: 18%; width: 57px; height: 57px; transform: rotate(0.8deg);"
-        aria-hidden="true"
-      >
-      <img
-        class="story-universal-truth__arrow"
-        src="{{ 'arrow-10.svg' | asset_url }}"
-        alt=""
-        width="78"
-        height="57"
-        loading="lazy"
-        style="top: 20%; right: 18%; width: 78px; height: 57px; transform: rotate(2.5deg);"
-        aria-hidden="true"
-      >
-      <img
-        class="story-universal-truth__arrow"
-        src="{{ 'arrow-9.svg' | asset_url }}"
-        alt=""
-        width="67"
-        height="67"
-        loading="lazy"
-        style="top: 58%; left: 22%; width: 67px; height: 67px; transform: rotate(-0.8deg);"
-        aria-hidden="true"
-      >
-      <img
-        class="story-universal-truth__arrow"
-        src="{{ 'arrow-11.svg' | asset_url }}"
-        alt=""
-        width="92"
-        height="67"
-        loading="lazy"
-        style="top: 55%; right: 20%; width: 92px; height: 67px; transform: rotate(-2.5deg);"
-        aria-hidden="true"
-      >
 
       {%- comment -%} Text content layer {%- endcomment -%}
       <div class="story-universal-truth__content">
@@ -213,7 +153,8 @@
 
   /* Background on the .shopify-section wrapper (avoids base.css .section trap) */
   .story-universal-truth-section {
-    background-color: #F5F5F5;
+    background-color: #6B6B6D;
+    background-image: radial-gradient(130% 110% at 50% 30%, #87878A 0%, #707072 45%, #4E4E50 100%);
     position: relative;
     z-index: 1;
   }
@@ -260,15 +201,6 @@
     pointer-events: none;
   }
 
-  /* Decorative arrow images */
-  .story-universal-truth__arrow {
-    position: absolute;
-    opacity: 0;
-    z-index: 2;
-    pointer-events: none;
-    max-width: none;
-  }
-
   /* Text content layer */
   .story-universal-truth__content {
     position: relative;
@@ -294,7 +226,7 @@
     line-height: 16px;
     letter-spacing: 0.75px;
     text-transform: uppercase;
-    color: #000000;
+    color: #FFFFFF;
     opacity: 0;
   }
 
@@ -320,7 +252,7 @@
     font-size: 32px;
     line-height: 40px;
     letter-spacing: 0;
-    color: #767676;
+    color: #FFFFFF;
     margin: 0;
     opacity: 0;
     transform: scale(3.5);
@@ -339,7 +271,7 @@
     font-size: 20px;
     line-height: 30px;
     letter-spacing: -0.5px;
-    color: #767676;
+    color: #E4E4E2;
     margin: 0;
   }
 
@@ -349,7 +281,8 @@
     will-change: opacity;
   }
 
-  /* Text block 2 */
+  /* Text block 2 — nudged below viewport centre so it sits in the gap
+     between the two vessel bulbs (bulb 1 converges above, bulb 2 opens below) */
   .story-universal-truth__text-block-2 {
     display: flex;
     flex-direction: column;
@@ -357,6 +290,8 @@
     gap: 12px;
     opacity: 0;
     transform: scale(1.3);
+    position: relative;
+    top: 10svh;
   }
 
   .story-universal-truth__eyebrow-inline {
@@ -366,7 +301,7 @@
     line-height: 16px;
     letter-spacing: 0.75px;
     text-transform: uppercase;
-    color: #000000;
+    color: #FFFFFF;
   }
 
   .story-universal-truth__body {
@@ -375,7 +310,7 @@
     font-size: 24px;
     line-height: 36px;
     letter-spacing: -0.5px;
-    color: #767676;
+    color: rgba(255, 255, 255, 0.72);
   }
 
   .story-universal-truth__body p {
@@ -383,7 +318,7 @@
   }
 
   .story-universal-truth__body strong {
-    color: #000000;
+    color: #FFFFFF;
     font-weight: 700;
   }
 
@@ -413,10 +348,6 @@
       font-size: 18px;
       line-height: 28px;
     }
-
-    .story-universal-truth__arrow {
-      display: none;
-    }
   }
 
   /* ------ Reduced motion ------ */
@@ -438,7 +369,6 @@
     .story-universal-truth__supporting,
     .story-universal-truth__text-block-1,
     .story-universal-truth__text-block-2,
-    .story-universal-truth__arrow,
     .story-universal-truth__word,
     .story-universal-truth__bg-vessels {
       opacity: 1 !important;
