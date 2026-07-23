@@ -79,6 +79,45 @@ export function init(sectionEl, utils) {
     };
   }
 
+  /* ------------------------------------------------------------------ */
+  /* Movement 1 — archival collage parallax                              */
+  /* The two photos drift in opposite directions (±60px, matching the    */
+  /* CSS bleed) as the panel crosses the viewport.                       */
+  /* ------------------------------------------------------------------ */
+
+  var archivalPanel = sectionEl.querySelector('.story-origin__archival');
+  var archivalImg1 = sectionEl.querySelector('.story-origin__archival-img--1');
+  var archivalImg2 = sectionEl.querySelector('.story-origin__archival-img--2');
+  var PARALLAX_RANGE = 60;
+  var parallaxTicking = false;
+  var hasParallax = archivalPanel && (archivalImg1 || archivalImg2);
+
+  function applyParallax() {
+    parallaxTicking = false;
+    var rect = archivalPanel.getBoundingClientRect();
+    var vh = window.innerHeight;
+    if (rect.bottom < 0 || rect.top > vh) return;
+
+    /* +1 as the panel enters from below → -1 as it exits above */
+    var t = (rect.top + rect.height / 2 - vh / 2) / ((vh + rect.height) / 2);
+    t = Math.min(Math.max(t, -1), 1);
+
+    if (archivalImg1) archivalImg1.style.transform = 'translateY(' + t * PARALLAX_RANGE + 'px)';
+    if (archivalImg2) archivalImg2.style.transform = 'translateY(' + -t * PARALLAX_RANGE + 'px)';
+  }
+
+  function onParallaxScroll() {
+    if (parallaxTicking) return;
+    parallaxTicking = true;
+    requestAnimationFrame(applyParallax);
+  }
+
+  if (hasParallax) {
+    window.addEventListener('scroll', onParallaxScroll, { passive: true });
+    window.addEventListener('resize', onParallaxScroll, { passive: true });
+    onParallaxScroll();
+  }
+
   var cleanupScroll = utils.createScrollProgress(scrollTrack, {
     onProgress: function (p) {
       requestAnimationFrame(function () {
@@ -111,6 +150,10 @@ export function init(sectionEl, utils) {
 
   return function cleanup() {
     cleanupScroll();
+    if (hasParallax) {
+      window.removeEventListener('scroll', onParallaxScroll);
+      window.removeEventListener('resize', onParallaxScroll);
+    }
     if (toggleBtn) toggleBtn.removeEventListener('click', handleToggle);
   };
 }
