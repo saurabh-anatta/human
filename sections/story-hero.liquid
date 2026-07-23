@@ -1,0 +1,345 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 2000
+  assign discover_label = section.settings.discover_label | default: 'DISCOVER'
+-%}
+
+{%- capture inline_styles -%}
+  --os-chapter-z: 10;
+{%- endcapture -%}
+
+<div
+  class="story-chapter"
+  data-anchor="hero"
+  style="height: calc(100vh + {{ pin_distance }}px); {{ inline_styles }}"
+>
+  <div
+    class="story-chapter__sticky story-hero"
+    data-section-id="{{ section.id }}"
+  >
+    <canvas class="story-hero__canvas" aria-hidden="true"></canvas>
+
+    <div class="story-hero__content">
+      {%- comment -%} Decorative ticks — top right {%- endcomment -%}
+      <div class="story-hero__ticks" aria-hidden="true">
+        <span class="story-hero__tick"></span>
+        <span class="story-hero__tick"></span>
+      </div>
+
+      {%- comment -%} Logo {%- endcomment -%}
+      {%- if section.settings.logo_image != blank -%}
+        <div class="story-hero__logo">
+          {{
+            section.settings.logo_image
+            | image_url: width: 870
+            | image_tag:
+              widths: '200,300,435,600,870',
+              sizes: '(min-width: 750px) 30vw, 60vw',
+              alt: 'humann logo',
+              loading: 'eager',
+              class: 'story-hero__logo-img'
+          }}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Tagline {%- endcomment -%}
+      <div class="story-hero__tagline">
+        {{ section.settings.tagline }}
+      </div>
+
+      {%- comment -%} Discover action group {%- endcomment -%}
+      <div class="story-hero__discover">
+        <span class="story-hero__discover-label">{{ discover_label }}</span>
+        <div class="story-hero__chevrons">
+          <span class="story-hero__chevron story-hero__chevron--1">
+            {{ 'chevron-down.svg' | inline_asset_content }}
+          </span>
+          <span class="story-hero__chevron story-hero__chevron--2">
+            {{ 'chevron-down-2.svg' | inline_asset_content }}
+          </span>
+          <span class="story-hero__chevron story-hero__chevron--3">
+            {{ 'chevron-down-3.svg' | inline_asset_content }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var heroUrl = {{ 'story-hero.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+    Promise.all([import(utilsUrl), import(heroUrl)]).then(function (modules) {
+      var utils = modules[0];
+      var section = modules[1];
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Story Hero Section Wrapper (applied via schema "class") --- */
+  .story-hero-section {
+    background: transparent;
+  }
+
+  /* --- Sticky viewport with red background --- */
+  .story-hero {
+    background-color: var(--os-color-red, #BC0F0F);
+    position: relative;
+  }
+
+  /* --- Particle-ring canvas --- */
+  .story-hero__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: multiply;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  /* --- Content overlay --- */
+  .story-hero__content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* --- Decorative ticks (top-right) --- */
+  .story-hero__ticks {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    display: flex;
+    gap: 5px;
+  }
+
+  .story-hero__tick {
+    display: block;
+    width: 1.5px;
+    height: 17px;
+    background-color: #FFFFFF;
+  }
+
+  /* --- Logo --- */
+  .story-hero__logo {
+    width: clamp(200px, 30vw, 435px);
+    margin-block-end: 10px;
+  }
+
+  .story-hero__logo-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* --- Tagline --- */
+  .story-hero__tagline {
+    font-family: var(--font-body--family);
+    font-size: 20px;
+    line-height: 52px;
+    letter-spacing: -0.5px;
+    color: var(--os-color-light-text, #F5F5F5);
+    text-align: center;
+    max-width: 1200px;
+    padding-inline: 24px;
+  }
+
+  .story-hero__tagline p {
+    margin: 0;
+  }
+
+  .story-hero__tagline strong {
+    font-weight: 700;
+  }
+
+  /* --- Discover group --- */
+  .story-hero__discover {
+    position: absolute;
+    bottom: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    pointer-events: auto;
+  }
+
+  .story-hero__discover-label {
+    font-family: var(--font-labels--family);
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+  }
+
+  /* --- Chevron stack --- */
+  .story-hero__chevrons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1px;
+  }
+
+  .story-hero__chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .story-hero__chevron svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+
+  /* Stagger the chevrons closer together */
+  .story-hero__chevron--2 {
+    margin-top: -12px;
+  }
+
+  .story-hero__chevron--3 {
+    margin-top: -12px;
+  }
+
+  /* --- Chevron bob animation --- */
+  @keyframes shr-chevron-bob {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+    100% { transform: translateY(0); }
+  }
+
+  .story-hero__chevron--1 {
+    animation: shr-chevron-bob 2s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .story-hero__chevron--2 {
+    animation: shr-chevron-bob 2s ease-in-out infinite;
+    animation-delay: 0.18s;
+  }
+
+  .story-hero__chevron--3 {
+    animation: shr-chevron-bob 2s ease-in-out infinite;
+    animation-delay: 0.36s;
+  }
+
+  /* --- Mobile adjustments --- */
+  @media screen and (max-width: 749px) {
+    .story-hero__logo {
+      width: clamp(180px, 60vw, 300px);
+    }
+
+    .story-hero__tagline {
+      font-size: 16px;
+      line-height: 40px;
+      letter-spacing: -0.3px;
+      padding-inline: 20px;
+    }
+
+    .story-hero__discover {
+      bottom: 32px;
+    }
+
+    .story-hero__ticks {
+      top: 20px;
+      right: 20px;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-hero__chevron--1,
+    .story-hero__chevron--2,
+    .story-hero__chevron--3 {
+      animation: none;
+    }
+
+    .story-hero__discover {
+      opacity: 1 !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story Hero",
+  "class": "story-hero-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image"
+    },
+    {
+      "type": "richtext",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "<p>Cardiovascular health is <strong>everything health</strong></p>"
+    },
+    {
+      "type": "text",
+      "id": "discover_label",
+      "label": "Discover label",
+      "default": "DISCOVER"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 500,
+      "max": 5000,
+      "step": 100,
+      "default": 2000,
+      "unit": "px",
+      "info": "Extra scroll height while the hero stays pinned"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}

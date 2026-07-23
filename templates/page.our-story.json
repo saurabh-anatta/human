@@ -55,9 +55,18 @@
         "nav_whats_next"
       ],
       "settings": {}
+    },
+    "story_hero": {
+      "type": "story-hero",
+      "settings": {
+        "tagline": "<p>Cardiovascular health is <strong>everything health<\/strong><\/p>",
+        "discover_label": "DISCOVER",
+        "pin_distance": 2000
+      }
     }
   },
   "order": [
-    "story_subnav"
+    "story_subnav",
+    "story_hero"
   ]
 }
