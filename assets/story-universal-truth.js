@@ -1,7 +1,7 @@
 /**
  * Section-specific JS for the universal-truth vessel canvas.
  *
- * Scroll-scrubbed drawing: an invisible "pen" sits at ~88% of the viewport
+ * Scroll-scrubbed drawing: an invisible "pen" sits at ~72% of the viewport
  * height. Every [data-sut-draw] element draws exactly as far as it has
  * scrolled past the pen — lines grow via scaleY, SVG strokes draw via
  * pathLength-normalised dashoffset, text fades up. Because progress is
@@ -48,8 +48,14 @@ export function init(sectionEl, utils) {
 
   let ticking = false;
 
+  /* Where the drawing tip rides in the viewport (0 = top, 1 = bottom).
+     0.88 hid the forming moment at the fold — short pieces like the 150px
+     tree flare completed before rising into view. 0.72 keeps the tip in the
+     lower-middle of the screen so splits/merges visibly form while read. */
+  const PEN_VH = 0.72;
+
   function applyDraw() {
-    const penY = window.innerHeight * 0.88;
+    const penY = window.innerHeight * PEN_VH;
 
     for (const item of items) {
       const rect = item.el.getBoundingClientRect();
