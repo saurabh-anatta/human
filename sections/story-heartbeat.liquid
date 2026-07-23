@@ -1,0 +1,496 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 12000
+-%}
+
+{%- capture inline_styles -%}
+  --os-chapter-z: 20;
+{%- endcapture -%}
+
+<div
+  class="story-chapter"
+  data-anchor="how-it-started"
+  style="height: calc(100vh + {{ pin_distance }}px); {{ inline_styles }}"
+>
+  <div
+    class="story-chapter__sticky story-heartbeat"
+    data-section-id="{{ section.id }}"
+  >
+
+    <canvas class="story-heartbeat__canvas-back" aria-hidden="true"></canvas>
+
+    {%- if section.settings.elder_image != blank -%}
+      <div class="story-heartbeat__image story-heartbeat__image--elder">
+        {{
+          section.settings.elder_image
+          | image_url: width: 1038
+          | image_tag:
+            widths: '260,400,519,800,1038',
+            sizes: '(min-width: 750px) 36vw, 70vw',
+            alt: 'Elder portrait',
+            loading: 'lazy',
+            class: 'story-heartbeat__img'
+        }}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.runner_image != blank -%}
+      <div class="story-heartbeat__image story-heartbeat__image--runner">
+        {{
+          section.settings.runner_image
+          | image_url: width: 1992
+          | image_tag:
+            widths: '400,600,996,1500,1992',
+            sizes: '(min-width: 750px) 69vw, 100vw',
+            alt: 'Runner',
+            loading: 'lazy',
+            class: 'story-heartbeat__img'
+        }}
+      </div>
+    {%- endif -%}
+
+    <canvas class="story-heartbeat__canvas-front" aria-hidden="true"></canvas>
+
+    <div class="story-heartbeat__text story-heartbeat__text--beat-1">
+      <div class="story-heartbeat__heading story-heartbeat__heading--dark">{{ section.settings.beat_1_heading }}</div>
+      <div class="story-heartbeat__subtext">{{ section.settings.beat_1_subtext }}</div>
+    </div>
+
+    <div class="story-heartbeat__text story-heartbeat__text--beat-2">
+      <div class="story-heartbeat__heading">{{ section.settings.beat_2_text }}</div>
+    </div>
+
+    <div class="story-heartbeat__text story-heartbeat__text--beat-3">
+      <div class="story-heartbeat__heading">{{ section.settings.beat_3_heading }}</div>
+      <div class="story-heartbeat__subtext">{{ section.settings.beat_3_subtext }}</div>
+    </div>
+
+    <div class="story-heartbeat__text story-heartbeat__text--beat-4">
+      <div class="story-heartbeat__heading">{{ section.settings.beat_4_text }}</div>
+    </div>
+
+    <div class="story-heartbeat__scroll-hint">
+      <span class="story-heartbeat__scroll-label">{{ section.settings.scroll_hint_label }}</span>
+      <span class="story-heartbeat__scroll-chevron">
+        {{ 'chevron-down.svg' | inline_asset_content }}
+      </span>
+    </div>
+
+    {% for block in section.blocks %}
+      {% if block.type == 'narrative_copy' and block.settings.enabled %}
+        <div class="story-heartbeat__narrative" {{ block.shopify_attributes }}>
+          {{ block.settings.text }}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var heartbeatUrl = {{ 'story-heartbeat.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+    Promise.all([import(utilsUrl), import(heartbeatUrl)]).then(function (modules) {
+      var utils = modules[0];
+      var section = modules[1];
+      section.init(sectionEl, utils);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-heartbeat-section {
+    background: transparent;
+  }
+
+  /* --- Sticky child — owns the light background --- */
+  .story-heartbeat {
+    position: relative;
+    background: linear-gradient(135deg, #ffffff 0%, #f5f5f0 40%, #eeeee8 100%);
+  }
+
+  /* --- Canvases --- */
+  .story-heartbeat__canvas-back,
+  .story-heartbeat__canvas-front {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .story-heartbeat__canvas-back {
+    z-index: 0;
+  }
+
+  .story-heartbeat__canvas-front {
+    z-index: 2;
+  }
+
+  /* --- Images --- */
+  .story-heartbeat__image {
+    position: absolute;
+    bottom: 46px;
+    left: 0;
+    z-index: 1;
+    will-change: transform, opacity;
+    opacity: 0;
+  }
+
+  .story-heartbeat__image--elder {
+    width: clamp(260px, 36vw, 519px);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  .story-heartbeat__image--runner {
+    width: clamp(400px, 69vw, 996px);
+  }
+
+  .story-heartbeat__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: grayscale(1);
+  }
+
+  .story-heartbeat__image--elder .story-heartbeat__img {
+    aspect-ratio: 519 / 741;
+    object-fit: cover;
+  }
+
+  .story-heartbeat__image--runner .story-heartbeat__img {
+    aspect-ratio: 996 / 925;
+    object-fit: cover;
+  }
+
+  /* --- Text blocks --- */
+  .story-heartbeat__text {
+    position: absolute;
+    left: 0;
+    z-index: 3;
+    will-change: transform, opacity;
+    opacity: 0;
+    max-width: 550px;
+    padding-inline: 24px;
+  }
+
+  .story-heartbeat__text--beat-1 {
+    bottom: 120px;
+  }
+
+  .story-heartbeat__text--beat-2 {
+    top: 30%;
+  }
+
+  .story-heartbeat__text--beat-3 {
+    top: 25%;
+  }
+
+  .story-heartbeat__text--beat-4 {
+    top: 30%;
+  }
+
+  /* --- Heading typography --- */
+  .story-heartbeat__heading {
+    font-family: var(--font-heading--family);
+    font-weight: 400;
+    font-size: clamp(28px, 3.33vw, 48px);
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: #767676;
+  }
+
+  .story-heartbeat__heading--dark {
+    color: #414141;
+  }
+
+  .story-heartbeat__heading p {
+    margin: 0;
+  }
+
+  /* --- Subtext typography --- */
+  .story-heartbeat__subtext {
+    font-family: var(--font-accent--family);
+    font-weight: 700;
+    font-size: clamp(14px, 1.39vw, 20px);
+    line-height: 24px;
+    color: #767676;
+    margin-top: 8px;
+  }
+
+  .story-heartbeat__text--beat-3 .story-heartbeat__subtext {
+    color: #A0A0A0;
+  }
+
+  .story-heartbeat__subtext p {
+    margin: 0;
+  }
+
+  /* --- Scroll hint --- */
+  .story-heartbeat__scroll-hint {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .story-heartbeat__scroll-label {
+    font-family: var(--font-labels--family);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #767676;
+  }
+
+  .story-heartbeat__scroll-chevron {
+    animation: shb-bob 2s ease-in-out infinite;
+  }
+
+  .story-heartbeat__scroll-chevron svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+
+  @keyframes shb-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
+  }
+
+  /* --- Narrative blocks (optional, hidden by default) --- */
+  .story-heartbeat__narrative {
+    position: absolute;
+    z-index: 3;
+    max-width: 480px;
+    font-family: var(--font-heading--family);
+    font-weight: 400;
+    font-size: clamp(20px, 2vw, 32px);
+    line-height: 1.4;
+    color: #767676;
+    opacity: 0;
+    will-change: transform, opacity;
+    padding-inline: 24px;
+  }
+
+  .story-heartbeat__narrative p {
+    margin: 0;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-heartbeat__image--elder {
+      width: clamp(200px, 60vw, 360px);
+    }
+
+    .story-heartbeat__image--runner {
+      width: clamp(300px, 90vw, 600px);
+    }
+
+    .story-heartbeat__text {
+      max-width: 85vw;
+      padding-inline: 16px;
+    }
+
+    .story-heartbeat__heading {
+      line-height: 38px;
+    }
+
+    .story-heartbeat__text--beat-1 {
+      bottom: 100px;
+    }
+
+    .story-heartbeat__scroll-hint {
+      bottom: 16px;
+    }
+  }
+
+  /* --- Reduced motion: static stacked fallback --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-heartbeat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+      padding: 60px 24px;
+    }
+
+    .story-heartbeat__canvas-back,
+    .story-heartbeat__canvas-front {
+      display: none;
+    }
+
+    .story-heartbeat__scroll-hint {
+      display: none;
+    }
+
+    .story-heartbeat__image,
+    .story-heartbeat__text,
+    .story-heartbeat__narrative {
+      position: relative;
+      bottom: auto;
+      top: auto;
+      left: auto;
+      opacity: 1;
+      transform: none;
+      will-change: auto;
+      max-width: 600px;
+    }
+
+    .story-heartbeat__image--elder { order: 1; }
+    .story-heartbeat__text--beat-1 { order: 2; }
+    .story-heartbeat__text--beat-2 { order: 3; }
+    .story-heartbeat__text--beat-3 { order: 4; }
+    .story-heartbeat__image--runner { order: 5; }
+    .story-heartbeat__text--beat-4 { order: 6; }
+    .story-heartbeat__narrative { order: 7; }
+
+    .story-heartbeat__scroll-chevron {
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Heartbeat Chapter",
+  "class": "story-heartbeat-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "elder_image",
+      "label": "Elder photo"
+    },
+    {
+      "type": "image_picker",
+      "id": "runner_image",
+      "label": "Runner photo"
+    },
+    {
+      "type": "header",
+      "content": "Text beats"
+    },
+    {
+      "type": "richtext",
+      "id": "beat_1_heading",
+      "label": "Beat 1 heading",
+      "default": "<p>America has been looking at cardiovascular health all wrong.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "beat_1_subtext",
+      "label": "Beat 1 subtext",
+      "default": "<p>Some say it's about your heart problems. Or something you deal with in old age.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "beat_2_text",
+      "label": "Beat 2 text",
+      "default": "<p>The real story isn't just about the heart —</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "beat_3_heading",
+      "label": "Beat 3 heading",
+      "default": "<p>It's about the 60,000 miles of blood vessels</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "beat_3_subtext",
+      "label": "Beat 3 subtext",
+      "default": "<p>doing the heavy lifting behind it–every second, for every one of us.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "beat_4_text",
+      "label": "Beat 4 text",
+      "default": "<p>You can't out-diet it and you can't out-train it.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Scroll hint"
+    },
+    {
+      "type": "text",
+      "id": "scroll_hint_label",
+      "label": "Scroll hint label",
+      "default": "SCROLL"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 4000,
+      "max": 16000,
+      "step": 500,
+      "default": 12000,
+      "unit": "px",
+      "info": "Extra scroll height while the scene stays pinned"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "narrative_copy",
+      "name": "Narrative copy",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enabled",
+          "label": "Show this text",
+          "default": false
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

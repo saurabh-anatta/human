@@ -63,10 +63,43 @@
         "discover_label": "DISCOVER",
         "pin_distance": 2000
       }
+    },
+    "story_heartbeat": {
+      "type": "story-heartbeat",
+      "settings": {
+        "elder_image": "shopify://shop_images/pexels-thehumantra-13517431-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281258.jpg",
+        "runner_image": "shopify://shop_images/runner-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281249.png",
+        "pin_distance": 12000
+      },
+      "blocks": {
+        "narrative_1": {
+          "type": "narrative_copy",
+          "settings": {
+            "enabled": false,
+            "text": "<p>So why do we keep getting this wrong?<\/p>"
+          }
+        },
+        "narrative_2": {
+          "type": "narrative_copy",
+          "settings": {
+            "enabled": false,
+            "text": "<p>It's the biggest blind spot in human health. We think, it's not something that happens to other people.<\/p>"
+          }
+        },
+        "narrative_3": {
+          "type": "narrative_copy",
+          "settings": {
+            "enabled": false,
+            "text": "<p>It's something already happening to you — whether you're paying attention or not.<\/p>"
+          }
+        }
+      },
+      "block_order": ["narrative_1", "narrative_2", "narrative_3"]
     }
   },
   "order": [
     "story_subnav",
-    "story_hero"
+    "story_hero",
+    "story_heartbeat"
   ]
 }
