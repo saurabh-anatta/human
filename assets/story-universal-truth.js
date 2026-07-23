@@ -142,9 +142,11 @@ export function init(sectionEl, utils) {
           stemEnterPaths[ai].el.style.strokeDashoffset = lerp(stemEnterPaths[ai].totalLength, 0, a1);
         }
 
-        /* ---- Phase 2 (0.04 → 0.10): Heartbeat squiggle draws ---- */
+        /* ---- Phase 2 (0.04 → 0.14): Heartbeats draw sequentially —
+           small pulse, then big pulse, then the tail into the text ---- */
         for (var bi = 0; bi < heartbeatPaths.length; bi++) {
-          var b1 = phaseProgress(p, 0.04, 0.10);
+          var hbStart = 0.04 + bi * 0.03;
+          var b1 = phaseProgress(p, hbStart, hbStart + 0.04);
           heartbeatPaths[bi].el.style.strokeDashoffset = lerp(heartbeatPaths[bi].totalLength, 0, b1);
         }
 

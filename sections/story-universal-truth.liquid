@@ -46,59 +46,66 @@
         preserveAspectRatio="xMidYMid slice"
         aria-hidden="true"
       >
-        {%- comment -%} Stem enter: central line arriving from sub-nav {%- endcomment -%}
+        {%- comment -%} Stem enter: central line continuing down from the sub-nav {%- endcomment -%}
         <path
           class="story-universal-truth__vessel-path"
           data-phase="stem-enter"
-          d="M 720 0 Q 718 60 720 122"
+          d="M 720 0 Q 719 65 720 130"
           fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
         />
 
-        {%- comment -%} Heartbeat squiggle: hand-drawn pulse motif {%- endcomment -%}
+        {%- comment -%} Heartbeat: small pulse, then a big pulse, then a tail leading to the text {%- endcomment -%}
         <path
           class="story-universal-truth__vessel-path"
           data-phase="heartbeat"
-          d="M 720,122 C 720,128 722,132 723,136 C 725,142 716,146 714,150 C 710,158 738,122 740,136 C 742,150 722,160 720,166 C 718,172 720,178 720,186"
+          d="M 720,130 C 720,136 727,140 712,145 C 703,148 731,152 721,157 C 719,160 720,163 720,166"
           fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
         />
         <path
           class="story-universal-truth__vessel-path"
           data-phase="heartbeat"
-          d="M 721,126 C 721,132 719,138 718,144 C 716,152 724,146 726,154 C 728,162 718,166 719,174 C 720,180 720,184 720,188"
-          fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"
+          d="M 720,166 C 722,175 727,181 705,185 C 666,192 784,191 798,198 C 814,206 658,209 644,217 C 632,224 704,229 718,235 C 721,241 720,248 720,256"
+          fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
+        />
+        <path
+          class="story-universal-truth__vessel-path"
+          data-phase="heartbeat"
+          d="M 720 256 Q 721 300 720 345"
+          fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
         />
 
-        {%- comment -%} Stem mid: long vertical run down to the first bulb split {%- endcomment -%}
+        {%- comment -%} Stem mid: plain vertical run down to the bulb split {%- endcomment -%}
         <path
           class="story-universal-truth__vessel-path"
           data-phase="stem-mid"
-          d="M 720 186 Q 721 265 720 344"
+          d="M 720 345 Q 721 400 720 455"
           fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
         />
 
-        {%- comment -%} Bulb 1 — vertical strands splitting from the stem, converging above the text {%- endcomment -%}
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 L 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,376 817,380 817,416 L 817,436 C 817,472 720,476 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,376 623,380 623,416 L 623,436 C 623,472 720,476 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,378 914,382 914,418 L 914,434 C 914,470 720,474 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,378 526,382 526,418 L 526,434 C 526,470 720,474 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,380 1011,384 1011,420 L 1011,432 C 1011,468 720,472 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.25" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,344 C 720,380 429,384 429,420 L 429,432 C 429,468 720,472 720,508" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.25" stroke-linecap="round"/>
+        {%- comment -%} Bulb top — 7 strands split on a slant, round into verticals, cut off above the text.
+            Center strand stays perfectly straight. {%- endcomment -%}
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 L 720,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 754,477 817,495 817,545 L 817,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 686,477 623,495 623,545 L 623,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 788,481 914,501 914,553 L 914,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.75" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 652,481 526,501 526,553 L 526,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.75" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 822,485 1011,507 1011,561 L 1011,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-1" d="M 720,455 C 618,485 429,507 429,561 L 429,585" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
 
-        {%- comment -%} Bulb 2 — reopens below the text, converges into the exit stem {%- endcomment -%}
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 L 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,727 817,731 817,767 L 817,833 C 817,869 720,873 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,727 623,731 623,767 L 623,833 C 623,869 720,873 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,729 914,733 914,769 L 914,831 C 914,867 720,871 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,729 526,733 526,769 L 526,831 C 526,867 720,871 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,731 1011,735 1011,771 L 1011,829 C 1011,865 720,869 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.25" stroke-linecap="round"/>
-        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,695 C 720,731 429,735 429,771 L 429,829 C 429,865 720,869 720,905" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.25" stroke-linecap="round"/>
+        {%- comment -%} Bulb bottom — strands restart below the text and merge back into one {%- endcomment -%}
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 720,812 L 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 817,812 L 817,842 C 817,872 754,884 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 623,812 L 623,842 C 623,872 686,884 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 914,812 L 914,834 C 914,866 788,880 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.75" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 526,812 L 526,834 C 526,866 652,880 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.75" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 1011,812 L 1011,826 C 1011,860 822,876 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="story-universal-truth__vessel-path" data-phase="cage-2" d="M 429,812 L 429,826 C 429,860 618,876 720,902" fill="none" stroke="var(--sut-vessel-color)" stroke-width="1.5" stroke-linecap="round"/>
 
-        {%- comment -%} Stem exit: continues downward to next chapter {%- endcomment -%}
+        {%- comment -%} Stem exit: merged line continues downward to next chapter {%- endcomment -%}
         <path
           class="story-universal-truth__vessel-path"
           data-phase="stem-exit"
-          d="M 720 905 Q 721 952 720 1000"
+          d="M 720 902 Q 721 951 720 1000"
           fill="none" stroke="var(--sut-vessel-color)" stroke-width="2" stroke-linecap="round"
         />
       </svg>
@@ -291,7 +298,7 @@
     opacity: 0;
     transform: scale(1.3);
     position: relative;
-    top: 10svh;
+    top: 20svh;
   }
 
   .story-universal-truth__eyebrow-inline {
