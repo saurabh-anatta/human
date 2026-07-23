@@ -34,12 +34,15 @@
      Prefix: --ssn-
   \* ------------------------------------------------------------------ */
 
-  /* Sticky positioning on the .shopify-section wrapper */
+  /* Sticky positioning on the .shopify-section wrapper.
+     Transparent + click-through: only the pill bar paints a background,
+     so page content shows through (and stays clickable) on either side. */
   .story-subnav-section {
     position: sticky;
     top: var(--header-height, 0px);
     z-index: 10;
-    background-color: #FFFFFF;
+    background-color: transparent;
+    pointer-events: none;
   }
 
   .story-subnav {
@@ -72,6 +75,7 @@
     background-color: #EDEBE3;
     scrollbar-width: none;
     position: relative;
+    pointer-events: auto;
   }
 
   .story-subnav__bar::-webkit-scrollbar {
