@@ -164,6 +164,7 @@ export async function init(sectionEl, utils, threeUrl) {
   let posCurrentX = 0;
   let posCurrentY = 0;
   let autoRotateAccum = 0;
+  let autoRampCurrent = 0;
   let dragAccumY = 0;
   let dragAccumX = 0;
   let dragVelY = 0;
@@ -269,9 +270,10 @@ export async function init(sectionEl, utils, threeUrl) {
 
     if (copyEl) copyEl.style.opacity = utils.kfVal(KF_COPY_OP, scrollPx);
 
-    /* Auto-rotate: accumulates over time, scaled by ramp factor */
-    const autoRamp = utils.kfVal(KF_AUTO_ROTATE, scrollPx);
-    autoRotateAccum += autoRamp * 0.38 * dt;
+    /* Auto-rotate: accumulates over time, scaled by ramp factor (lerped at 0.03/frame) */
+    const autoRampTarget = utils.kfVal(KF_AUTO_ROTATE, scrollPx);
+    autoRampCurrent += (autoRampTarget - autoRampCurrent) * 0.03;
+    autoRotateAccum += autoRampCurrent * 0.38 * dt;
 
     /* Drag: accumulate velocity into persistent offset, damp velocity */
     dragAccumY += dragVelY;
@@ -374,10 +376,33 @@ export async function init(sectionEl, utils, threeUrl) {
     renderer.setSize(w, h);
   }
 
-  window.addEventListener('resize', function () {
+  function onResize() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(handleResize, 120);
-  });
+  }
+
+  window.addEventListener('resize', onResize);
 
   handleResize();
+
+  /* --- Cleanup on section unload (theme editor hot-swap) --- */
+  function cleanup() {
+    utils.unregisterRafCallback(tick);
+    window.removeEventListener('resize', onResize);
+    clearTimeout(resizeTimer);
+    renderer.dispose();
+    geomN.dispose();
+    geomO.dispose();
+    matN.dispose();
+    matO.dispose();
+    bondGeom.dispose();
+    bondMat.dispose();
+    spriteTexture.dispose();
+  }
+
+  document.addEventListener('shopify:section:unload', function (e) {
+    if (e.detail && e.detail.sectionId === sectionEl.dataset.sectionId) {
+      cleanup();
+    }
+  });
 }
