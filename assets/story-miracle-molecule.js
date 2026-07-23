@@ -146,10 +146,12 @@ export function init(sectionEl, utils) {
           }
         }
 
-        /* stage1_text_2: in 0.12-0.18, hold 0.18-0.20, out 0.20-0.25 */
+        /* stage1_text_2: in 0.15-0.19 (text 1 is fully out at 0.15 — the two
+           blocks share the same centered position, so any overlap stacks
+           them), hold 0.19-0.20, out 0.20-0.25 */
         if (stage1Text2) {
-          if (p <= 0.18) {
-            stage1Text2.style.opacity = lerp(0, 1, phaseProgress(p, 0.12, 0.18));
+          if (p <= 0.19) {
+            stage1Text2.style.opacity = lerp(0, 1, phaseProgress(p, 0.15, 0.19));
           } else if (p <= 0.20) {
             stage1Text2.style.opacity = '1';
           } else {
@@ -247,10 +249,12 @@ export function init(sectionEl, utils) {
               stage3Images[pi].style.opacity = Math.min(Math.max(imgOp, 0), 1);
             }
 
-            /* Text: fade in 10-40%, fade out 65-95% of range (last stays) */
+            /* Text: fade in 10-40%, fade out 65-95% of range. The last text
+               stays only when no closing text follows — closing text shares
+               the same absolute slot, so it must not fade in over it. */
             var txtIn = phaseProgress(p, pStart + perPair * 0.1, pStart + perPair * 0.4);
             var txtOut = 0;
-            if (pi < pairCount - 1) {
+            if (pi < pairCount - 1 || closingText) {
               txtOut = phaseProgress(p, pEnd - perPair * 0.35, pEnd - perPair * 0.05);
             }
             var txtOp = txtIn * (1 - txtOut);
