@@ -34,33 +34,52 @@ export function init(sectionEl, utils) {
   const navItems = Array.from(sectionEl.querySelectorAll('.story-subnav__item'));
   if (navItems.length === 0) return;
 
+  const navAnchors = navItems.map((item) =>
+    (item.getAttribute('href') || '').replace('#', '')
+  );
+
+  function getChapters() {
+    return Array.from(document.querySelectorAll('.story-chapter[data-anchor]'));
+  }
+
   /* --- Scroll-spy via rAF --- */
   let currentAnchor = '';
 
   function scrollSpy() {
-    const chapters = document.querySelectorAll('.story-chapter[data-anchor]');
+    const chapters = getChapters();
     if (chapters.length === 0) return;
 
-    const scrollY = window.scrollY;
-    const viewportMiddle = scrollY + window.innerHeight * 0.4;
-    let activeAnchor = '';
+    /*
+     * Overlay chapters have large negative top margins, so document ranges
+     * overlap. The chapter visually on screen is the LAST one (in DOM order)
+     * whose top edge has crossed the activation line.
+     */
+    const threshold = window.innerHeight * 0.4;
+    let activeIndex = -1;
 
-    for (const chapter of chapters) {
-      const top = chapter.offsetTop;
-      const bottom = top + chapter.offsetHeight;
-      if (viewportMiddle >= top && viewportMiddle < bottom) {
-        activeAnchor = chapter.getAttribute('data-anchor');
+    for (let i = 0; i < chapters.length; i++) {
+      if (chapters[i].getBoundingClientRect().top <= threshold) {
+        activeIndex = i;
+      }
+    }
+
+    /*
+     * Not every chapter has a nav item (e.g. blood-vessels, the-advisors).
+     * Walk backwards to the nearest chapter that does, so its pill stays lit
+     * through the un-navigated chapters that belong to it.
+     */
+    let activeAnchor = '';
+    for (let i = activeIndex; i >= 0; i--) {
+      const anchor = chapters[i].getAttribute('data-anchor');
+      if (anchor && navAnchors.indexOf(anchor) !== -1) {
+        activeAnchor = anchor;
         break;
       }
     }
 
-    /* Fall back to last chapter if scrolled past all */
-    if (!activeAnchor && chapters.length > 0) {
-      const last = chapters[chapters.length - 1];
-      const lastBottom = last.offsetTop + last.offsetHeight;
-      if (scrollY + window.innerHeight >= lastBottom - 50) {
-        activeAnchor = last.getAttribute('data-anchor');
-      }
+    /* At the very top (hero) nothing matches — treat it as the first item */
+    if (!activeAnchor) {
+      activeAnchor = navAnchors[0] || '';
     }
 
     if (activeAnchor && activeAnchor !== currentAnchor) {
@@ -97,9 +116,23 @@ export function init(sectionEl, utils) {
     const target = document.querySelector('.story-chapter[data-anchor="' + anchor + '"]');
     if (!target) return;
 
-    window.scrollTo({
-      top: target.offsetTop,
-      behavior: 'smooth'
-    });
+    /* The first nav chapter starts the story — take it from the very top */
+    const chapters = getChapters();
+    let firstNavChapter = null;
+    for (const chapter of chapters) {
+      const chapterAnchor = chapter.getAttribute('data-anchor');
+      if (chapterAnchor && navAnchors.indexOf(chapterAnchor) !== -1) {
+        firstNavChapter = chapter;
+        break;
+      }
+    }
+
+    /* rect-based document offset — offsetTop is unreliable with positioned ancestors */
+    const top =
+      target === firstNavChapter
+        ? 0
+        : Math.max(0, target.getBoundingClientRect().top + window.scrollY);
+
+    window.scrollTo({ top, behavior: 'smooth' });
   });
 }
