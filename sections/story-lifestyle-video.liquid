@@ -1,0 +1,441 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 2000
+  assign show_cycling_word = section.settings.show_cycling_word
+  assign cycling_words_raw = section.settings.cycling_words
+-%}
+
+<div
+  class="story-chapter"
+  data-anchor="whats-next"
+  style="height: calc(100vh + {{ pin_distance }}px); --os-chapter-z: 1;"
+>
+  <div
+    class="story-chapter__sticky story-lifestyle-video"
+    data-section-id="{{ section.id }}"
+  >
+    <div class="story-lifestyle-video__content">
+
+      {%- comment -%} Video / Poster group with frosted text overlay {%- endcomment -%}
+      <div class="story-lifestyle-video__group">
+
+        {%- if section.settings.video_url != blank -%}
+          <video
+            class="story-lifestyle-video__video"
+            src="{{ section.settings.video_url }}"
+            muted
+            loop
+            playsinline
+            preload="none"
+            {%- if section.settings.poster_image != blank %}
+              poster="{{ section.settings.poster_image | image_url: width: 1360 }}"
+            {%- endif %}
+            {%- if section.settings.show_controls %}
+              controls
+            {%- endif %}
+          ></video>
+        {%- elsif section.settings.poster_image != blank -%}
+          <img
+            class="story-lifestyle-video__video"
+            src="{{ section.settings.poster_image | image_url: width: 1360 }}"
+            alt=""
+            loading="lazy"
+            width="1360"
+            height="689"
+          >
+        {%- endif -%}
+
+        {%- comment -%} Frosted glass text card {%- endcomment -%}
+        <div class="story-lifestyle-video__text-card story-reveal">
+
+          <div class="story-lifestyle-video__headline">
+            {%- if section.settings.headline_serif != blank -%}
+              <span class="story-lifestyle-video__headline-serif">{{ section.settings.headline_serif }}</span>
+            {%- endif -%}
+
+            {%- if show_cycling_word and cycling_words_raw != blank -%}
+              {%- assign words = cycling_words_raw | split: '|' -%}
+              <div class="story-lifestyle-video__cycling-word" data-words="{{ cycling_words_raw | escape }}">
+                {%- for word in words -%}
+                  <span class="story-lifestyle-video__cycling-word-item{% if forloop.first %} is-active{% endif %}">{{ word | strip }}</span>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+
+            {%- if section.settings.headline_bold != blank -%}
+              {{ ' ' }}<span class="story-lifestyle-video__headline-bold">{{ section.settings.headline_bold }}</span>
+            {%- endif -%}
+          </div>
+
+          {%- if section.settings.body_text != blank -%}
+            <div class="story-lifestyle-video__body">
+              {{ section.settings.body_text }}
+            </div>
+          {%- endif -%}
+
+        </div>
+      </div>
+
+      {%- comment -%} Benefits list {%- endcomment -%}
+      {%- if section.blocks.size > 0 -%}
+        <div class="story-lifestyle-video__benefits">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'benefit_row' -%}
+              <div class="story-lifestyle-video__benefit story-reveal" {{ block.shopify_attributes }}>
+                <span class="story-lifestyle-video__benefit-label">{{ block.settings.text }}</span>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var sectionUrl = {{ 'story-lifestyle-video.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+
+    var target = sectionEl.closest('.story-chapter') || sectionEl;
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          observer.disconnect();
+          Promise.all([import(utilsUrl), import(sectionUrl)]).then(function (modules) {
+            var utils = modules[0];
+            var mod = modules[1];
+            mod.init(sectionEl, utils);
+          });
+          break;
+        }
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(target);
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-lifestyle-video-section {
+    background: transparent;
+  }
+
+  /* --- Eliminate gap between previous section and this one --- */
+  .story-lifestyle-video-section .story-chapter {
+    margin-top: 0;
+  }
+
+  /* --- Sticky child — black chapter background --- */
+  .story-lifestyle-video {
+    position: relative;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* --- Content wrapper --- */
+  .story-lifestyle-video__content {
+    width: 100%;
+    max-width: 1360px;
+    padding: 0 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* --- Group container (video + text card) --- */
+  .story-lifestyle-video__group {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  /* --- Video / Poster image --- */
+  .story-lifestyle-video__video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1360 / 689;
+    object-fit: cover;
+  }
+
+  /* --- Frosted glass text card --- */
+  .story-lifestyle-video__text-card {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 909px;
+    width: calc(100% - 64px);
+    padding: 48px 32px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(36px);
+    -webkit-backdrop-filter: blur(36px);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  /* --- Headline container --- */
+  .story-lifestyle-video__headline {
+    text-align: center;
+    max-width: 845px;
+  }
+
+  /* --- Headline serif span --- */
+  .story-lifestyle-video__headline-serif {
+    font-family: 'Moderat Serif Regular', serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 40px;
+    color: #fff;
+  }
+
+  /* --- Headline bold span --- */
+  .story-lifestyle-video__headline-bold {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 40px;
+    color: #fff;
+  }
+
+  /* --- Cycling word container --- */
+  .story-lifestyle-video__cycling-word {
+    display: block;
+    position: relative;
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 32px;
+    color: #fff;
+    text-align: center;
+    margin-block: 8px;
+  }
+
+  /* --- Cycling word items --- */
+  .story-lifestyle-video__cycling-word-item {
+    position: absolute;
+    inset-inline: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .story-lifestyle-video__cycling-word-item.is-active {
+    position: relative;
+    opacity: 1;
+  }
+
+  /* --- Body text --- */
+  .story-lifestyle-video__body {
+    text-align: center;
+    max-width: 807px;
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    color: var(--os-color-light-text, #F5F5F5);
+  }
+
+  .story-lifestyle-video__body p {
+    margin: 0;
+  }
+
+  /* --- Benefits list --- */
+  .story-lifestyle-video__benefits {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+  }
+
+  .story-lifestyle-video__benefit {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 16px 0;
+  }
+
+  .story-lifestyle-video__benefit:last-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .story-lifestyle-video__benefit-label {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    color: #fff;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-lifestyle-video__content {
+      padding: 0 16px;
+      gap: 24px;
+    }
+
+    .story-lifestyle-video__text-card {
+      padding: 32px 20px;
+      width: calc(100% - 32px);
+    }
+
+    .story-lifestyle-video__headline-serif,
+    .story-lifestyle-video__headline-bold {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .story-lifestyle-video__cycling-word {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .story-lifestyle-video__body {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .story-lifestyle-video__benefit-label {
+      font-size: 16px;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-lifestyle-video .story-reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-lifestyle-video__cycling-word-item {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Lifestyle Video",
+  "class": "story-lifestyle-video-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "headline_serif",
+      "label": "Headline (serif)",
+      "default": "So yes, we're fifteen years in -"
+    },
+    {
+      "type": "text",
+      "id": "headline_bold",
+      "label": "Headline (bold)",
+      "default": "but we're still just getting started."
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>The early chapters were all about this one molecule.  But the people who trust us started asking for more. The same standard, applied to the rest of cardiovascular health.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cycling_words",
+      "label": "Cycling words",
+      "info": "Pipe-separated list (e.g. word one|word two)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cycling_word",
+      "label": "Show cycling word",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show video controls",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Video URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster image"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "default": 2000,
+      "unit": "px",
+      "info": "Extra scroll height while the scene stays pinned"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit_row",
+      "name": "Benefit row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Label",
+          "default": "Benefit"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

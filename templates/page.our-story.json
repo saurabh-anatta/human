@@ -380,6 +380,34 @@
       },
       "block_order": ["reel_1", "reel_2", "reel_3", "reel_4", "reel_5", "reel_6"]
     },
+    "story_lifestyle_video": {
+      "type": "story-lifestyle-video",
+      "settings": {
+        "headline_serif": "So yes, we're fifteen years in -",
+        "headline_bold": "but we're still just getting started.",
+        "body_text": "<p>The early chapters were all about this one molecule.  But the people who trust us started asking for more. The same standard, applied to the rest of cardiovascular health.<\/p>",
+        "show_cycling_word": false,
+        "cycling_words": "consistent daily energy|enhanced daily focus",
+        "show_controls": false,
+        "poster_image": "shopify:\/\/shop_images\/lifestyle-video-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281080.png",
+        "pin_distance": 2000
+      },
+      "blocks": {
+        "benefit_1": {
+          "type": "benefit_row",
+          "settings": {
+            "text": "Enhanced daily energy"
+          }
+        },
+        "benefit_2": {
+          "type": "benefit_row",
+          "settings": {
+            "text": "Supports cardiovascular vitality"
+          }
+        }
+      },
+      "block_order": ["benefit_1", "benefit_2"]
+    },
     "story_everyday_people": {
       "type": "story-everyday-people",
       "settings": {
@@ -699,6 +727,7 @@
     "story_proof_statistics",
     "story_university_stadium",
     "story_athletes_branching_lines",
-    "story_everyday_people"
+    "story_everyday_people",
+    "story_lifestyle_video"
   ]
 }
