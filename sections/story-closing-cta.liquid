@@ -1,0 +1,297 @@
+{%- liquid
+  assign overlap_distance = section.settings.overlap_distance | default: 3000
+-%}
+
+{%- capture inline_styles -%}
+  --os-chapter-z: 20; margin-top: -{{ overlap_distance }}px;
+{%- endcapture -%}
+
+<div
+  class="story-chapter story-chapter--overlay"
+  data-anchor="closing-cta"
+  style="height: 100vh; {{ inline_styles }}"
+>
+  <div
+    class="story-chapter__sticky story-closing-cta"
+    data-section-id="{{ section.id }}"
+  >
+    <canvas class="story-hero__canvas" aria-hidden="true"></canvas>
+
+    <div class="story-closing-cta__content">
+
+      {%- if section.settings.headline_text != blank -%}
+        <div class="story-closing-cta__headline story-reveal">
+          {{ section.settings.headline_text }}
+        </div>
+      {%- endif -%}
+
+      <div class="story-closing-cta__actions story-reveal">
+        {%- if section.settings.button_label != blank -%}
+          <a
+            class="story-closing-cta__button"
+            {% if section.settings.button_url != blank %}href="{{ section.settings.button_url }}"{% endif %}
+          >
+            {{ section.settings.button_label }}
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.secondary_label != blank -%}
+          <a
+            class="story-closing-cta__button-secondary"
+            {% if section.settings.secondary_url != blank %}href="{{ section.settings.secondary_url }}"{% endif %}
+          >
+            {{ section.settings.secondary_label }}
+          </a>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var sectionUrl = {{ 'story-closing-cta.js' | asset_url | json }};
+    var heroUrl = {{ 'story-hero.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+
+    var target = sectionEl.closest('.story-chapter') || sectionEl;
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          observer.disconnect();
+          Promise.all([import(utilsUrl), import(sectionUrl), import(heroUrl)]).then(function (modules) {
+            var utils = modules[0];
+            var sectionMod = modules[1];
+            var heroMod = modules[2];
+            sectionMod.init(sectionEl, utils, heroMod);
+          });
+          break;
+        }
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(target);
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-closing-cta-section {
+    background: transparent;
+  }
+
+  /* --- Sticky child — owns the red background --- */
+  .story-closing-cta {
+    background-color: var(--os-color-red, #BC0F0F);
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* --- Particle-ring canvas (reuses .story-hero__canvas class for JS) --- */
+  .story-closing-cta .story-hero__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: multiply;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  /* --- Centered content column --- */
+  .story-closing-cta__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    text-align: center;
+    padding: 0 24px;
+  }
+
+  /* --- Headline --- */
+  .story-closing-cta__headline {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 52px;
+    color: #FFFFFF;
+    max-width: 909px;
+    margin: 0;
+  }
+
+  .story-closing-cta__headline p {
+    margin: 0;
+  }
+
+  /* --- Actions container --- */
+  .story-closing-cta__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* --- Primary pill button --- */
+  .story-closing-cta__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 28px;
+    background: #F5F5F5;
+    color: #414141;
+    font-family: '(K) Uniforma', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 28px;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+
+  .story-closing-cta__button:hover {
+    transform: scale(1.04);
+    filter: brightness(0.96);
+  }
+
+  /* --- Secondary link --- */
+  .story-closing-cta__button-secondary {
+    color: #FFFFFF;
+    font-family: '(K) Uniforma', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* --- Reveal states --- */
+  .story-closing-cta .story-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .story-closing-cta .story-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-closing-cta__headline {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .story-closing-cta__content {
+      gap: 32px;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-closing-cta .story-reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-closing-cta__button {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Closing CTA",
+  "class": "story-closing-cta-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "headline_text",
+      "label": "Headline",
+      "default": "<p>Your cardiovascular routine starts here.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Get started TODAY"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary link label"
+    },
+    {
+      "type": "url",
+      "id": "secondary_url",
+      "label": "Secondary link URL"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "overlap_distance",
+      "label": "Overlap distance",
+      "min": 1000,
+      "max": 9500,
+      "step": 500,
+      "default": 3000,
+      "unit": "px",
+      "info": "How far this section slides over the previous chapter"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}

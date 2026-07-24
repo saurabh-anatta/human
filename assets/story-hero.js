@@ -1,25 +1,22 @@
 /* ==========================================================================
    Our Story — Hero Section (Particle Ring + DISCOVER fade)
    Exports init(sectionEl, utils) per the story-section pattern.
+   Exports initRing(canvas, utils) for reuse by other sections (e.g. Closing CTA).
    ========================================================================== */
 
 /**
- * Initialise the hero particle-ring canvas and scroll-driven DISCOVER fade.
- * @param {HTMLElement} sectionEl - The element with data-section-id
+ * Initialise a particle-ring canvas and return a draw handle.
+ * Under reduced motion: bakes once, draws a static frame, returns null.
+ * @param {HTMLCanvasElement} canvas - The canvas element to draw on
  * @param {Object} utils - The story-utils module
+ * @returns {{ draw: Function }|null} Ring handle with a draw() method, or null for reduced motion
  */
-export function init(sectionEl, utils) {
-  const chapterEl = sectionEl.closest('.story-chapter');
-  if (!chapterEl) return;
-
-  const canvas = sectionEl.querySelector('.story-hero__canvas');
-  const discoverEl = sectionEl.querySelector('.story-hero__discover');
-  if (!canvas) return;
+export function initRing(canvas, utils) {
+  if (!canvas) return null;
 
   const ctx = canvas.getContext('2d');
   const DOT_COLOR = '#5a0808';
   const ROTATION_SPEED = 0.012; /* rad/s */
-  const FADE_DISTANCE = 320; /* px of scroll to fully fade DISCOVER */
 
   let offscreen = null;
   let offCtx = null;
@@ -143,7 +140,6 @@ export function init(sectionEl, utils) {
 
   /* --- Reduced motion path --- */
   if (utils.prefersReducedMotion()) {
-    sectionEl.setAttribute('data-reduced-motion', '');
     bake();
     drawFrame(0);
 
@@ -155,18 +151,55 @@ export function init(sectionEl, utils) {
         drawFrame(0);
       }, 120);
     });
-    return;
+    return null;
   }
 
   /* --- Full animation path --- */
   bake();
   startTime = performance.now() / 1000;
 
-  function tick() {
+  function draw() {
     const now = performance.now() / 1000;
     const elapsed = now - startTime;
-
     drawFrame(elapsed);
+  }
+
+  /* Debounced resize: re-bake offscreen canvas */
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      bake();
+    }, 120);
+  });
+
+  return { draw };
+}
+
+/**
+ * Initialise the hero particle-ring canvas and scroll-driven DISCOVER fade.
+ * @param {HTMLElement} sectionEl - The element with data-section-id
+ * @param {Object} utils - The story-utils module
+ */
+export function init(sectionEl, utils) {
+  const chapterEl = sectionEl.closest('.story-chapter');
+  if (!chapterEl) return;
+
+  const canvas = sectionEl.querySelector('.story-hero__canvas');
+  const discoverEl = sectionEl.querySelector('.story-hero__discover');
+  if (!canvas) return;
+
+  const FADE_DISTANCE = 320; /* px of scroll to fully fade DISCOVER */
+
+  const ring = initRing(canvas, utils);
+
+  if (!ring) {
+    /* Reduced motion — initRing already drew a static frame */
+    sectionEl.setAttribute('data-reduced-motion', '');
+    return;
+  }
+
+  function tick() {
+    ring.draw();
 
     /* DISCOVER fade: opacity 1 → 0 over first FADE_DISTANCE px */
     if (discoverEl) {
@@ -177,12 +210,4 @@ export function init(sectionEl, utils) {
   }
 
   utils.registerRafCallback(tick);
-
-  /* Debounced resize: re-bake offscreen canvas */
-  window.addEventListener('resize', function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () {
-      bake();
-    }, 120);
-  });
 }

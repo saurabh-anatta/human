@@ -758,6 +758,14 @@
         "tile_33", "tile_34", "tile_35", "tile_36", "tile_37", "tile_38", "tile_39", "tile_40",
         "tile_41", "tile_42", "tile_43", "tile_44", "tile_45", "tile_46", "tile_47", "tile_48"
       ]
+    },
+    "story_closing_cta": {
+      "type": "story-closing-cta",
+      "settings": {
+        "headline_text": "<p>Your cardiovascular routine starts here.<\/p>",
+        "button_label": "Get started TODAY",
+        "overlap_distance": 3000
+      }
     }
   },
   "order": [
@@ -775,6 +783,7 @@
     "story_athletes_branching_lines",
     "story_everyday_people",
     "story_lifestyle_video",
-    "story_whats_next"
+    "story_whats_next",
+    "story_closing_cta"
   ]
 }
