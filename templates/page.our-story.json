@@ -324,6 +324,14 @@
         "stat_inc5000",
         "stat_teams"
       ]
+    },
+    "story_university_stadium": {
+      "type": "story-university-stadium",
+      "settings": {
+        "stadium_image": "shopify://shop_images/university-stadium-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-13328908.jpg",
+        "overlay_opacity": 0,
+        "pin_distance": 1500
+      }
     }
   },
   "order": [
@@ -336,6 +344,7 @@
     "story_molecule_in_all_of_us",
     "story_product_reveal",
     "story_advisory_board",
-    "story_proof_statistics"
+    "story_proof_statistics",
+    "story_university_stadium"
   ]
 }

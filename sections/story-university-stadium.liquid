@@ -1,0 +1,267 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 1500
+-%}
+
+<div
+  class="story-chapter"
+  data-anchor="the-people"
+  style="height: calc(100vh + {{ pin_distance }}px); --os-chapter-z: 1;"
+>
+  <div
+    class="story-chapter__sticky story-university-stadium"
+    data-section-id="{{ section.id }}"
+  >
+
+    {%- if section.settings.stadium_image != blank -%}
+      {%- assign img_alt = section.settings.stadium_image.alt | default: 'University stadium' -%}
+      <img
+        class="story-university-stadium__bg"
+        src="{{ section.settings.stadium_image | image_url: width: 1920 }}"
+        srcset="
+          {{ section.settings.stadium_image | image_url: width: 750 }} 750w,
+          {{ section.settings.stadium_image | image_url: width: 1100 }} 1100w,
+          {{ section.settings.stadium_image | image_url: width: 1440 }} 1440w,
+          {{ section.settings.stadium_image | image_url: width: 1920 }} 1920w,
+          {{ section.settings.stadium_image | image_url: width: 2880 }} 2880w
+        "
+        sizes="100vw"
+        alt="{{ img_alt }}"
+        loading="lazy"
+        width="{{ section.settings.stadium_image.width }}"
+        height="{{ section.settings.stadium_image.height }}"
+      >
+    {%- endif -%}
+
+    <div class="story-university-stadium__gradient"></div>
+
+    {%- assign overlay_opacity = section.settings.overlay_opacity | default: 0 -%}
+    {%- if overlay_opacity > 0 -%}
+      {%- assign opacity_decimal = overlay_opacity | divided_by: 100.0 -%}
+      <div class="story-university-stadium__tint" style="opacity: {{ opacity_decimal }};"></div>
+    {%- endif -%}
+
+    <div class="story-university-stadium__logo">
+      {%- if section.settings.logo_image != blank -%}
+        {{
+          section.settings.logo_image
+          | image_url: width: 626
+          | image_tag:
+            widths: '313,626',
+            sizes: '313px',
+            loading: 'lazy',
+            alt: section.settings.logo_image.alt | default: 'humann | UT logo'
+        }}
+      {%- else -%}
+        {{ 'humann-ut-logo-white.svg' | inline_asset_content }}
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var sectionUrl = {{ 'story-university-stadium.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+
+    var target = sectionEl.closest('.story-chapter') || sectionEl;
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          observer.disconnect();
+          Promise.all([import(utilsUrl), import(sectionUrl)]).then(function (modules) {
+            var utils = modules[0];
+            var section = modules[1];
+            section.init(sectionEl, utils);
+          });
+          break;
+        }
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(target);
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-university-stadium-section {
+    background: transparent;
+  }
+
+  /* --- Sticky child — full-bleed stadium image container --- */
+  .story-university-stadium {
+    position: relative;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 88px 8px 112px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  /* --- Background image --- */
+  .story-university-stadium__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transform: scale(1.06);
+    transition: transform 1.2s ease-out;
+  }
+
+  .story-university-stadium__bg.is-settled {
+    transform: scale(1);
+  }
+
+  /* --- Gradient overlay (always present) --- */
+  .story-university-stadium__gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 84%, rgba(0, 0, 0, 1) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* --- Optional dark tint --- */
+  .story-university-stadium__tint {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* --- Logo lockup --- */
+  .story-university-stadium__logo {
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .story-university-stadium__logo.is-visible {
+    opacity: 1;
+  }
+
+  .story-university-stadium__logo svg,
+  .story-university-stadium__logo img {
+    display: block;
+    width: 313px;
+    height: auto;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-university-stadium {
+      padding: 48px 16px 64px;
+    }
+
+    .story-university-stadium__logo svg,
+    .story-university-stadium__logo img {
+      width: 220px;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-university-stadium__bg {
+      transform: none !important;
+      will-change: auto;
+      transition: none !important;
+    }
+
+    .story-university-stadium__logo {
+      opacity: 1 !important;
+      transition: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "University Stadium",
+  "class": "story-university-stadium-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "image_picker",
+      "id": "stadium_image",
+      "label": "Background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image",
+      "info": "Leave blank to use the default humann | UT lockup SVG."
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay tint opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "unit": "%",
+      "info": "Additional dark tint over the image. 0 = no tint."
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "default": 1500,
+      "unit": "px",
+      "info": "Extra scroll height while the scene stays pinned"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}
