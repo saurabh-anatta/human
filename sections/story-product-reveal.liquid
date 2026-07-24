@@ -1,0 +1,268 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 3000
+  assign overlap_distance = section.settings.overlap_distance | default: 3000
+-%}
+
+{%- capture inline_styles -%}
+  --os-chapter-z: 70; margin-top: -{{ overlap_distance }}px;
+{%- endcapture -%}
+
+<div
+  class="story-chapter story-chapter--overlay story-chapter--light"
+  data-anchor="the-proof"
+  style="height: calc(100vh + {{ pin_distance }}px); {{ inline_styles }}"
+>
+  <div
+    class="story-chapter__sticky story-product-reveal"
+    data-section-id="{{ section.id }}"
+  >
+
+    <div class="story-product-reveal__content">
+      <div class="story-product-reveal__headline story-reveal">
+        {{ section.settings.headline_text }}
+      </div>
+
+      <div class="story-product-reveal__product-wrap">
+        {%- if section.settings.product_image != blank -%}
+          {{
+            section.settings.product_image
+            | image_url: width: 694
+            | image_tag:
+              widths: '347,694',
+              sizes: '347px',
+              class: 'story-product-reveal__product-img',
+              loading: 'lazy',
+              alt: 'Product'
+          }}
+        {%- endif -%}
+
+        {%- if section.settings.show_shadow -%}
+          <div class="story-product-reveal__shadow" aria-hidden="true"></div>
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var sectionUrl = {{ 'story-product-reveal.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+
+    var target = sectionEl.closest('.story-chapter') || sectionEl;
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          observer.disconnect();
+          Promise.all([import(utilsUrl), import(sectionUrl)]).then(function (modules) {
+            var utils = modules[0];
+            var section = modules[1];
+            section.init(sectionEl, utils);
+          });
+          break;
+        }
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(target);
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-product-reveal-section {
+    background: transparent;
+  }
+
+  /* --- Sticky child — owns the light gradient background --- */
+  .story-product-reveal {
+    position: relative;
+    background: var(--os-light-bg, linear-gradient(315deg, #ffffff 0%, #c8c8c8 100%));
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* --- Centered content column --- */
+  .story-product-reveal__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    max-width: 617px;
+    width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
+  /* --- Headline --- */
+  .story-product-reveal__headline {
+    font-family: "Moderat Serif Regular", serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 52px;
+    letter-spacing: -1px;
+    color: var(--os-light-text, #414141);
+    text-align: center;
+    margin: 0;
+  }
+
+  .story-product-reveal__headline p {
+    margin: 0;
+  }
+
+  /* --- Product wrap (image + shadow) --- */
+  .story-product-reveal__product-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* --- Product image --- */
+  .story-product-reveal__product-img {
+    width: 347px;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 9px;
+    position: relative;
+    z-index: 1;
+    will-change: transform;
+  }
+
+  /* --- Elliptical shadow beneath product --- */
+  .story-product-reveal__shadow {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 515px;
+    height: 344px;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.12) 0%, rgba(155, 155, 155, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform, opacity;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-product-reveal__headline {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .story-product-reveal__product-img {
+      width: 260px;
+    }
+
+    .story-product-reveal__shadow {
+      width: 380px;
+      height: 240px;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-product-reveal__product-img {
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-product-reveal__shadow {
+      transform: translateX(-50%) !important;
+      opacity: 1 !important;
+      will-change: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product Reveal",
+  "class": "story-product-reveal-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "headline_text",
+      "label": "Headline",
+      "default": "<p>We didn't build this business to sell supplements.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shadow",
+      "label": "Show product shadow",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "default": 3000,
+      "unit": "px",
+      "info": "Extra scroll height while the scene stays pinned"
+    },
+    {
+      "type": "range",
+      "id": "overlap_distance",
+      "label": "Overlap distance",
+      "min": 1000,
+      "max": 9500,
+      "step": 500,
+      "default": 3000,
+      "unit": "px",
+      "info": "How far this section slides over the previous chapter"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}

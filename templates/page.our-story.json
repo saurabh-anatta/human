@@ -178,6 +178,16 @@
         "pin_distance": 4000,
         "overlap_distance": 5000
       }
+    },
+    "story_product_reveal": {
+      "type": "story-product-reveal",
+      "settings": {
+        "headline_text": "<p>We didn\u2019t build this business to sell supplements.<\/p>",
+        "product_image": "shopify://shop_images/sbhczs-omi-19-1-page-overview-for-client-section-108344953.png",
+        "show_shadow": true,
+        "pin_distance": 3000,
+        "overlap_distance": 3000
+      }
     }
   },
   "order": [
@@ -187,6 +197,7 @@
     "story_no_molecule",
     "story_blood_vessels",
     "story_timeline",
-    "story_molecule_in_all_of_us"
+    "story_molecule_in_all_of_us",
+    "story_product_reveal"
   ]
 }

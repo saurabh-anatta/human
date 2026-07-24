@@ -44,6 +44,14 @@
   transform: none;
 }
 
+/* --- Light chapter modifier (shared tokens for product-reveal and downstream sections) --- */
+.story-chapter--light {
+  --os-light-bg: linear-gradient(315deg, #ffffff 0%, #c8c8c8 100%);
+  --os-light-text: #414141;
+  --os-light-bg-start: #c8c8c8;
+  --os-light-bg-end: #ffffff;
+}
+
 /* --- Reduced motion --- */
 @media (prefers-reduced-motion: reduce) {
   .story-chapter {
