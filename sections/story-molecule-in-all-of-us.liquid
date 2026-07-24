@@ -1,0 +1,391 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 4000
+  assign overlap_distance = section.settings.overlap_distance | default: 5000
+-%}
+
+{%- capture inline_styles -%}
+  --os-chapter-z: 60; margin-top: -{{ overlap_distance }}px;
+{%- endcapture -%}
+
+<div
+  class="story-chapter story-chapter--overlay"
+  data-anchor="molecule-in-all-of-us"
+  style="height: calc(100vh + {{ pin_distance }}px); {{ inline_styles }}"
+>
+  <div
+    class="story-chapter__sticky story-molecule-in-all-of-us"
+    data-section-id="{{ section.id }}"
+  >
+
+    {%- comment -%} Decorative vessel contour lines {%- endcomment -%}
+    <div class="story-molecule-in-all-of-us__vessel-lines" aria-hidden="true">
+      <svg class="story-molecule-in-all-of-us__vessel-svg" viewBox="0 0 2600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="mau-blur-{{ section.id }}">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+          </filter>
+        </defs>
+        <g transform="rotate(3.1 1300 600)">
+          <path d="M-100 280 C300 220, 700 400, 1100 320 C1500 240, 1900 380, 2700 300" stroke="#fff" stroke-width="1"/>
+          <path d="M-100 480 C400 440, 800 560, 1200 500 C1600 440, 2000 520, 2700 490" stroke="#fff" stroke-width="1"/>
+          <path d="M-100 680 C350 640, 750 780, 1150 700 C1550 620, 1950 740, 2700 690" stroke="#fff" stroke-width="1"/>
+          <path d="M-100 880 C300 840, 700 960, 1100 890 C1500 820, 1900 940, 2700 880" stroke="#fff" stroke-width="1"/>
+          <g filter="url(#mau-blur-{{ section.id }})">
+            <path d="M-100 180 C500 130, 900 300, 1300 220 C1700 140, 2100 280, 2700 200" stroke="#fff" stroke-width="1"/>
+            <path d="M-100 580 C400 540, 850 680, 1250 600 C1650 520, 2050 640, 2700 580" stroke="#fff" stroke-width="1"/>
+            <path d="M-100 780 C300 750, 750 880, 1150 800 C1550 720, 1950 840, 2700 790" stroke="#fff" stroke-width="1"/>
+            <path d="M-100 380 C500 340, 900 460, 1300 380 C1700 300, 2100 420, 2700 370" stroke="#fff" stroke-width="1"/>
+          </g>
+          <path d="M-100 130 C600 100, 1000 220, 1400 160 C1800 100, 2200 200, 2700 150" stroke="#fff" stroke-width="1" opacity="0.3"/>
+          <path d="M-100 980 C450 940, 850 1060, 1250 990 C1650 920, 2050 1040, 2700 980" stroke="#fff" stroke-width="1" opacity="0.8"/>
+        </g>
+      </svg>
+    </div>
+
+    {%- comment -%} Main layout: images left, text right {%- endcomment -%}
+    <div class="story-molecule-in-all-of-us__layout">
+
+      <div class="story-molecule-in-all-of-us__images">
+        {%- if section.settings.photo_1 != blank -%}
+          {{
+            section.settings.photo_1
+            | image_url: width: 1060
+            | image_tag:
+              widths: '375,530,1060',
+              sizes: '(min-width: 750px) 530px, calc(100vw - 48px)',
+              alt: 'Photo',
+              loading: 'lazy',
+              class: 'story-molecule-in-all-of-us__photo'
+          }}
+        {%- endif -%}
+        {%- if section.settings.photo_2 != blank -%}
+          {{
+            section.settings.photo_2
+            | image_url: width: 1060
+            | image_tag:
+              widths: '375,530,1060',
+              sizes: '(min-width: 750px) 530px, calc(100vw - 48px)',
+              alt: 'Photo',
+              loading: 'lazy',
+              class: 'story-molecule-in-all-of-us__photo story-molecule-in-all-of-us__photo--tilted'
+          }}
+        {%- endif -%}
+      </div>
+
+      <div class="story-molecule-in-all-of-us__text">
+        <div class="story-molecule-in-all-of-us__headline">
+          {{ section.settings.headline_text }}
+          {%- if section.settings.molecule_image != blank -%}
+            <img
+              class="story-molecule-in-all-of-us__molecule-img"
+              src="{{ section.settings.molecule_image | image_url: width: 80 }}"
+              alt=""
+              width="40"
+              height="40"
+              loading="lazy"
+              style="width: 40px; height: auto;"
+            >
+          {%- endif -%}
+        </div>
+        {%- if section.settings.body_text != blank -%}
+          <div class="story-molecule-in-all-of-us__body">
+            {{ section.settings.body_text }}
+          </div>
+        {%- endif -%}
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var sectionUrl = {{ 'story-molecule-in-all-of-us.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+
+    var target = sectionEl.closest('.story-chapter') || sectionEl;
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          observer.disconnect();
+          Promise.all([import(utilsUrl), import(sectionUrl)]).then(function (modules) {
+            var utils = modules[0];
+            var section = modules[1];
+            section.init(sectionEl, utils);
+          });
+          break;
+        }
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(target);
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-molecule-in-all-of-us-section {
+    background: transparent;
+  }
+
+  /* --- Sticky child — owns the red background --- */
+  .story-molecule-in-all-of-us {
+    position: relative;
+    background-color: #BC0F0F;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 27px;
+  }
+
+  /* --- Decorative vessel contour lines --- */
+  .story-molecule-in-all-of-us__vessel-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    will-change: transform;
+  }
+
+  .story-molecule-in-all-of-us__vessel-svg {
+    position: absolute;
+    width: 180%;
+    height: 100%;
+    left: -40%;
+    top: -10%;
+  }
+
+  /* --- Main two-column layout --- */
+  .story-molecule-in-all-of-us__layout {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 80px;
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 60px;
+  }
+
+  /* --- Images column (left) --- */
+  .story-molecule-in-all-of-us__images {
+    flex: 0 0 530px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    will-change: transform;
+  }
+
+  /* --- Photo --- */
+  .story-molecule-in-all-of-us__photo {
+    border-radius: 24px;
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .story-molecule-in-all-of-us__photo--tilted {
+    transform: rotate(3.1deg);
+  }
+
+  /* --- Text column (right) --- */
+  .story-molecule-in-all-of-us__text {
+    flex: 1 1 0%;
+    max-width: 562px;
+  }
+
+  /* --- Headline --- */
+  .story-molecule-in-all-of-us__headline {
+    position: relative;
+    font-family: var(--font-heading--family);
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 52px;
+    color: #FFFFFF;
+    margin: 0;
+  }
+
+  .story-molecule-in-all-of-us__headline p {
+    margin: 0;
+  }
+
+  .story-molecule-in-all-of-us__headline em {
+    font-family: var(--font-accent--family);
+    font-style: normal;
+  }
+
+  /* --- Inline molecule image (absolute within headline) --- */
+  .story-molecule-in-all-of-us__molecule-img {
+    position: absolute;
+    width: 40px;
+    height: auto;
+    pointer-events: none;
+    top: -5px;
+    right: -15px;
+  }
+
+  /* --- Body text --- */
+  .story-molecule-in-all-of-us__body {
+    font-family: var(--font-heading--family);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    color: rgba(245, 245, 245, 0.7);
+    margin-top: 16px;
+  }
+
+  .story-molecule-in-all-of-us__body p {
+    margin: 0;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-molecule-in-all-of-us__layout {
+      flex-direction: column;
+      gap: 40px;
+      padding: 0 24px;
+    }
+
+    .story-molecule-in-all-of-us__images {
+      flex-basis: auto;
+      width: 100%;
+    }
+
+    .story-molecule-in-all-of-us__text {
+      max-width: 100%;
+    }
+
+    .story-molecule-in-all-of-us__headline {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .story-molecule-in-all-of-us__body {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .story-molecule-in-all-of-us__molecule-img {
+      width: 28px;
+      top: -4px;
+      right: -10px;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-molecule-in-all-of-us__images {
+      transform: none !important;
+    }
+
+    .story-molecule-in-all-of-us__vessel-lines {
+      transform: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Molecule in All of Us Chapter",
+  "class": "story-molecule-in-all-of-us-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "headline_text",
+      "label": "Headline",
+      "default": "<p>Because the same molecule that started this <em>runs through all of us.</em></p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "molecule_image",
+      "label": "Inline molecule image",
+      "info": "Small N-O molecule graphic displayed inside the headline"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>The same mechanism helping a 23-year-old athlete perform at their peak \u2014 and a 68-year-old keep a healthy blood pressure reading. One highway. Every kind of person running on it.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Photos"
+    },
+    {
+      "type": "image_picker",
+      "id": "photo_1",
+      "label": "Photo 1 (top)"
+    },
+    {
+      "type": "image_picker",
+      "id": "photo_2",
+      "label": "Photo 2 (bottom)"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "default": 4000,
+      "unit": "px",
+      "info": "Extra scroll height while the scene stays pinned"
+    },
+    {
+      "type": "range",
+      "id": "overlap_distance",
+      "label": "Overlap distance",
+      "min": 1000,
+      "max": 9500,
+      "step": 500,
+      "default": 5000,
+      "unit": "px",
+      "info": "How far this section slides over the previous chapter"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}

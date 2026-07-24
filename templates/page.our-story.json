@@ -166,6 +166,18 @@
         }
       },
       "block_order": ["milestone_1998", "milestone_2009", "milestone_today"]
+    },
+    "story_molecule_in_all_of_us": {
+      "type": "story-molecule-in-all-of-us",
+      "settings": {
+        "headline_text": "<p>Because the same molecule that started this <em>runs through all of us.<\/em><\/p>",
+        "molecule_image": "shopify://shop_images/screenshot-2026-07-22-at-11-25-49-am-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-13328907.png",
+        "body_text": "<p>The same mechanism helping a 23-year-old athlete perform at their peak \u2014 and a 68-year-old keep a healthy blood pressure reading. One highway. Every kind of person running on it.<\/p>",
+        "photo_1": "shopify://shop_images/kzabh10350-full-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-13328902.jpg",
+        "photo_2": "shopify://shop_images/kambria-trout-rdm2emlablm-unsplash-1-concept-14-out-diet-full-bleed-slide-final-design-125732198.jpg",
+        "pin_distance": 4000,
+        "overlap_distance": 5000
+      }
     }
   },
   "order": [
@@ -174,6 +186,7 @@
     "story_heartbeat",
     "story_no_molecule",
     "story_blood_vessels",
-    "story_timeline"
+    "story_timeline",
+    "story_molecule_in_all_of_us"
   ]
 }
