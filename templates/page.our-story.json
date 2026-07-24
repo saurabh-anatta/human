@@ -408,6 +408,52 @@
       },
       "block_order": ["benefit_1", "benefit_2"]
     },
+    "story_whats_next": {
+      "type": "story-whats-next",
+      "settings": {
+        "headline_text": "<p><strong>It was always about the 60,000 miles<\/strong> running through every single one of us.<\/p>",
+        "body_text": "<p>There isn\u2019t a person on Earth who doesn\u2019t benefit from better cardiovascular health. It isn\u2019t supplemental. It\u2019s central to<\/p>",
+        "body_text_closing": "<p><strong>and more.<\/strong><\/p><p>So start where it actually starts.<\/p>",
+        "pin_distance": 3000,
+        "overlap_distance": 3000
+      },
+      "blocks": {
+        "chip_energy": {
+          "type": "chip",
+          "settings": {
+            "label": "Energy",
+            "dot_color": "#E9FF6D"
+          }
+        },
+        "chip_metabolism": {
+          "type": "chip",
+          "settings": {
+            "label": "Metabolism",
+            "dot_color": "#E62F5E"
+          }
+        },
+        "chip_cholesterol": {
+          "type": "chip",
+          "settings": {
+            "label": "Cholesterol",
+            "dot_color": "#D54427"
+          }
+        },
+        "product_1": {
+          "type": "product_image",
+          "settings": {
+            "image": "shopify://shop_images/kzabh10350-full-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-13328902.jpg"
+          }
+        },
+        "product_2": {
+          "type": "product_image",
+          "settings": {
+            "image": "shopify://shop_images/kambria-trout-rdm2emlablm-unsplash-1-concept-14-out-diet-full-bleed-slide-final-design-125732198.jpg"
+          }
+        }
+      },
+      "block_order": ["chip_energy", "chip_metabolism", "chip_cholesterol", "product_1", "product_2"]
+    },
     "story_everyday_people": {
       "type": "story-everyday-people",
       "settings": {
@@ -728,6 +774,7 @@
     "story_university_stadium",
     "story_athletes_branching_lines",
     "story_everyday_people",
-    "story_lifestyle_video"
+    "story_lifestyle_video",
+    "story_whats_next"
   ]
 }

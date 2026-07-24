@@ -1,0 +1,474 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 3000
+  assign overlap_distance = section.settings.overlap_distance | default: 3000
+-%}
+
+{%- capture inline_styles -%}
+  --os-chapter-z: 10; margin-top: -{{ overlap_distance }}px;
+{%- endcapture -%}
+
+<div
+  class="story-chapter story-chapter--overlay"
+  data-anchor="whats-next"
+  style="height: calc(100vh + {{ pin_distance }}px); {{ inline_styles }}"
+>
+  <div
+    class="story-chapter__sticky story-whats-next"
+    data-section-id="{{ section.id }}"
+  >
+
+    {%- comment -%} Decorative vessel contour lines {%- endcomment -%}
+    <div class="story-whats-next__vessel-lines" aria-hidden="true">
+      <svg class="story-whats-next__vessel-svg" viewBox="0 0 2600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="swn-blur-{{ section.id }}">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+          </filter>
+        </defs>
+        <g transform="rotate(3.1 1300 600)">
+          <path d="M-100 280 C300 220, 700 400, 1100 320 C1500 240, 1900 380, 2700 300" stroke="#fff" stroke-width="1"/>
+          <path d="M-100 480 C400 440, 800 560, 1200 500 C1600 440, 2000 520, 2700 490" stroke="#fff" stroke-width="1"/>
+          <path d="M-100 680 C350 640, 750 780, 1150 700 C1550 620, 1950 740, 2700 690" stroke="#fff" stroke-width="1"/>
+          <path d="M-100 880 C300 840, 700 960, 1100 890 C1500 820, 1900 940, 2700 880" stroke="#fff" stroke-width="1"/>
+          <g filter="url(#swn-blur-{{ section.id }})">
+            <path d="M-100 180 C500 130, 900 300, 1300 220 C1700 140, 2100 280, 2700 200" stroke="#fff" stroke-width="1"/>
+            <path d="M-100 580 C400 540, 850 680, 1250 600 C1650 520, 2050 640, 2700 580" stroke="#fff" stroke-width="1"/>
+            <path d="M-100 780 C300 750, 750 880, 1150 800 C1550 720, 1950 840, 2700 790" stroke="#fff" stroke-width="1"/>
+            <path d="M-100 380 C500 340, 900 460, 1300 380 C1700 300, 2100 420, 2700 370" stroke="#fff" stroke-width="1"/>
+          </g>
+          <path d="M-100 130 C600 100, 1000 220, 1400 160 C1800 100, 2200 200, 2700 150" stroke="#fff" stroke-width="1" opacity="0.3"/>
+          <path d="M-100 980 C450 940, 850 1060, 1250 990 C1650 920, 2050 1040, 2700 980" stroke="#fff" stroke-width="1" opacity="0.8"/>
+        </g>
+      </svg>
+    </div>
+
+    {%- comment -%} Main layout: text left, product images right {%- endcomment -%}
+    <div class="story-whats-next__layout">
+
+      {%- comment -%} Left column — headline, body, chips {%- endcomment -%}
+      <div class="story-whats-next__left">
+
+        {%- if section.settings.headline_text != blank -%}
+          <div class="story-whats-next__headline story-reveal">
+            {{ section.settings.headline_text }}
+          </div>
+        {%- endif -%}
+
+        <div class="story-whats-next__body">
+
+          {%- if section.settings.body_text != blank -%}
+            <div class="story-whats-next__body-text story-reveal">
+              {{ section.settings.body_text }}
+            </div>
+          {%- endif -%}
+
+          {%- comment -%} Category chips {%- endcomment -%}
+          {%- assign has_chips = false -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'chip' -%}
+              {%- assign has_chips = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if has_chips -%}
+            <div class="story-whats-next__chips">
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'chip' -%}
+                  <span class="story-whats-next__chip" {{ block.shopify_attributes }}>
+                    <span class="story-whats-next__chip-dot" style="background-color: {{ block.settings.dot_color }};"></span>
+                    <span class="story-whats-next__chip-label">{{ block.settings.label }}</span>
+                  </span>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.body_text_closing != blank -%}
+            <div class="story-whats-next__body-closing story-reveal">
+              {{ section.settings.body_text_closing }}
+            </div>
+          {%- endif -%}
+
+        </div>
+
+      </div>
+
+      {%- comment -%} Right column — product images {%- endcomment -%}
+      <div class="story-whats-next__right">
+        <div class="story-whats-next__product-column">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'product_image' and block.settings.image != blank -%}
+              {{
+                block.settings.image
+                | image_url: width: 1060
+                | image_tag:
+                  widths: '375,530,1060',
+                  sizes: '(min-width: 750px) 530px, calc(100vw - 48px)',
+                  alt: 'Product photo',
+                  loading: 'lazy',
+                  class: 'story-whats-next__product-image'
+              }}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var sectionUrl = {{ 'story-whats-next.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+
+    var target = sectionEl.closest('.story-chapter') || sectionEl;
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          observer.disconnect();
+          Promise.all([import(utilsUrl), import(sectionUrl)]).then(function (modules) {
+            var utils = modules[0];
+            var mod = modules[1];
+            mod.init(sectionEl, utils);
+          });
+          break;
+        }
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(target);
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-whats-next-section {
+    background: transparent;
+  }
+
+  /* --- Sticky child — owns the red background --- */
+  .story-whats-next {
+    position: relative;
+    background: #BC0F0F;
+    border-radius: 27px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* --- Decorative vessel contour lines --- */
+  .story-whats-next__vessel-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    will-change: transform;
+  }
+
+  .story-whats-next__vessel-svg {
+    position: absolute;
+    width: 180%;
+    height: 100%;
+    left: -40%;
+    top: -10%;
+  }
+
+  /* --- Main two-column layout --- */
+  .story-whats-next__layout {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 80px;
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 60px;
+  }
+
+  /* --- Left column (text + chips) --- */
+  .story-whats-next__left {
+    flex: 1 1 0%;
+    max-width: 562px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* --- Headline --- */
+  .story-whats-next__headline {
+    font-family: 'Moderat Serif Regular', serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 40px;
+    letter-spacing: -1px;
+    color: #fff;
+    margin: 0;
+  }
+
+  .story-whats-next__headline p {
+    margin: 0;
+  }
+
+  .story-whats-next__headline strong {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+  }
+
+  /* --- Body container --- */
+  .story-whats-next__body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* --- Body text (before and after chips) --- */
+  .story-whats-next__body-text,
+  .story-whats-next__body-closing {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+
+  .story-whats-next__body-text p,
+  .story-whats-next__body-closing p {
+    margin: 0;
+  }
+
+  .story-whats-next__body-closing strong {
+    font-weight: 700;
+  }
+
+  /* --- Chips container --- */
+  .story-whats-next__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* --- Individual chip (frosted glass pill) --- */
+  .story-whats-next__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* --- Chip dot --- */
+  .story-whats-next__chip-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* --- Chip label --- */
+  .story-whats-next__chip-label {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 20px;
+    color: #fff;
+  }
+
+  /* --- Right column (product images) --- */
+  .story-whats-next__right {
+    flex: 0 0 530px;
+  }
+
+  /* --- Product column --- */
+  .story-whats-next__product-column {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    will-change: transform;
+  }
+
+  /* --- Product image --- */
+  .story-whats-next__product-image {
+    border-radius: 24px;
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-whats-next__layout {
+      flex-direction: column;
+      gap: 40px;
+      padding: 0 24px;
+    }
+
+    .story-whats-next__left {
+      max-width: 100%;
+    }
+
+    .story-whats-next__headline {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .story-whats-next__body-text,
+    .story-whats-next__body-closing {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .story-whats-next__right {
+      flex-basis: auto;
+      width: 100%;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-whats-next__product-column {
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-whats-next__vessel-lines {
+      transform: none !important;
+      will-change: auto;
+    }
+
+    .story-whats-next .story-reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Whats Next",
+  "class": "story-whats-next-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "headline_text",
+      "label": "Headline",
+      "default": "<p><strong>It was always about the 60,000 miles</strong> running through every single one of us.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text (before chips)",
+      "default": "<p>There isn\u2019t a person on Earth who doesn\u2019t benefit from better cardiovascular health. It isn\u2019t supplemental. It\u2019s central to</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text_closing",
+      "label": "Body text (after chips)",
+      "default": "<p><strong>and more.</strong></p><p>So start where it actually starts.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "default": 3000,
+      "unit": "px",
+      "info": "Extra scroll height while the scene stays pinned"
+    },
+    {
+      "type": "range",
+      "id": "overlap_distance",
+      "label": "Overlap distance",
+      "min": 1000,
+      "max": 9500,
+      "step": 500,
+      "default": 3000,
+      "unit": "px",
+      "info": "How far this section slides over the previous chapter"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "chip",
+      "name": "Category chip",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Energy"
+        },
+        {
+          "type": "color",
+          "id": "dot_color",
+          "label": "Dot color",
+          "default": "#E62F5E"
+        }
+      ]
+    },
+    {
+      "type": "product_image",
+      "name": "Product image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
