@@ -1,0 +1,475 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 1500
+  assign overlap_distance = section.settings.overlap_distance | default: 1500
+-%}
+
+{%- capture inline_styles -%}
+  --os-chapter-z: 80; margin-top: -{{ overlap_distance }}px;
+{%- endcapture -%}
+
+<div
+  class="story-chapter story-chapter--overlay story-chapter--light"
+  data-anchor="the-people"
+  style="height: calc(100vh + {{ pin_distance }}px); {{ inline_styles }}"
+>
+  <div
+    class="story-chapter__sticky story-advisory-board"
+    data-section-id="{{ section.id }}"
+  >
+
+    <div class="story-advisory-board__header">
+      {%- if section.settings.headline_text != blank -%}
+        <div class="story-advisory-board__headline story-reveal">
+          {{ section.settings.headline_text }}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.body_text != blank -%}
+        <div class="story-advisory-board__body story-reveal">
+          {{ section.settings.body_text }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div
+      class="story-advisory-board__carousel"
+      data-auto-speed="{{ section.settings.auto_rotate_speed | default: 40 }}"
+    >
+      <div class="story-advisory-board__track">
+        {%- for block in section.blocks -%}
+          <div class="story-advisory-board__card" {{ block.shopify_attributes }}>
+            <div class="story-advisory-board__card-img">
+              {%- if block.settings.portrait != blank -%}
+                {{
+                  block.settings.portrait
+                  | image_url: width: 560
+                  | image_tag:
+                    widths: '280,560',
+                    sizes: '280px',
+                    class: 'story-advisory-board__card-portrait',
+                    loading: 'lazy',
+                    alt: block.settings.expert_name
+                }}
+              {%- endif -%}
+
+              {%- if block.settings.video_url != blank -%}
+                <button
+                  class="story-advisory-board__card-play"
+                  aria-label="Play video"
+                  data-video-url="{{ block.settings.video_url }}"
+                >
+                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="30" cy="30" r="30" fill="rgba(255,255,255,0.9)"/>
+                    <polygon points="24,18 24,42 44,30" fill="#414141"/>
+                  </svg>
+                </button>
+              {%- endif -%}
+            </div>
+
+            <div class="story-advisory-board__card-info">
+              {%- if block.settings.expert_name != blank -%}
+                <p class="story-advisory-board__card-name">{{ block.settings.expert_name }}</p>
+              {%- endif -%}
+              {%- if block.settings.expert_title != blank -%}
+                <p class="story-advisory-board__card-title">{{ block.settings.expert_title }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var sectionUrl = {{ 'story-advisory-board.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+
+    var target = sectionEl.closest('.story-chapter') || sectionEl;
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          observer.disconnect();
+          Promise.all([import(utilsUrl), import(sectionUrl)]).then(function (modules) {
+            var utils = modules[0];
+            var section = modules[1];
+            section.init(sectionEl, utils);
+          });
+          break;
+        }
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(target);
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-advisory-board-section {
+    background: transparent;
+  }
+
+  /* --- Sticky child — owns the light gradient background --- */
+  .story-advisory-board {
+    position: relative;
+    background: var(--os-light-bg, linear-gradient(315deg, #ffffff 0%, #c8c8c8 100%));
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 48px;
+  }
+
+  /* --- Header (headline + body) --- */
+  .story-advisory-board__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    max-width: 902px;
+    width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  /* --- Headline --- */
+  .story-advisory-board__headline {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 52px;
+    color: var(--os-light-text, #414141);
+    text-align: center;
+    margin: 0;
+  }
+
+  .story-advisory-board__headline p {
+    margin: 0;
+  }
+
+  .story-advisory-board__headline em {
+    font-family: 'Moderat Serif Regular', serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  /* --- Body text --- */
+  .story-advisory-board__body {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    color: #767676;
+    text-align: center;
+    max-width: 794px;
+    margin: 0;
+  }
+
+  .story-advisory-board__body p {
+    margin: 0;
+  }
+
+  .story-advisory-board__body strong {
+    font-weight: 700;
+  }
+
+  /* --- Carousel container --- */
+  .story-advisory-board__carousel {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* --- Static mode (reduced-motion fallback) --- */
+  .story-advisory-board__carousel--static {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+
+  .story-advisory-board__carousel--static .story-advisory-board__track {
+    will-change: auto;
+  }
+
+  .story-advisory-board__carousel--static .story-advisory-board__card {
+    scroll-snap-align: start;
+  }
+
+  /* --- Track (flex row of cards) --- */
+  .story-advisory-board__track {
+    display: flex;
+    gap: 24px;
+    will-change: transform;
+    cursor: grab;
+    padding-inline-start: calc((100vw - 280px * 4 - 24px * 3) / 2);
+    padding-inline-end: 24px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .story-advisory-board__track:active {
+    cursor: grabbing;
+  }
+
+  /* --- Card --- */
+  .story-advisory-board__card {
+    flex: 0 0 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* --- Card image container --- */
+  .story-advisory-board__card-img {
+    width: 280px;
+    height: 347px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    background: #e0e0e0;
+  }
+
+  .story-advisory-board__card-portrait {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* --- Play button --- */
+  .story-advisory-board__card-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: none;
+    background: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: opacity 0.2s ease;
+    padding: 0;
+  }
+
+  .story-advisory-board__card-play:hover svg circle {
+    fill: #ffffff;
+  }
+
+  .story-advisory-board__card-play[hidden] {
+    display: none;
+  }
+
+  /* --- On-demand video overlay --- */
+  .story-advisory-board__card-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    border-radius: 16px;
+  }
+
+  /* --- Card info (name + title) --- */
+  .story-advisory-board__card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .story-advisory-board__card-name {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    color: #414141;
+    margin: 0;
+  }
+
+  .story-advisory-board__card-title {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: #767676;
+    margin: 0;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-advisory-board {
+      gap: 32px;
+    }
+
+    .story-advisory-board__headline {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .story-advisory-board__headline em {
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    .story-advisory-board__body {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .story-advisory-board__card {
+      flex: 0 0 240px;
+    }
+
+    .story-advisory-board__card-img {
+      width: 240px;
+      height: 297px;
+    }
+
+    .story-advisory-board__track {
+      padding-inline-start: 24px;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-advisory-board__track {
+      transform: none !important;
+      will-change: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Advisory Board",
+  "class": "story-advisory-board-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "headline_text",
+      "label": "Headline",
+      "default": "<p>We built it with leading scientific experts<br><em>on staff from day one</em></p>"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>because we adhered to a standard that didn't exist in this industry. And when you do things right from the start, you get noticed. <strong>First, from doctors.</strong> They recommended us <strong>thirteen years before we ever sat on a retail shelf.</strong></p>"
+    },
+    {
+      "type": "range",
+      "id": "auto_rotate_speed",
+      "label": "Auto-rotate speed",
+      "min": 10,
+      "max": 120,
+      "step": 5,
+      "default": 40,
+      "unit": "s",
+      "info": "Seconds for one full carousel cycle. Lower values = faster."
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "default": 1500,
+      "unit": "px",
+      "info": "Extra scroll height while the scene stays pinned"
+    },
+    {
+      "type": "range",
+      "id": "overlap_distance",
+      "label": "Overlap distance",
+      "min": 1000,
+      "max": 9500,
+      "step": 500,
+      "default": 1500,
+      "unit": "px",
+      "info": "How far this section slides over the previous chapter"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "expert_card",
+      "name": "Expert card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "type": "text",
+          "id": "expert_name",
+          "label": "Name"
+        },
+        {
+          "type": "text",
+          "id": "expert_title",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

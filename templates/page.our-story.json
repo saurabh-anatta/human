@@ -188,6 +188,74 @@
         "pin_distance": 3000,
         "overlap_distance": 3000
       }
+    },
+    "story_advisory_board": {
+      "type": "story-advisory-board",
+      "settings": {
+        "headline_text": "<p>We built it with leading scientific experts<br><em>on staff from day one<\/em><\/p>",
+        "body_text": "<p>because we adhered to a standard that didn\u2019t exist in this industry. And when you do things right from the start, you get noticed. <strong>First, from doctors.<\/strong> They recommended us <strong>thirteen years before we ever sat on a retail shelf.<\/strong><\/p>",
+        "auto_rotate_speed": 40,
+        "pin_distance": 1500,
+        "overlap_distance": 1500
+      },
+      "blocks": {
+        "expert_john_ivy": {
+          "type": "expert_card",
+          "settings": {
+            "portrait": "shopify://shop_images/screenshot-2026-06-24-at-12-21-44-pm-1-page-overview-for-client-section-108344888.png",
+            "expert_name": "Dr. John Ivy, PhD",
+            "expert_title": "Teresa Lozano Long Endowed Chair Emeritus at the University of Texas"
+          }
+        },
+        "expert_harold_schmitz": {
+          "type": "expert_card",
+          "settings": {
+            "portrait": "shopify://shop_images/screenshot-2026-06-30-at-11-57-31-am-1-page-overview-for-client-section-108344913.png",
+            "expert_name": "Dr. Harold Schmitz, PhD",
+            "expert_title": "Senior Scholar at UC Davis, Pioneer in Nitric Oxide & Vascular Biology Research"
+          }
+        },
+        "expert_christopher_davis": {
+          "type": "expert_card",
+          "settings": {
+            "portrait": "shopify://shop_images/screenshot-2026-06-24-at-12-22-56-pm-1-page-overview-for-client-section-108344902.png",
+            "expert_name": "Dr. Christopher Davis, MD, FACC",
+            "expert_title": "Triple Board - Certified Cardiologist"
+          }
+        },
+        "expert_molly_bray": {
+          "type": "expert_card",
+          "settings": {
+            "portrait": "shopify://shop_images/screenshot-2026-06-30-at-11-57-31-am-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-13328954.png",
+            "expert_name": "Dr. Molly Bray",
+            "expert_title": "Susan T. Jastrow Human Ecology Chair for Excellence in Nutritional Sciences, University of Texas"
+          }
+        },
+        "expert_penny_kris_etherton": {
+          "type": "expert_card",
+          "settings": {
+            "portrait": "shopify://shop_images/screenshot-2026-06-24-at-12-22-40-pm-1-page-overview-for-client-section-108344877.png",
+            "expert_name": "Penny Kris-Etherton, PhD, RD",
+            "expert_title": "Professor Emeritus Department of Nutritional Sciences, Penn State University"
+          }
+        },
+        "expert_john_cooke": {
+          "type": "expert_card",
+          "settings": {
+            "portrait": "shopify://shop_images/screenshot-2026-06-30-at-11-57-31-am-1-page-overview-for-client-section-108344913.png",
+            "expert_name": "Dr. John P. Cooke, MD, PhD",
+            "expert_title": "Chair of the Department of Cardiovascular Sciences at the Houston Methodist Research Institute"
+          }
+        }
+      },
+      "block_order": [
+        "expert_john_ivy",
+        "expert_harold_schmitz",
+        "expert_christopher_davis",
+        "expert_molly_bray",
+        "expert_penny_kris_etherton",
+        "expert_john_cooke"
+      ]
     }
   },
   "order": [
@@ -198,6 +266,7 @@
     "story_blood_vessels",
     "story_timeline",
     "story_molecule_in_all_of_us",
-    "story_product_reveal"
+    "story_product_reveal",
+    "story_advisory_board"
   ]
 }
