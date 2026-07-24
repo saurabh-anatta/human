@@ -332,6 +332,53 @@
         "overlay_opacity": 0,
         "pin_distance": 1500
       }
+    },
+    "story_athletes_branching_lines": {
+      "type": "story-athletes-branching-lines",
+      "settings": {
+        "headline_text": "<p>Then the athletes showed up. 54 team championships. Seven straight in college football. Four straight in college baseball. Two straight in pro hockey.<\/p>",
+        "subheadline_text": "<p>Over 2,000 teams. More than 50,000 athletes — all running on the same molecule.<\/p>",
+        "pin_distance": 3000
+      },
+      "blocks": {
+        "reel_1": {
+          "type": "reel_tile",
+          "settings": {
+            "poster_image": "shopify://shop_images/video-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281073.png"
+          }
+        },
+        "reel_2": {
+          "type": "reel_tile",
+          "settings": {
+            "poster_image": "shopify://shop_images/video-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281074.png"
+          }
+        },
+        "reel_3": {
+          "type": "reel_tile",
+          "settings": {
+            "poster_image": "shopify://shop_images/video-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281075.png"
+          }
+        },
+        "reel_4": {
+          "type": "reel_tile",
+          "settings": {
+            "poster_image": "shopify://shop_images/video-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281076.png"
+          }
+        },
+        "reel_5": {
+          "type": "reel_tile",
+          "settings": {
+            "poster_image": "shopify://shop_images/video-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281077.png"
+          }
+        },
+        "reel_6": {
+          "type": "reel_tile",
+          "settings": {
+            "poster_image": "shopify://shop_images/video-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281078.png"
+          }
+        }
+      },
+      "block_order": ["reel_1", "reel_2", "reel_3", "reel_4", "reel_5", "reel_6"]
     }
   },
   "order": [
@@ -345,6 +392,7 @@
     "story_product_reveal",
     "story_advisory_board",
     "story_proof_statistics",
-    "story_university_stadium"
+    "story_university_stadium",
+    "story_athletes_branching_lines"
   ]
 }
