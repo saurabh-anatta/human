@@ -379,6 +379,311 @@
         }
       },
       "block_order": ["reel_1", "reel_2", "reel_3", "reel_4", "reel_5", "reel_6"]
+    },
+    "story_everyday_people": {
+      "type": "story-everyday-people",
+      "settings": {
+        "headline_text": "<p>And then, everyone else. Over 2.7 million customers. Over 700 million doses delivered.<\/p>",
+        "pin_distance": 2000
+      },
+      "blocks": {
+        "tile_1": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281024.png"
+          }
+        },
+        "tile_2": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281025.png"
+          }
+        },
+        "tile_3": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281026.png"
+          }
+        },
+        "tile_4": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281027.png"
+          }
+        },
+        "tile_5": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281028.png"
+          }
+        },
+        "tile_6": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281029.png"
+          }
+        },
+        "tile_7": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281030.png"
+          }
+        },
+        "tile_8": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281031.png"
+          }
+        },
+        "tile_9": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281032.png"
+          }
+        },
+        "tile_10": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/dsc-2814-sawhorse-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281033.png"
+          }
+        },
+        "tile_11": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-37-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281034.png"
+          }
+        },
+        "tile_12": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-37-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281035.png"
+          }
+        },
+        "tile_13": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-37-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281036.png"
+          }
+        },
+        "tile_14": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-37-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281037.png"
+          }
+        },
+        "tile_15": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-37-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281038.png"
+          }
+        },
+        "tile_16": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-37-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281039.png"
+          }
+        },
+        "tile_17": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-37-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281040.png"
+          }
+        },
+        "tile_18": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-37-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281041.png"
+          }
+        },
+        "tile_19": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281042.png"
+          }
+        },
+        "tile_20": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281043.png"
+          }
+        },
+        "tile_21": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281044.png"
+          }
+        },
+        "tile_22": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281045.png"
+          }
+        },
+        "tile_23": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281046.png"
+          }
+        },
+        "tile_24": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281047.png"
+          }
+        },
+        "tile_25": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281048.png"
+          }
+        },
+        "tile_26": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281049.png"
+          }
+        },
+        "tile_27": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281050.png"
+          }
+        },
+        "tile_28": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-40-04-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281051.png"
+          }
+        },
+        "tile_29": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/fellipe-ditadi-v1maglew3iw-unsplash-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281052.png"
+          }
+        },
+        "tile_30": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/fellipe-ditadi-v1maglew3iw-unsplash-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281053.png"
+          }
+        },
+        "tile_31": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/fellipe-ditadi-v1maglew3iw-unsplash-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281054.png"
+          }
+        },
+        "tile_32": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/fellipe-ditadi-v1maglew3iw-unsplash-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281055.png"
+          }
+        },
+        "tile_33": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/fellipe-ditadi-v1maglew3iw-unsplash-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281056.png"
+          }
+        },
+        "tile_34": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/fellipe-ditadi-v1maglew3iw-unsplash-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281057.png"
+          }
+        },
+        "tile_35": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/fellipe-ditadi-v1maglew3iw-unsplash-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281058.png"
+          }
+        },
+        "tile_36": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/fellipe-ditadi-v1maglew3iw-unsplash-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281059.png"
+          }
+        },
+        "tile_37": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-27-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281060.png"
+          }
+        },
+        "tile_38": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-27-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281061.png"
+          }
+        },
+        "tile_39": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-27-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281062.png"
+          }
+        },
+        "tile_40": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-27-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281063.png"
+          }
+        },
+        "tile_41": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-17-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281064.png"
+          }
+        },
+        "tile_42": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-17-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281065.png"
+          }
+        },
+        "tile_43": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-17-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281066.png"
+          }
+        },
+        "tile_44": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-17-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281067.png"
+          }
+        },
+        "tile_45": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-48-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281068.png"
+          }
+        },
+        "tile_46": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-48-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281069.png"
+          }
+        },
+        "tile_47": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-48-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281070.png"
+          }
+        },
+        "tile_48": {
+          "type": "photo_tile",
+          "settings": {
+            "image": "shopify://shop_images/screenshot-2026-06-29-at-2-39-48-pm-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-133281071.png"
+          }
+        }
+      },
+      "block_order": [
+        "tile_1", "tile_2", "tile_3", "tile_4", "tile_5", "tile_6", "tile_7", "tile_8",
+        "tile_9", "tile_10", "tile_11", "tile_12", "tile_13", "tile_14", "tile_15", "tile_16",
+        "tile_17", "tile_18", "tile_19", "tile_20", "tile_21", "tile_22", "tile_23", "tile_24",
+        "tile_25", "tile_26", "tile_27", "tile_28", "tile_29", "tile_30", "tile_31", "tile_32",
+        "tile_33", "tile_34", "tile_35", "tile_36", "tile_37", "tile_38", "tile_39", "tile_40",
+        "tile_41", "tile_42", "tile_43", "tile_44", "tile_45", "tile_46", "tile_47", "tile_48"
+      ]
     }
   },
   "order": [
@@ -393,6 +698,7 @@
     "story_advisory_board",
     "story_proof_statistics",
     "story_university_stadium",
-    "story_athletes_branching_lines"
+    "story_athletes_branching_lines",
+    "story_everyday_people"
   ]
 }
