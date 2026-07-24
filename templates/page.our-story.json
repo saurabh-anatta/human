@@ -129,6 +129,43 @@
         }
       },
       "block_order": ["narrative_1"]
+    },
+    "story_timeline": {
+      "type": "story-timeline",
+      "settings": {
+        "pin_distance": 5000,
+        "overlap_distance": 2000
+      },
+      "blocks": {
+        "milestone_1998": {
+          "type": "milestone",
+          "settings": {
+            "year_label": "1998",
+            "subtitle": "nitric oxide discovery",
+            "poster_image": "shopify://shop_images/e922a71812814f7aa98f510f5d105a6b-hd-1080p-3-3mbps-86402157-first10s-trimmed-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-13328879.png",
+            "caption_text": "<p>In 1998, the discovery of what nitric oxide does for the human body <strong>won the Nobel Prize in Medicine<\/strong> and was awarded to Dr. Ferid Murad, one of the scientists behind it.<\/p>"
+          }
+        },
+        "milestone_2009": {
+          "type": "milestone",
+          "settings": {
+            "year_label": "2009",
+            "subtitle": "Our first product",
+            "poster_image": "shopify://shop_images/beetelite-broll-only-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-13328882.png",
+            "caption_text": "<p>In 2009, that same discovery led to a nitric oxide research program at the University of Texas. <strong>And that\u2019s where Humann came to life.<\/strong><\/p>"
+          }
+        },
+        "milestone_today": {
+          "type": "milestone",
+          "settings": {
+            "year_label": "Today",
+            "subtitle": "Millions of happy customers",
+            "poster_image": "shopify://shop_images/humann-combined-product-only-no-text-v3-1-full-page-vertical-poc-1440-wide-design-source-of-truth-for-the-whole-story-page-13328885.png",
+            "caption_text": "<p>Fifteen years later, the science hasn\u2019t changed. <strong>Our commitment to it hasn\u2019t either.<\/strong><\/p>"
+          }
+        }
+      },
+      "block_order": ["milestone_1998", "milestone_2009", "milestone_today"]
     }
   },
   "order": [
@@ -136,6 +173,7 @@
     "story_hero",
     "story_heartbeat",
     "story_no_molecule",
-    "story_blood_vessels"
+    "story_blood_vessels",
+    "story_timeline"
   ]
 }
