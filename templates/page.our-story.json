@@ -256,6 +256,74 @@
         "expert_penny_kris_etherton",
         "expert_john_cooke"
       ]
+    },
+    "story_proof_statistics": {
+      "type": "story-proof-statistics",
+      "settings": {
+        "intro_text": "<p>Today, thousands of medical practitioners and professionals trust us. <strong>SuperBeets is the #1 doctor, pharmacist, and cardiologist recommended beet brand<\/strong> for heart health support, and the science kept pace with the trust.<\/p>",
+        "enable_count_up": true,
+        "pin_distance": 1500,
+        "overlap_distance": 1500
+      },
+      "blocks": {
+        "stat_studies": {
+          "type": "stat_card",
+          "settings": {
+            "stat_value": "8",
+            "stat_suffix": "",
+            "stat_label": "Published clinical studies",
+            "show_stars": false,
+            "below_band": false
+          }
+        },
+        "stat_bain": {
+          "type": "stat_card",
+          "settings": {
+            "stat_value": "2026",
+            "stat_suffix": "",
+            "stat_label": "Bain & Co Insurgent Brands List",
+            "show_stars": false,
+            "below_band": false
+          }
+        },
+        "stat_ratings": {
+          "type": "stat_card",
+          "settings": {
+            "stat_value": "100",
+            "stat_suffix": ",000+",
+            "stat_label": "5 star ratings",
+            "show_stars": true,
+            "below_band": false
+          }
+        },
+        "stat_inc5000": {
+          "type": "stat_card",
+          "settings": {
+            "stat_value": "10",
+            "stat_suffix": "+",
+            "stat_label": "Consecutive years on Inc. 5000 list",
+            "show_stars": false,
+            "below_band": false
+          }
+        },
+        "stat_teams": {
+          "type": "stat_card",
+          "settings": {
+            "stat_value": "2000",
+            "stat_suffix": "+",
+            "stat_label": "Pro & collegiate teams",
+            "show_stars": false,
+            "below_band": true
+          }
+        }
+      },
+      "block_order": [
+        "stat_studies",
+        "stat_bain",
+        "stat_ratings",
+        "stat_inc5000",
+        "stat_teams"
+      ]
     }
   },
   "order": [
@@ -267,6 +335,7 @@
     "story_timeline",
     "story_molecule_in_all_of_us",
     "story_product_reveal",
-    "story_advisory_board"
+    "story_advisory_board",
+    "story_proof_statistics"
   ]
 }

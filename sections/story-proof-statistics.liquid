@@ -1,0 +1,469 @@
+{%- liquid
+  assign pin_distance = section.settings.pin_distance | default: 1500
+  assign overlap_distance = section.settings.overlap_distance | default: 1500
+-%}
+
+{%- capture inline_styles -%}
+  --os-chapter-z: 90; margin-top: -{{ overlap_distance }}px;
+{%- endcapture -%}
+
+<div
+  class="story-chapter story-chapter--overlay story-chapter--light"
+  data-anchor="the-proof-stats"
+  style="height: calc(100vh + {{ pin_distance }}px); {{ inline_styles }}"
+>
+  <div
+    class="story-chapter__sticky story-proof-statistics"
+    data-section-id="{{ section.id }}"
+    data-enable-count-up="{{ section.settings.enable_count_up }}"
+  >
+
+    {%- if section.settings.intro_text != blank -%}
+      <div class="story-proof-statistics__intro story-reveal">
+        {{ section.settings.intro_text }}
+      </div>
+    {%- endif -%}
+
+    <div class="story-proof-statistics__band">
+      <div class="story-proof-statistics__divider"></div>
+
+      <div class="story-proof-statistics__stats">
+        {%- for block in section.blocks -%}
+          {%- unless block.settings.below_band -%}
+            <div
+              class="story-proof-statistics__stat story-reveal"
+              {{ block.shopify_attributes }}
+            >
+              <div class="story-proof-statistics__stat-content">
+                <span
+                  class="story-proof-statistics__stat-number"
+                  data-value="{{ block.settings.stat_value }}"
+                  data-suffix="{{ block.settings.stat_suffix }}"
+                  data-count-up="{{ section.settings.enable_count_up }}"
+                >
+                  {{- block.settings.stat_value }}{{ block.settings.stat_suffix -}}
+                </span>
+
+                {%- if block.settings.show_stars -%}
+                  <div class="story-proof-statistics__stars">
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.stat_label != blank -%}
+                  <span class="story-proof-statistics__stat-label">{{ block.settings.stat_label }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="story-proof-statistics__divider"></div>
+    </div>
+
+    {%- assign has_secondary = false -%}
+    {%- for block in section.blocks -%}
+      {%- if block.settings.below_band -%}
+        {%- assign has_secondary = true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_secondary -%}
+      <div class="story-proof-statistics__stats story-proof-statistics__stats--secondary">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.below_band -%}
+            <div
+              class="story-proof-statistics__stat story-reveal"
+              {{ block.shopify_attributes }}
+            >
+              <div class="story-proof-statistics__stat-content">
+                <span
+                  class="story-proof-statistics__stat-number"
+                  data-value="{{ block.settings.stat_value }}"
+                  data-suffix="{{ block.settings.stat_suffix }}"
+                  data-count-up="{{ section.settings.enable_count_up }}"
+                >
+                  {{- block.settings.stat_value }}{{ block.settings.stat_suffix -}}
+                </span>
+
+                {%- if block.settings.show_stars -%}
+                  <div class="story-proof-statistics__stars">
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                    <span class="story-proof-statistics__star">{{ 'star-solid-2.svg' | inline_asset_content }}</span>
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.stat_label != blank -%}
+                  <span class="story-proof-statistics__stat-label">{{ block.settings.stat_label }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<script type="module">
+  (function () {
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var sectionUrl = {{ 'story-proof-statistics.js' | asset_url | json }};
+    var sectionEl = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!sectionEl) return;
+
+    var target = sectionEl.closest('.story-chapter') || sectionEl;
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          observer.disconnect();
+          Promise.all([import(utilsUrl), import(sectionUrl)]).then(function (modules) {
+            var utils = modules[0];
+            var section = modules[1];
+            section.init(sectionEl, utils);
+          });
+          break;
+        }
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(target);
+  })();
+</script>
+
+{% stylesheet %}
+  /* --- Schema class rule (required by base.css transparent override) --- */
+  .story-proof-statistics-section {
+    background: transparent;
+  }
+
+  /* --- Sticky child — owns the light gradient background --- */
+  .story-proof-statistics {
+    position: relative;
+    background: var(--os-light-bg, linear-gradient(315deg, #ffffff 0%, #c8c8c8 100%));
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 57px;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
+  /* --- Intro text --- */
+  .story-proof-statistics__intro {
+    font-family: 'Moderat Serif Regular', serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 40px;
+    text-align: center;
+    color: var(--os-light-text, #414141);
+    max-width: 912px;
+    width: 100%;
+  }
+
+  .story-proof-statistics__intro p {
+    margin: 0;
+  }
+
+  .story-proof-statistics__intro strong {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+  }
+
+  /* --- Band (dividers + stats row) --- */
+  .story-proof-statistics__band {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  /* --- Dividers (1px horizontal rules) --- */
+  .story-proof-statistics__divider {
+    width: 100%;
+    max-width: 1200px;
+    height: 1px;
+    background: #767676;
+  }
+
+  /* --- Stats row --- */
+  .story-proof-statistics__stats {
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  /* --- Individual stat card --- */
+  .story-proof-statistics__stat {
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    background: rgba(255, 255, 255, 0.15);
+    flex: 1 1 0%;
+    min-width: 0;
+  }
+
+  /* --- Stat inner content --- */
+  .story-proof-statistics__stat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* --- Stat number --- */
+  .story-proof-statistics__stat-number {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 60px;
+    color: var(--os-light-text, #414141);
+  }
+
+  /* --- Stat label --- */
+  .story-proof-statistics__stat-label {
+    font-family: 'Stabil Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    color: #767676;
+  }
+
+  /* --- Stars row --- */
+  .story-proof-statistics__stars {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+  }
+
+  /* --- Individual star (animated pop-in) --- */
+  .story-proof-statistics__star {
+    display: inline-flex;
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .story-proof-statistics__star svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+  .story-proof-statistics__star.is-popped {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* --- Secondary stats row (below the divider band) --- */
+  .story-proof-statistics__stats--secondary {
+    justify-content: center;
+  }
+
+  .story-proof-statistics__stats--secondary .story-proof-statistics__stat-number {
+    font-size: 48px;
+    line-height: 48px;
+  }
+
+  .story-proof-statistics__stats--secondary .story-proof-statistics__stat-label {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  /* --- Mobile --- */
+  @media screen and (max-width: 749px) {
+    .story-proof-statistics {
+      gap: 32px;
+      padding: 0 16px;
+    }
+
+    .story-proof-statistics__intro {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    .story-proof-statistics__band {
+      gap: 16px;
+    }
+
+    .story-proof-statistics__stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .story-proof-statistics__stat {
+      padding: 16px;
+    }
+
+    .story-proof-statistics__stat-number {
+      font-size: 40px;
+      line-height: 40px;
+    }
+
+    .story-proof-statistics__stat-label {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .story-proof-statistics__stats--secondary {
+      grid-template-columns: 1fr;
+    }
+
+    .story-proof-statistics__stats--secondary .story-proof-statistics__stat-number {
+      font-size: 36px;
+      line-height: 36px;
+    }
+
+    .story-proof-statistics__stats--secondary .story-proof-statistics__stat-label {
+      font-size: 18px;
+      line-height: 22px;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .story-proof-statistics__star {
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto;
+      transition: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Proof Statistics",
+  "class": "story-proof-statistics-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "label": "Intro text",
+      "default": "<p>Today, thousands of medical practitioners and professionals trust us. <strong>SuperBeets is the #1 doctor, pharmacist, and cardiologist recommended beet brand</strong> for heart health support, and the science kept pace with the trust.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_count_up",
+      "label": "Enable count-up animation",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Scroll behavior"
+    },
+    {
+      "type": "range",
+      "id": "pin_distance",
+      "label": "Pin distance",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "default": 1500,
+      "unit": "px",
+      "info": "Extra scroll height while the scene stays pinned"
+    },
+    {
+      "type": "range",
+      "id": "overlap_distance",
+      "label": "Overlap distance",
+      "min": 1000,
+      "max": 9500,
+      "step": 500,
+      "default": 1500,
+      "unit": "px",
+      "info": "How far this section slides over the previous chapter"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat_card",
+      "name": "Stat card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "stat_value",
+          "label": "Stat value",
+          "info": "The numeric portion, e.g. 100"
+        },
+        {
+          "type": "text",
+          "id": "stat_suffix",
+          "label": "Suffix",
+          "info": "Appended after the number, e.g. + or ,000+"
+        },
+        {
+          "type": "text",
+          "id": "stat_label",
+          "label": "Label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_stars",
+          "label": "Show star rating",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "below_band",
+          "label": "Place below divider band",
+          "default": false
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
