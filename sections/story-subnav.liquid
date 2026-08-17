@@ -1,0 +1,293 @@
+{%- comment -%}
+  story-subnav.liquid — Sticky sub-nav capsule for the "Our Story" page.
+  First section in template order: loads global story-scroll.css and
+  lazy-boots story-utils.js + story-subnav.js on first intersection.
+{%- endcomment -%}
+
+{%- comment -%} ── Global story CSS (loaded once) ── {%- endcomment -%}
+{{ 'story-scroll.css' | asset_url | stylesheet_tag }}
+
+<div class="story-subnav-section">
+  {%- comment -%} Sentinel — hidden element at natural flow position.
+    When it scrolls out of view the IntersectionObserver toggles
+    .ssn__capsule--stuck on the capsule. ─{%- endcomment -%}
+  <div class="ssn__sentinel" aria-hidden="true"></div>
+
+  <nav class="ssn__capsule" aria-label="Story navigation">
+    {%- comment -%} Pill indicator — positioned behind the active link via JS ─{%- endcomment -%}
+    <span class="ssn__pill" aria-hidden="true"></span>
+
+    <div class="ssn__nav">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'nav_item' -%}
+          <a
+            class="ssn__link"
+            href="#{{ block.settings.anchor }}"
+            data-anchor="{{ block.settings.anchor }}"
+            {{ block.shopify_attributes }}
+          >
+            {{- block.settings.label -}}
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </nav>
+</div>
+
+<script type="module">
+  (function () {
+    const sectionEl = document.querySelector('.story-subnav-section');
+    if (!sectionEl) return;
+
+    let initialized = false;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !initialized) {
+          initialized = true;
+          observer.disconnect();
+
+          Promise.all([
+            import('{{ "story-utils.js" | asset_url }}'),
+            import('{{ "story-subnav.js" | asset_url }}')
+          ]).then(([utils, subnav]) => {
+            subnav.init(sectionEl, utils);
+          });
+        }
+      },
+      { rootMargin: '200px' }
+    );
+
+    observer.observe(sectionEl);
+  })();
+</script>
+
+{% stylesheet %}
+/* ==========================================================================
+   story-subnav — Sticky capsule nav
+   All classes prefixed .ssn__ (story sub-nav) to avoid global collisions.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Section wrapper — no .section class (avoids base.css background:transparent
+   override on .shopify-section :is(.section))
+   -------------------------------------------------------------------------- */
+.story-subnav-section {
+  position: relative;
+  width: 100%;
+  z-index: 999;
+}
+
+/* --------------------------------------------------------------------------
+   2. Sentinel — invisible element that triggers stuck detection
+   -------------------------------------------------------------------------- */
+.ssn__sentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   3. Capsule — the sticky nav bar
+   -------------------------------------------------------------------------- */
+.ssn__capsule {
+  position: sticky;
+  top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 999;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Stuck state — opaque background with subtle shadow */
+.ssn__capsule--stuck {
+  background: rgba(0, 0, 0, 0.85);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* --------------------------------------------------------------------------
+   4. Nav scroller — horizontal overflow on mobile
+   -------------------------------------------------------------------------- */
+.ssn__nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ssn__nav::-webkit-scrollbar {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   5. Nav links
+   -------------------------------------------------------------------------- */
+.ssn__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: var(--os-font-label, sans-serif);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--os-color-muted-light, #A0A0A0);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.25s ease;
+  z-index: 1;
+}
+
+.ssn__link:hover {
+  color: var(--os-color-white, #FFFFFF);
+}
+
+.ssn__link--active {
+  color: var(--os-color-white, #FFFFFF);
+}
+
+/* --------------------------------------------------------------------------
+   6. Sliding pill indicator — sits behind the active link
+   -------------------------------------------------------------------------- */
+.ssn__pill {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  height: calc(100% - 12px);
+  border-radius: 999px;
+  background: var(--os-color-red, #BC0F0F);
+  pointer-events: none;
+  transition: transform 0.3s ease, width 0.3s ease;
+  z-index: 0;
+  width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Mobile adjustments
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 749px) {
+  .ssn__capsule {
+    max-width: calc(100% - 24px);
+    padding: 4px;
+  }
+
+  .ssn__link {
+    padding: 6px 12px;
+    font-size: 10px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. Reduced motion — disable smooth transitions
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .ssn__capsule,
+  .ssn__link,
+  .ssn__pill {
+    transition: none;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Story subnav",
+  "tag": "section",
+  "class": "story-subnav-section",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [],
+  "blocks": [
+    {
+      "type": "nav_item",
+      "name": "Nav item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "SECTION"
+        },
+        {
+          "type": "text",
+          "id": "anchor",
+          "label": "Anchor slug",
+          "info": "Must match the data-anchor on the target story chapter."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Story subnav",
+      "blocks": [
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "HOW IT STARTED",
+            "anchor": "how-it-started"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE SCIENCE",
+            "anchor": "the-science"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "WHY WE MADE IT",
+            "anchor": "why-we-made-it"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE PROOF",
+            "anchor": "the-proof"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "THE PEOPLE",
+            "anchor": "the-people"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "WHAT'S NEXT",
+            "anchor": "whats-next"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

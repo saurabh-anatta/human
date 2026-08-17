@@ -1,0 +1,116 @@
+/* ==========================================================================
+   story-scroll.css — Global CSS for the "Our Story" page
+   Loaded once by story-subnav (first section in template order).
+   All story sections inherit these tokens and utility classes.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   --------------------------------------------------------------------------
+   Color tokens prefixed --os- (original story).
+   Font tokens reference licensed custom families loaded elsewhere.
+   Subsequent sections use these tokens — never hardcode values.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Colors */
+  --os-color-red: #BC0F0F;
+  --os-color-red-dark: #5a0808;
+  --os-color-ecg-red: #D72A2A;
+  --os-color-black: #000000;
+  --os-color-dark-text: #414141;
+  --os-color-light-text: #F5F5F5;
+  --os-color-white: #FFFFFF;
+  --os-color-muted: #767676;
+  --os-color-muted-light: #A0A0A0;
+
+  /* Fonts */
+  --os-font-display: 'Moderat Serif', serif;
+  --os-font-sans: 'Stabil Grotesk', sans-serif;
+  --os-font-label: '(K) Uniforma', sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   2. .story-chapter — tall scroll wrapper
+   --------------------------------------------------------------------------
+   Each story section wraps its content in:
+     <div class="story-chapter" data-anchor="<slug>"
+          style="height: calc(100vh + {{ pin_distance }}px)">
+       <div class="story-chapter__sticky"> ... </div>
+     </div>
+
+   The wrapper's height = viewport + pin_distance creates the scroll range.
+   The sticky child pins at the top for the duration of that range.
+   -------------------------------------------------------------------------- */
+.story-chapter {
+  position: relative;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   3. .story-chapter__sticky — pinned visual content
+   --------------------------------------------------------------------------
+   Sticks to viewport top. height:100vh fills the screen.
+   overflow:hidden prevents content from spilling during animations.
+   -------------------------------------------------------------------------- */
+.story-chapter__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   4. .story-chapter--overlay — z-stacking for slide-over chapters
+   --------------------------------------------------------------------------
+   Overlay chapters set escalating z-index via --story-z (10, 20, 30 ...).
+   Negative margin-top is set inline per section's overlap_distance setting:
+     style="margin-top: -{{ overlap_distance }}px"
+   This pulls the chapter up so its sticky child overlaps the previous chapter.
+   -------------------------------------------------------------------------- */
+.story-chapter--overlay {
+  z-index: var(--story-z, 1);
+}
+
+/* --------------------------------------------------------------------------
+   5. .story-reveal — scroll-triggered reveal animation
+   --------------------------------------------------------------------------
+   Elements start invisible and translated down. JS adds .is-visible on
+   intersection to trigger the reveal. Stagger via transition-delay inline.
+
+   Usage in Liquid:
+     <h2 class="story-reveal">Title</h2>
+   JS (via createRevealObserver):
+     utils.createRevealObserver(sectionEl.querySelectorAll('.story-reveal'));
+   -------------------------------------------------------------------------- */
+.story-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: opacity, transform;
+}
+
+.story-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. Reduced motion — accessibility reset
+   --------------------------------------------------------------------------
+   Disables pinning (sticky → relative, height:auto) so content flows
+   normally. Reveals are immediately visible with no animation.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .story-chapter__sticky {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .story-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto;
+    transition: none;
+  }
+}
