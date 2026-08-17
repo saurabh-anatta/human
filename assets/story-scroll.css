@@ -1,0 +1,29 @@
+/* ============================================================
+   story-scroll.css — Global tokens & utilities for Our Story
+   Loaded once by story-hero; harmless if loaded again by
+   story-subnav or other story sections.
+   ============================================================ */
+
+:root {
+  --os-color-red: #BC0F0F;
+  --os-color-red-dark: #5a0808;
+  --os-color-light-text: #F5F5F5;
+  --os-color-dark-text: #414141;
+}
+
+/* Chapter wrapper base */
+.story-chapter {
+  position: relative;
+}
+
+/* Reveal utility — used by createRevealObserver in story-utils.js */
+.story-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.story-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
