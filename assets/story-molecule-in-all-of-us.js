@@ -8,7 +8,7 @@
 /**
  * Initialise the molecule-in-all-of-us chapter scroll animation.
  * @param {HTMLElement} sectionEl - The sticky child (.story-molecule-in-all-of-us) bearing data-section-id
- * @param {Object} utils - The story-utils module (getScrollProgress, registerRafCallback, etc.)
+ * @param {Object} utils - The story-utils module (getScrollPx, registerRafCallback, etc.)
  */
 export function init(sectionEl, utils) {
   const chapterEl = sectionEl.closest('.story-chapter');
@@ -29,7 +29,9 @@ export function init(sectionEl, utils) {
    * parallax to the vessel contour lines as scroll progress advances.
    */
   function tick() {
-    const progress = utils.getScrollProgress(chapterEl);
+    const scrollPx = utils.getScrollPx(chapterEl);
+    const totalPin = chapterEl.scrollHeight - window.innerHeight;
+    const progress = totalPin > 0 ? Math.min(1, Math.max(0, scrollPx / totalPin)) : 0;
 
     /* Image column scrolls upward with progress.
        maxShift = how much taller the column is than the viewport. */
