@@ -30,13 +30,18 @@
 
 <script type="module">
   (function () {
-    const sectionEl = document.querySelector('[data-story-subnav]');
+    var sectionEl = document.querySelector('[data-story-subnav]');
     if (!sectionEl) return;
 
+    var utilsUrl = {{ 'story-utils.js' | asset_url | json }};
+    var subnavUrl = {{ 'story-subnav.js' | asset_url | json }};
+
     Promise.all([
-      import('{{ "story-utils.js" | asset_url }}'),
-      import('{{ "story-subnav.js" | asset_url }}')
-    ]).then(([utils, subnav]) => {
+      import(utilsUrl),
+      import(subnavUrl)
+    ]).then(function (modules) {
+      var utils = modules[0];
+      var subnav = modules[1];
       subnav.init(sectionEl, utils);
     });
   })();

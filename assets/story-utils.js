@@ -13,14 +13,14 @@ export function prefersReducedMotion() {
 
 /**
  * Returns how many scroll-pixels the wrapper has been scrolled past the
- * viewport top. Clamped ≥ 0 (negative values before the wrapper enters
- * aren't useful).
+ * viewport top. Can be negative when the wrapper hasn't reached the
+ * viewport top yet.
  *
  * @param {HTMLElement} wrapperEl - A .story-chapter wrapper
- * @returns {number} Scroll distance in px (≥ 0)
+ * @returns {number} Scroll distance in px (negative = not yet reached)
  */
 export function getScrollPx(wrapperEl) {
-  return Math.max(0, -wrapperEl.getBoundingClientRect().top);
+  return -wrapperEl.getBoundingClientRect().top;
 }
 
 /**
@@ -81,39 +81,60 @@ export function kfVal(keyframes, scrollPx) {
 /**
  * Creates an IntersectionObserver that adds .is-visible to elements when
  * they enter the viewport. One-shot: unobserves each element after reveal.
+ * Optional stagger delay staggers each element's reveal by index × staggerDelay ms.
  *
  * @param {NodeList|Array<HTMLElement>} elements - Elements with .story-reveal
  * @param {Object} [opts]
  * @param {number} [opts.threshold=0.15] - Intersection ratio to trigger
  * @param {string} [opts.rootMargin='0px 0px -60px 0px'] - Observer margin
+ * @param {number} [opts.staggerDelay=0] - Ms delay between each element's reveal
+ * @returns {IntersectionObserver|null} The observer instance (null if reduced motion)
  */
 export function createRevealObserver(elements, opts = {}) {
+  const elArray = Array.from(elements);
+
   if (prefersReducedMotion()) {
     /* Immediately show all elements — skip animation */
-    for (const el of elements) {
+    for (const el of elArray) {
       el.classList.add('is-visible');
     }
-    return;
+    return null;
   }
 
   const threshold = opts.threshold ?? 0.15;
   const rootMargin = opts.rootMargin ?? '0px 0px -60px 0px';
+  const staggerDelay = opts.staggerDelay ?? 0;
+
+  /** @type {Map<HTMLElement, number>} element -> its index for stagger calc */
+  const indexMap = new Map();
+  elArray.forEach((el, i) => indexMap.set(el, i));
 
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
+          const el = entry.target;
+          const idx = indexMap.get(el) ?? 0;
+          const delay = idx * staggerDelay;
+
+          if (delay > 0) {
+            setTimeout(() => el.classList.add('is-visible'), delay);
+          } else {
+            el.classList.add('is-visible');
+          }
+
+          observer.unobserve(el);
         }
       }
     },
     { threshold, rootMargin }
   );
 
-  for (const el of elements) {
+  for (const el of elArray) {
     observer.observe(el);
   }
+
+  return observer;
 }
 
 /* --------------------------------------------------------------------------
@@ -128,6 +149,9 @@ const _rafCallbacks = new Set();
 
 /** @type {number|null} */
 let _rafId = null;
+
+/** @type {boolean} */
+let _visibilityListenerAdded = false;
 
 /**
  * Internal tick — calls every registered callback, then requests next frame.
@@ -144,6 +168,25 @@ function _tick() {
 }
 
 /**
+ * Pause/resume the rAF loop on page visibility change.
+ * Prevents wasted CPU cycles when the tab is hidden.
+ */
+function _onVisibilityChange() {
+  if (document.hidden) {
+    /* Page hidden — pause the loop */
+    if (_rafId !== null) {
+      cancelAnimationFrame(_rafId);
+      _rafId = null;
+    }
+  } else {
+    /* Page visible — restart if callbacks remain */
+    if (_rafCallbacks.size > 0 && _rafId === null) {
+      _rafId = requestAnimationFrame(_tick);
+    }
+  }
+}
+
+/**
  * Register a callback to run every animation frame.
  * Starts the rAF loop if it isn't running.
  *
@@ -151,7 +194,14 @@ function _tick() {
  */
 export function registerRafCallback(fn) {
   _rafCallbacks.add(fn);
-  if (_rafId === null) {
+
+  /* Add visibilitychange listener once on first registration */
+  if (!_visibilityListenerAdded) {
+    _visibilityListenerAdded = true;
+    document.addEventListener('visibilitychange', _onVisibilityChange);
+  }
+
+  if (_rafId === null && !document.hidden) {
     _rafId = requestAnimationFrame(_tick);
   }
 }
