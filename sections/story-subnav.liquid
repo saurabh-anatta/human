@@ -1,130 +1,119 @@
 {%- comment -%}
   story-subnav.liquid — Sticky sub-nav capsule for the "Our Story" page.
   First section in template order: loads global story-scroll.css and
-  lazy-boots story-utils.js + story-subnav.js on first intersection.
+  story-utils.js + story-subnav.js immediately (above-the-fold).
 {%- endcomment -%}
 
 {%- comment -%} ── Global story CSS (loaded once) ── {%- endcomment -%}
 {{ 'story-scroll.css' | asset_url | stylesheet_tag }}
 
-<div class="story-subnav-section">
-  {%- comment -%} Sentinel — hidden element at natural flow position.
-    When it scrolls out of view the IntersectionObserver toggles
-    .ssn__capsule--stuck on the capsule. ─{%- endcomment -%}
-  <div class="ssn__sentinel" aria-hidden="true"></div>
-
-  <nav class="ssn__capsule" aria-label="Story navigation">
-    {%- comment -%} Pill indicator — positioned behind the active link via JS ─{%- endcomment -%}
-    <span class="ssn__pill" aria-hidden="true"></span>
-
-    <div class="ssn__nav">
+<div class="story-subnav" data-story-subnav>
+  <nav class="story-subnav__capsule" aria-label="Story navigation">
+    <ul class="story-subnav__list" role="list">
       {%- for block in section.blocks -%}
         {%- if block.type == 'nav_item' -%}
-          <a
-            class="ssn__link"
-            href="#{{ block.settings.anchor }}"
-            data-anchor="{{ block.settings.anchor }}"
-            {{ block.shopify_attributes }}
-          >
-            {{- block.settings.label -}}
-          </a>
+          <li class="story-subnav__item">
+            <a
+              class="story-subnav__link"
+              href="#{{ block.settings.anchor }}"
+              data-anchor="{{ block.settings.anchor }}"
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.label -}}
+            </a>
+          </li>
         {%- endif -%}
       {%- endfor -%}
-    </div>
+    </ul>
   </nav>
 </div>
 
 <script type="module">
   (function () {
-    const sectionEl = document.querySelector('.story-subnav-section');
+    const sectionEl = document.querySelector('[data-story-subnav]');
     if (!sectionEl) return;
 
-    let initialized = false;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !initialized) {
-          initialized = true;
-          observer.disconnect();
-
-          Promise.all([
-            import('{{ "story-utils.js" | asset_url }}'),
-            import('{{ "story-subnav.js" | asset_url }}')
-          ]).then(([utils, subnav]) => {
-            subnav.init(sectionEl, utils);
-          });
-        }
-      },
-      { rootMargin: '200px' }
-    );
-
-    observer.observe(sectionEl);
+    Promise.all([
+      import('{{ "story-utils.js" | asset_url }}'),
+      import('{{ "story-subnav.js" | asset_url }}')
+    ]).then(([utils, subnav]) => {
+      subnav.init(sectionEl, utils);
+    });
   })();
 </script>
 
 {% stylesheet %}
 /* ==========================================================================
    story-subnav — Sticky capsule nav
-   All classes prefixed .ssn__ (story sub-nav) to avoid global collisions.
+   BEM: .story-subnav__, modifier: .story-subnav--stuck
+   CSS custom props: --ssn-* (set by JS)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. Section wrapper — no .section class (avoids base.css background:transparent
-   override on .shopify-section :is(.section))
+   1. Shopify section wrapper — set via schema "class": "story-subnav-section"
+   Transparent background avoids base.css .section override; high z-index
+   keeps the capsule above story chapters (--story-z: 10, 20, 30 …).
    -------------------------------------------------------------------------- */
 .story-subnav-section {
+  background: transparent;
   position: relative;
-  width: 100%;
   z-index: 999;
 }
 
 /* --------------------------------------------------------------------------
-   2. Sentinel — invisible element that triggers stuck detection
+   2. Inner root — centers the capsule in normal flow
    -------------------------------------------------------------------------- */
-.ssn__sentinel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 1px;
-  pointer-events: none;
+.story-subnav {
+  display: flex;
+  justify-content: center;
+  padding-block: 12px;
+  width: 100%;
 }
 
 /* --------------------------------------------------------------------------
-   3. Capsule — the sticky nav bar
+   3. Stuck state — position:fixed below the site header
+   JS sets --ssn-header-offset to the header height in px.
+   The parent .shopify-section gets min-height to prevent layout shift.
    -------------------------------------------------------------------------- */
-.ssn__capsule {
-  position: sticky;
-  top: 12px;
+.story-subnav--stuck {
+  position: fixed;
+  top: var(--ssn-header-offset, 0px);
+  left: 0;
+  right: 0;
+  z-index: 999;
+  padding-block: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Capsule — the white pill container
+   -------------------------------------------------------------------------- */
+.story-subnav__capsule {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin: 0 auto;
   width: fit-content;
   max-width: calc(100% - 32px);
   padding: 6px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  z-index: 999;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  background: #FFFFFF;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
 }
 
-/* Stuck state — opaque background with subtle shadow */
-.ssn__capsule--stuck {
-  background: rgba(0, 0, 0, 0.85);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+/* Slightly stronger shadow when stuck for visual separation */
+.story-subnav--stuck .story-subnav__capsule {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
 
 /* --------------------------------------------------------------------------
-   4. Nav scroller — horizontal overflow on mobile
+   5. List — horizontal scrolling container
    -------------------------------------------------------------------------- */
-.ssn__nav {
-  position: relative;
+.story-subnav__list {
   display: flex;
   align-items: center;
   gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -132,79 +121,81 @@
   -ms-overflow-style: none;
 }
 
-.ssn__nav::-webkit-scrollbar {
+.story-subnav__list::-webkit-scrollbar {
   display: none;
 }
 
 /* --------------------------------------------------------------------------
-   5. Nav links
+   6. List items
    -------------------------------------------------------------------------- */
-.ssn__link {
-  position: relative;
+.story-subnav__item {
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Nav links
+   -------------------------------------------------------------------------- */
+.story-subnav__link {
   display: inline-flex;
   align-items: center;
   padding: 8px 16px;
   border-radius: 999px;
   font-family: var(--os-font-label, sans-serif);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.75px;
   line-height: 1;
   text-transform: uppercase;
   text-decoration: none;
-  color: var(--os-color-muted-light, #A0A0A0);
+  color: var(--os-color-muted, #767676);
   white-space: nowrap;
   cursor: pointer;
-  transition: color 0.25s ease;
-  z-index: 1;
+  transition: color 0.25s ease, background-color 0.25s ease;
 }
 
-.ssn__link:hover {
-  color: var(--os-color-white, #FFFFFF);
+.story-subnav__link:hover {
+  color: var(--os-color-dark-text, #414141);
 }
 
-.ssn__link--active {
-  color: var(--os-color-white, #FFFFFF);
-}
-
-/* --------------------------------------------------------------------------
-   6. Sliding pill indicator — sits behind the active link
-   -------------------------------------------------------------------------- */
-.ssn__pill {
-  position: absolute;
-  top: 6px;
-  left: 0;
-  height: calc(100% - 12px);
-  border-radius: 999px;
+/* Active link — red pill with white text */
+.story-subnav__link--active {
   background: var(--os-color-red, #BC0F0F);
-  pointer-events: none;
-  transition: transform 0.3s ease, width 0.3s ease;
-  z-index: 0;
-  width: 0;
+  color: var(--os-color-white, #FFFFFF);
+}
+
+.story-subnav__link--active:hover {
+  color: var(--os-color-white, #FFFFFF);
 }
 
 /* --------------------------------------------------------------------------
-   7. Mobile adjustments
+   8. Mobile adjustments
    -------------------------------------------------------------------------- */
 @media screen and (max-width: 749px) {
-  .ssn__capsule {
+  .story-subnav {
+    padding-block: 8px;
+  }
+
+  .story-subnav--stuck {
+    padding-block: 8px;
+  }
+
+  .story-subnav__capsule {
     max-width: calc(100% - 24px);
     padding: 4px;
   }
 
-  .ssn__link {
+  .story-subnav__link {
     padding: 6px 12px;
-    font-size: 10px;
+    font-size: 11px;
   }
 }
 
 /* --------------------------------------------------------------------------
-   8. Reduced motion — disable smooth transitions
+   9. Reduced motion — disable transitions
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  .ssn__capsule,
-  .ssn__link,
-  .ssn__pill {
+  .story-subnav__capsule,
+  .story-subnav__link {
     transition: none;
   }
 }
@@ -212,7 +203,7 @@
 
 {% schema %}
 {
-  "name": "Story subnav",
+  "name": "Story Sub-Nav",
   "tag": "section",
   "class": "story-subnav-section",
   "limit": 1,
@@ -224,6 +215,7 @@
     {
       "type": "nav_item",
       "name": "Nav item",
+      "limit": 8,
       "settings": [
         {
           "type": "text",
@@ -242,7 +234,7 @@
   ],
   "presets": [
     {
-      "name": "Story subnav",
+      "name": "Story Sub-Nav",
       "blocks": [
         {
           "type": "nav_item",

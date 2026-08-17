@@ -1,133 +1,182 @@
 /* ==========================================================================
    story-subnav.js — Sticky sub-nav capsule behavior
-   Loaded lazily by story-subnav.liquid on first IntersectionObserver hit.
+   Imported by story-subnav.liquid on page load (above-the-fold, no lazy IO).
    ========================================================================== */
 
 /**
  * Initialise the sticky sub-nav capsule.
  *
- * @param {HTMLElement} sectionEl - The story-subnav section root
- * @param {Object} utils - story-utils.js module (unused directly here,
- *   but keeps the init(sectionEl, utils) contract consistent with other
- *   story section JS modules)
+ * @param {HTMLElement} sectionEl - The [data-story-subnav] root element
+ * @param {Object} utils - story-utils.js module exports
  */
 export function init(sectionEl, utils) {
-  const capsule = sectionEl.querySelector('.ssn__capsule');
-  const links = sectionEl.querySelectorAll('.ssn__link');
-  const pill = sectionEl.querySelector('.ssn__pill');
+  const capsule = sectionEl.querySelector('.story-subnav__capsule');
+  const list = sectionEl.querySelector('.story-subnav__list');
+  const links = sectionEl.querySelectorAll('.story-subnav__link');
 
   if (!capsule || links.length === 0) return;
 
   /* ------------------------------------------------------------------
-     1. Sticky offset — account for the site header height
+     1. STICKY: position:fixed when scrolled past the resting position
      ------------------------------------------------------------------ */
-  function updateStickyOffset() {
-    const headerHeight = parseInt(
-      getComputedStyle(document.body).getPropertyValue('--header-height') || '0',
-      10
-    );
-    capsule.style.top = (headerHeight + 12) + 'px';
+
+  /**
+   * Read the Horizon sticky header height so the subnav docks below it.
+   * Checks #header-group first, falls back to .header-section.
+   * @returns {number}
+   */
+  function getHeaderHeight() {
+    const headerGroup = document.getElementById('header-group');
+    if (headerGroup) {
+      const headerSection = headerGroup.querySelector('.header-section');
+      if (headerSection) return headerSection.offsetHeight;
+      return headerGroup.offsetHeight;
+    }
+    const headerSection = document.querySelector('.header-section');
+    if (headerSection) return headerSection.offsetHeight;
+    return 0;
   }
 
-  updateStickyOffset();
-  window.addEventListener('resize', updateStickyOffset, { passive: true });
+  /* Record the subnav's resting Y position (page-relative, measured once) */
+  const restingTop = sectionEl.getBoundingClientRect().top + window.scrollY;
+
+  /* Parent Shopify section wrapper — used to reserve space when child goes fixed */
+  const shopifySection = sectionEl.closest('.shopify-section');
+
+  let isStuck = false;
+
+  /**
+   * Toggle the stuck class based on scroll position. When stuck, the
+   * subnav becomes position:fixed below the site header. The parent
+   * wrapper gets a min-height to prevent layout shift.
+   */
+  function updateSticky() {
+    const headerH = getHeaderHeight();
+    const shouldStick = window.scrollY >= restingTop - headerH;
+
+    if (shouldStick && !isStuck) {
+      isStuck = true;
+      /* Lock parent height before the child leaves flow */
+      if (shopifySection) {
+        shopifySection.style.minHeight = sectionEl.offsetHeight + 'px';
+      }
+      sectionEl.style.setProperty('--ssn-header-offset', headerH + 'px');
+      sectionEl.classList.add('story-subnav--stuck');
+    } else if (!shouldStick && isStuck) {
+      isStuck = false;
+      sectionEl.classList.remove('story-subnav--stuck');
+      if (shopifySection) {
+        shopifySection.style.minHeight = '';
+      }
+    }
+  }
 
   /* ------------------------------------------------------------------
-     2. Scroll-spy — highlight the link whose chapter is most visible
+     2. SCROLL-SPY: IntersectionObserver on .story-chapter wrappers
      ------------------------------------------------------------------ */
 
-  /** @type {HTMLElement[]} */
-  const chapters = Array.from(
-    document.querySelectorAll('.story-chapter[data-anchor]')
-  );
+  /** @type {NodeListOf<HTMLElement>} */
+  const chapters = document.querySelectorAll('.story-chapter[data-anchor]');
 
-  /** @type {Map<string, HTMLElement>} anchor → link element */
+  /** @type {Map<string, HTMLElement>} anchor string -> link element */
   const linkMap = new Map();
   for (const link of links) {
     const anchor = link.dataset.anchor;
     if (anchor) linkMap.set(anchor, link);
   }
 
-  /** @type {HTMLElement|null} Currently active link */
+  /** @type {HTMLElement|null} */
   let activeLink = null;
 
   /**
-   * Determine which chapter is most in view and activate its nav link.
+   * Activate a nav link by its anchor string. Removes the active class
+   * from the previous link and adds it to the new one. On mobile,
+   * scrolls the link into the visible area of the horizontal scroller.
+   * @param {string} anchor
    */
-  function updateScrollSpy() {
-    if (chapters.length === 0) return;
+  function setActiveLink(anchor) {
+    const targetLink = linkMap.get(anchor);
+    if (!targetLink || targetLink === activeLink) return;
 
-    const viewportMid = window.innerHeight / 2;
-    let bestChapter = null;
-    let bestDistance = Infinity;
+    if (activeLink) activeLink.classList.remove('story-subnav__link--active');
+    targetLink.classList.add('story-subnav__link--active');
+    activeLink = targetLink;
 
-    for (const chapter of chapters) {
-      const rect = chapter.getBoundingClientRect();
-      /* Distance from chapter's vertical center to viewport center */
-      const chapterMid = rect.top + rect.height / 2;
-      const distance = Math.abs(chapterMid - viewportMid);
-
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        bestChapter = chapter;
+    /* On mobile, ensure the active link is visible in the horizontal scroller */
+    if (list && window.innerWidth <= 749) {
+      const listRect = list.getBoundingClientRect();
+      const linkRect = targetLink.getBoundingClientRect();
+      if (linkRect.left < listRect.left || linkRect.right > listRect.right) {
+        targetLink.scrollIntoView({
+          inline: 'center',
+          block: 'nearest',
+          behavior: 'smooth'
+        });
       }
     }
-
-    if (!bestChapter) return;
-
-    const anchor = bestChapter.dataset.anchor;
-    const targetLink = linkMap.get(anchor);
-
-    if (targetLink && targetLink !== activeLink) {
-      if (activeLink) activeLink.classList.remove('ssn__link--active');
-      targetLink.classList.add('ssn__link--active');
-      activeLink = targetLink;
-      movePill(targetLink);
-      scrollLinkIntoView(targetLink);
-    }
   }
 
-  /**
-   * Position the sliding pill indicator behind the active link.
-   * @param {HTMLElement} linkEl
+  /*
+   * rootMargin '-40% 0px -60% 0px' creates a trigger line at the 40%
+   * mark from the viewport top. Chapters (which are many vh tall) are
+   * considered "in view" when their extent crosses this line. As the
+   * user scrolls, the chapter spanning the 40% line is the active one.
    */
-  function movePill(linkEl) {
-    if (!pill) return;
-    const navScroller = capsule.querySelector('.ssn__nav');
-    if (!navScroller) return;
+  const spyObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const anchor = entry.target.dataset.anchor;
+          if (anchor) setActiveLink(anchor);
+        }
+      }
+    },
+    { rootMargin: '-40% 0px -60% 0px' }
+  );
 
-    const scrollerRect = navScroller.getBoundingClientRect();
-    const linkRect = linkEl.getBoundingClientRect();
-
-    pill.style.transform = `translateX(${linkRect.left - scrollerRect.left + navScroller.scrollLeft}px)`;
-    pill.style.width = `${linkRect.width}px`;
+  for (const chapter of chapters) {
+    spyObserver.observe(chapter);
   }
 
-  /**
-   * On mobile, ensure the active link is scrolled into the visible area
-   * of the horizontally-scrollable nav.
-   * @param {HTMLElement} linkEl
-   */
-  function scrollLinkIntoView(linkEl) {
-    const navScroller = capsule.querySelector('.ssn__nav');
-    if (!navScroller) return;
+  /* ------------------------------------------------------------------
+     3. SMOOTH-SCROLL: click -> scroll to wrapper top
+     Event delegation on the nav list for .story-subnav__link clicks.
+     ------------------------------------------------------------------ */
 
-    const navRect = navScroller.getBoundingClientRect();
-    const linkRect = linkEl.getBoundingClientRect();
+  list.addEventListener('click', (e) => {
+    const link = e.target.closest('.story-subnav__link');
+    if (!link) return;
 
-    /* If the link is partially or fully outside the visible nav area */
-    if (linkRect.left < navRect.left || linkRect.right > navRect.right) {
-      linkEl.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
-    }
-  }
+    e.preventDefault();
 
-  /* Throttled scroll listener */
+    const anchor = link.dataset.anchor;
+    if (!anchor) return;
+
+    const targetChapter = document.querySelector(
+      '.story-chapter[data-anchor="' + anchor + '"]'
+    );
+    if (!targetChapter) return;
+
+    /* Scroll to the wrapper top so pinned chapters start at progress 0 */
+    const wrapperOffsetTop =
+      targetChapter.getBoundingClientRect().top + window.scrollY;
+
+    /* AC-13: fall back to instant scroll under prefers-reduced-motion */
+    const scrollBehavior = utils.prefersReducedMotion() ? 'instant' : 'smooth';
+
+    window.scrollTo({ top: wrapperOffsetTop, behavior: scrollBehavior });
+  });
+
+  /* ------------------------------------------------------------------
+     4. Throttled scroll listener for sticky state
+     ------------------------------------------------------------------ */
+
   let ticking = false;
   function onScroll() {
     if (!ticking) {
       ticking = true;
       requestAnimationFrame(() => {
-        updateScrollSpy();
+        updateSticky();
         ticking = false;
       });
     }
@@ -135,50 +184,13 @@ export function init(sectionEl, utils) {
 
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  /* Initial check */
-  updateScrollSpy();
+  /* Recalculate header offset on resize (header height may change) */
+  window.addEventListener('resize', () => {
+    if (isStuck) {
+      sectionEl.style.setProperty('--ssn-header-offset', getHeaderHeight() + 'px');
+    }
+  }, { passive: true });
 
-  /* ------------------------------------------------------------------
-     3. Click → smooth-scroll to the wrapper top
-     ------------------------------------------------------------------ */
-  for (const link of links) {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-
-      const anchor = link.dataset.anchor;
-      if (!anchor) return;
-
-      const targetChapter = document.querySelector(
-        `.story-chapter[data-anchor="${anchor}"]`
-      );
-      if (!targetChapter) return;
-
-      /* Offset by header height so the chapter starts below the header */
-      const headerHeight = parseInt(
-        getComputedStyle(document.body).getPropertyValue('--header-height') || '0',
-        10
-      );
-
-      const targetTop =
-        targetChapter.getBoundingClientRect().top +
-        window.scrollY -
-        headerHeight;
-
-      window.scrollTo({ top: targetTop, behavior: 'smooth' });
-    });
-  }
-
-  /* ------------------------------------------------------------------
-     4. Stuck state — toggle .ssn__capsule--stuck for visual treatment
-     ------------------------------------------------------------------ */
-  const stuckObserver = new IntersectionObserver(
-    ([entry]) => {
-      /* When the sentinel goes out of view, the capsule is stuck */
-      capsule.classList.toggle('ssn__capsule--stuck', !entry.isIntersecting);
-    },
-    { threshold: 0 }
-  );
-
-  const sentinel = sectionEl.querySelector('.ssn__sentinel');
-  if (sentinel) stuckObserver.observe(sentinel);
+  /* Initial check — may already need to be stuck on page load */
+  updateSticky();
 }
